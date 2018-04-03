@@ -11,8 +11,8 @@ bool MapEditor::initWindow()
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
     auto scrollPanel = tgui::ScrollablePanel::create({"20%", "80%"});
-    scrollPanel->setPosition(10, 10);
     auto grid = tgui::Grid::create();
+    scrollPanel->setPosition(10, 10);
     grid->setPosition(20, 20);
     scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
     uint x = 0, y = 0;
