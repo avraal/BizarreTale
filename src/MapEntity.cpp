@@ -12,7 +12,6 @@ MapEntity::MapEntity(const std::string imagePath, float posX, float posY)
     {
         sprite.setTexture(texture);
     }
-    sprite.setScale(0.1f, 0.1f);
 
     sprite.setPosition(posX, posY);
 
