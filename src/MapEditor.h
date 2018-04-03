@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
+#include <dirent.h>
 #include "MapEntity.h"
 
 class MapEditor
@@ -17,9 +18,12 @@ private:
     MapEditor() {}
     ~MapEditor() {}
     std::vector<std::shared_ptr<MapEntity>> ObjList;
+    std::vector<std::string> PathToImages;
     sf::RenderWindow window;
 
     int prevScrollBarValue = 0;
+
+    void findAllFiles();
 
 public:
     MapEditor(MapEditor const&) = delete;
@@ -31,7 +35,7 @@ public:
     }
 
     bool initWindow();
+    static std::string CurrentDirectory;
     void display();
 };
-
 #endif //BIZARRETALE_MAPEDITOR_H

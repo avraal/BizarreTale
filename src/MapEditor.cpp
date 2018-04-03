@@ -3,6 +3,8 @@
 //
 
 #include "MapEditor.h"
+std::string MapEditor::CurrentDirectory = "";
+
 bool MapEditor::initWindow()
 {
     window.create(sf::VideoMode(1280, 720), "Hello, SFML"/*, sf::Style::Titlebar | sf::Style::Close*/);
@@ -26,11 +28,13 @@ bool MapEditor::initWindow()
         }
         grid->addWidget(pic, x, y, {10, 10, 10, 10});
     }
-    scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
 
+    scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
     scrollPanel->add(grid);
     gui.add(scrollPanel);
     window.setVerticalSyncEnabled(true);
+
+    findAllFiles();
 
     while (window.isOpen())
     {
@@ -67,4 +71,38 @@ bool MapEditor::initWindow()
         window.display();
     }
     return true;
+}
+void MapEditor::findAllFiles()
+{
+    std::cout << "findAllFiles" << std::endl;
+    DIR *dir;
+    dirent *directory;
+
+    std::cout << "find in " << MapEditor::CurrentDirectory << std::endl;
+    if((dir = opendir(MapEditor::CurrentDirectory.c_str())) != NULL)
+    {
+        std::cout << "find..." << std::endl;
+        while((directory = readdir(dir)) != NULL)
+        {
+            char *last = strrchr(directory->d_name, '.');
+            if(last != NULL)
+            {
+                //std::cout << MapEditor::CurrentDirectory << directory->d_name << std::endl;
+                std::cout << last << std::endl;
+                if (strcmp(last, ".png") == 0)
+                {
+                    std::cout << MapEditor::CurrentDirectory << directory->d_name << " added to stack" << std::endl;
+                    PathToImages.push_back(MapEditor::CurrentDirectory.append(directory->d_name));
+                }
+            }
+        }
+        closedir(dir);
+    } else
+    {
+        std::cerr << "Cant open a dir" << std::endl;
+    }
+    for(auto p : PathToImages)
+    {
+        std::cout << p << std::endl;
+    }
 }
