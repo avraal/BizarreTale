@@ -35,7 +35,7 @@ public:
     }
 
     bool initWindow();
-    static std::string CurrentDirectory;
+    std::string CurrentDirectory = "";
     void display();
 };
 #endif //BIZARRETALE_MAPEDITOR_H

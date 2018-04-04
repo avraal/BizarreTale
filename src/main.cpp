@@ -29,9 +29,9 @@ int main(int argc, char **argv)
     std::cout << argv[0] << std::endl;
     std::vector<std::shared_ptr<MapEntity>> ObjList;
     MapEditor &Editor = MapEditor::Instance();
-    MapEditor::CurrentDirectory.clear();
-    MapEditor::CurrentDirectory.append(argv[0]);
-    MapEditor::CurrentDirectory = MapEditor::CurrentDirectory.substr(0, MapEditor::CurrentDirectory.size() - 11);
+    Editor.CurrentDirectory.clear();
+    Editor.CurrentDirectory.append(argv[0]);
+    Editor.CurrentDirectory = Editor.CurrentDirectory.substr(0, Editor.CurrentDirectory.size() - 11);
     Editor.initWindow();
 
     return 0;

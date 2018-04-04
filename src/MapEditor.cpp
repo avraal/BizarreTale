@@ -3,7 +3,6 @@
 //
 
 #include "MapEditor.h"
-std::string MapEditor::CurrentDirectory = "";
 
 bool MapEditor::initWindow()
 {
