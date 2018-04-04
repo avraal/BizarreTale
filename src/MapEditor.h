@@ -26,7 +26,7 @@ private:
     std::vector<std::string> ImagesFormats;
     sf::RenderWindow window;
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
-
+    void AddObject(std::string imagePath);
 
 public:
     MapEditor(MapEditor const&) = delete;

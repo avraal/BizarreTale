@@ -8,7 +8,7 @@ bool MapEditor::initWindow()
 {
     window.create(sf::VideoMode(1280, 720), "Hello, SFML"/*, sf::Style::Titlebar | sf::Style::Close*/);
     findAllFiles(PathToImages, ImagesFormats);
-    
+
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
@@ -19,10 +19,11 @@ bool MapEditor::initWindow()
     scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
 
     uint x = 0, y = 0;
-    for(auto i : PathToImages)
+    for (auto i : PathToImages)
     {
         auto pic = tgui::Picture::create(i);
-        if(y == 2)
+        pic->connect(pic->onClick.getName(), &MapEditor::AddObject, this, i);
+        if (y == 2)
         {
             x++;
             y = 0;
@@ -55,8 +56,8 @@ bool MapEditor::initWindow()
                 }
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-//                    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-//                            new MapEntity("1.png", event.mouseButton.x, event.mouseButton.y))));
+                    //                    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
+                    //                            new MapEntity("1.png", event.mouseButton.x, event.mouseButton.y))));
 
                 }
             }
@@ -77,16 +78,16 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
 {
     DIR *dir;
     dirent *directory;
-    if((dir = opendir(MapEditor::CurrentDirectory.c_str())) != NULL)
+    if ((dir = opendir(MapEditor::CurrentDirectory.c_str())) != NULL)
     {
-        while((directory = readdir(dir)) != NULL)
+        while ((directory = readdir(dir)) != NULL)
         {
             char *last = strrchr(directory->d_name, '.');
-            if(last != NULL)
+            if (last != NULL)
             {
-                for(auto f : FileFormats)
+                for (auto f : FileFormats)
                 {
-                    if(strcmp(last, f.c_str()) == 0)
+                    if (strcmp(last, f.c_str()) == 0)
                     {
                         std::cout << MapEditor::CurrentDirectory << directory->d_name << " added to stack" << std::endl;
                         Container.push_back(MapEditor::CurrentDirectory + directory->d_name);
@@ -99,4 +100,9 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
     {
         std::cerr << "Cant open a dir" << std::endl;
     }
+}
+void MapEditor::AddObject(std::string imagePath)
+{
+    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(new MapEntity(imagePath, 300.f, 300.f))));
+    std::cout << "Its image :" << std::endl;
 }
