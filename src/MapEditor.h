@@ -15,15 +15,18 @@
 class MapEditor
 {
 private:
-    MapEditor() {}
+    MapEditor()
+    {
+        ImagesFormats.push_back(".png");
+        ImagesFormats.push_back(".jpg");
+    }
     ~MapEditor() {}
     std::vector<std::shared_ptr<MapEntity>> ObjList;
     std::vector<std::string> PathToImages;
+    std::vector<std::string> ImagesFormats;
     sf::RenderWindow window;
+    void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
 
-    int prevScrollBarValue = 0;
-
-    void findAllFiles();
 
 public:
     MapEditor(MapEditor const&) = delete;

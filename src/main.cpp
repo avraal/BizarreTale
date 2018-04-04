@@ -32,7 +32,9 @@ int main(int argc, char **argv)
     Editor.CurrentDirectory.clear();
     Editor.CurrentDirectory.append(argv[0]);
     Editor.CurrentDirectory = Editor.CurrentDirectory.substr(0, Editor.CurrentDirectory.size() - 11);
+
     Editor.initWindow();
+
 
     return 0;
 }

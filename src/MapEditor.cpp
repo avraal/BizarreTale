@@ -7,7 +7,8 @@
 bool MapEditor::initWindow()
 {
     window.create(sf::VideoMode(1280, 720), "Hello, SFML"/*, sf::Style::Titlebar | sf::Style::Close*/);
-
+    findAllFiles(PathToImages, ImagesFormats);
+    
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
@@ -16,15 +17,17 @@ bool MapEditor::initWindow()
     scrollPanel->setPosition(10, 10);
     grid->setPosition(20, 20);
     scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
+
     uint x = 0, y = 0;
-    for(uint i = 0; i < 15; i++, y++)
+    for(auto i : PathToImages)
     {
-        auto pic = tgui::Picture::create("1.png");
+        auto pic = tgui::Picture::create(i);
         if(y == 2)
         {
             x++;
             y = 0;
         }
+        y++;
         grid->addWidget(pic, x, y, {10, 10, 10, 10});
     }
 
@@ -32,8 +35,6 @@ bool MapEditor::initWindow()
     scrollPanel->add(grid);
     gui.add(scrollPanel);
     window.setVerticalSyncEnabled(true);
-
-    findAllFiles();
 
     while (window.isOpen())
     {
@@ -71,27 +72,25 @@ bool MapEditor::initWindow()
     }
     return true;
 }
-void MapEditor::findAllFiles()
+
+void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
 {
-    std::cout << "findAllFiles" << std::endl;
     DIR *dir;
     dirent *directory;
-
-    std::cout << "find in " << MapEditor::CurrentDirectory << std::endl;
     if((dir = opendir(MapEditor::CurrentDirectory.c_str())) != NULL)
     {
-        std::cout << "find..." << std::endl;
         while((directory = readdir(dir)) != NULL)
         {
             char *last = strrchr(directory->d_name, '.');
             if(last != NULL)
             {
-                //std::cout << MapEditor::CurrentDirectory << directory->d_name << std::endl;
-                std::cout << last << std::endl;
-                if (strcmp(last, ".png") == 0)
+                for(auto f : FileFormats)
                 {
-                    std::cout << MapEditor::CurrentDirectory << directory->d_name << " added to stack" << std::endl;
-                    PathToImages.push_back(MapEditor::CurrentDirectory.append(directory->d_name));
+                    if(strcmp(last, f.c_str()) == 0)
+                    {
+                        std::cout << MapEditor::CurrentDirectory << directory->d_name << " added to stack" << std::endl;
+                        Container.push_back(MapEditor::CurrentDirectory + directory->d_name);
+                    }
                 }
             }
         }
@@ -99,9 +98,5 @@ void MapEditor::findAllFiles()
     } else
     {
         std::cerr << "Cant open a dir" << std::endl;
-    }
-    for(auto p : PathToImages)
-    {
-        std::cout << p << std::endl;
     }
 }
