@@ -61,9 +61,14 @@ bool MapEditor::initWindow()
                 if (event.mouseButton.button == sf::Mouse::Left &&
                     !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
                 {
-                    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-                            new MapEntity(CurrentPathFile, event.mouseButton.x, event.mouseButton.y))));
-
+                    if(!CurrentPathFile.empty())
+                    {
+                        ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
+                                new MapEntity(CurrentPathFile, event.mouseButton.x, event.mouseButton.y))));
+                    } else
+                    {
+                        std::cout << "[WARNING | MapEditor]: Current Path File is empty" << std::endl;
+                    }
                 }
             }
             gui.handleEvent(event);
