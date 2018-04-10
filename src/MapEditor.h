@@ -24,6 +24,7 @@ private:
     std::vector<std::shared_ptr<MapEntity>> ObjList;
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
+    std::string CurrentPathFile;
     sf::RenderWindow window;
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void AddObject(std::string imagePath);

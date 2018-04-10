@@ -12,6 +12,8 @@ bool MapEditor::initWindow()
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
+    bool mouseOnImagePanel = false;
+
     auto scrollPanel = tgui::ScrollablePanel::create({"20%", "80%"});
     auto grid = tgui::Grid::create();
     scrollPanel->setPosition(10, 10);
@@ -34,7 +36,9 @@ bool MapEditor::initWindow()
 
     scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
     scrollPanel->add(grid);
+
     gui.add(scrollPanel);
+
     window.setVerticalSyncEnabled(true);
 
     while (window.isOpen())
@@ -54,10 +58,11 @@ bool MapEditor::initWindow()
                 {
                     window.create(sf::VideoMode(720, 480), "");
                 }
-                if (event.mouseButton.button == sf::Mouse::Left)
+                if (event.mouseButton.button == sf::Mouse::Left &&
+                    !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
                 {
-                    //                    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-                    //                            new MapEntity("1.png", event.mouseButton.x, event.mouseButton.y))));
+                    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
+                            new MapEntity(CurrentPathFile, event.mouseButton.x, event.mouseButton.y))));
 
                 }
             }
@@ -67,7 +72,6 @@ bool MapEditor::initWindow()
         for (auto o : ObjList)
         {
             window.draw(*o);
-            std::cout << ObjList.size() << std::endl;
         }
         window.display();
     }
@@ -103,6 +107,6 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
 }
 void MapEditor::AddObject(std::string imagePath)
 {
-    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(new MapEntity(imagePath, 300.f, 300.f))));
-    std::cout << "Its image :" << std::endl;
+    CurrentPathFile = imagePath;
+//    ObjList.push_back(std::move(std::shared_ptr<MapEntity>(new MapEntity(imagePath, 300.f, 300.f))));
 }
