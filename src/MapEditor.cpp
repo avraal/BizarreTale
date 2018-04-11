@@ -7,6 +7,7 @@
 bool MapEditor::initWindow()
 {
     window.create(sf::VideoMode(1280, 720), "Hello, SFML"/*, sf::Style::Titlebar | sf::Style::Close*/);
+    MainCamera = sf::View(sf::FloatRect(0, 0, 1280, 720));
     findAllFiles(PathToImages, ImagesFormats);
     drawTileMap();
     tgui::Gui gui{window};
@@ -37,21 +38,28 @@ bool MapEditor::initWindow()
 
     gui.add(scrollPanel);
 
+    window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
-
+    //    MainCamera.zoom(2.0f);
+    window.setView(MainCamera);
+    sf::Vector2i Mouse = sf::Mouse::getPosition(window);
     while (window.isOpen())
     {
         sf::Event event;
         window.clear(sf::Color(42, 76, 61));
-
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
             {
                 window.close();
             }
+            if (event.type == sf::Event::Resized)
+            {
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                window.setView(sf::View(visibleArea));
+            }
             MouseCallbacks(event);
-
+            KeyBoadrCallbacks(event);
             gui.handleEvent(event);
         }
         for (auto t : TileMap)
@@ -128,11 +136,26 @@ void MapEditor::drawTileMap()
 }
 void MapEditor::MouseCallbacks(sf::Event event)
 {
+    if (event.type == sf::Event::MouseWheelScrolled)
+    {
+        if (event.mouseWheelScroll.delta > 0)
+        {
+            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, (1.f / 1.1f));
+        } else if (event.mouseWheelScroll.delta < 0)
+        {
+            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, 1.1f);
+        }
+    }
+
     if (event.type == sf::Event::MouseButtonPressed)
     {
         if (event.mouseButton.button == sf::Mouse::Right)
         {
-            window.create(sf::VideoMode(720, 480), "");
+            sf::Vector2i Mouse = sf::Mouse::getPosition(window);
+            float w = window.mapPixelToCoords(Mouse).x;
+            float h = window.mapPixelToCoords(Mouse).y;
+            MainCamera.setCenter(w, h);
+            window.setView(MainCamera);
         }
 
         if (event.mouseButton.button == sf::Mouse::Left &&
@@ -168,6 +191,52 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 {
                     std::cout << "[WARNING | MapEditor]: Current Path File is empty" << std::endl;
                 }
+            }
+        }
+    }
+}
+void MapEditor::ZoomViewAt(sf::Vector2i pixel, float zoom)
+{
+    const sf::Vector2f beforeCoord{window.mapPixelToCoords(pixel)};
+    MainCamera.zoom(zoom);
+    const sf::Vector2f afterCoord{window.mapPixelToCoords(pixel)};
+    const sf::Vector2f offsetCoords{beforeCoord - afterCoord};
+    MainCamera.move(offsetCoords);
+    window.setView(MainCamera);
+}
+void MapEditor::KeyBoadrCallbacks(sf::Event event)
+{
+    if(event.type == sf::Event::KeyPressed)
+    {
+        if(event.key.code == sf::Keyboard::Escape)
+        {
+            window.close();
+        }
+        switch (event.key.code)
+        {
+            case sf::Keyboard::Right:
+            {
+                MainCamera.move(-CameraSpeed, 0.0f);
+                window.setView(MainCamera);
+                break;
+            }
+            case sf::Keyboard::Left:
+            {
+                MainCamera.move(CameraSpeed, 0.0f);
+                window.setView(MainCamera);
+                break;
+            }
+            case sf::Keyboard::Up:
+            {
+                MainCamera.move(0.0f, CameraSpeed);
+                window.setView(MainCamera);
+                break;
+            }
+            case sf::Keyboard::Down:
+            {
+                MainCamera.move(0.0f, -CameraSpeed);
+                window.setView(MainCamera);
+                break;
             }
         }
     }

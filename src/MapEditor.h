@@ -21,6 +21,7 @@ private:
         CurrentPathFile  = "";
         ImagesFormats.push_back(".png");
         ImagesFormats.push_back(".jpg");
+        CameraSpeed = 1.2f;
     }
     ~MapEditor() {}
     std::vector<std::shared_ptr<MapEntity>> ObjList;
@@ -29,11 +30,17 @@ private:
     std::vector<std::shared_ptr<MapEntity>> TileMap;
     std::string CurrentPathFile;
     sf::RenderWindow window;
+    sf::View MainCamera;
     tgui::ScrollablePanel::Ptr scrollPanel;
+
+    float CameraSpeed;
+
     void drawTileMap();
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void AddObject(std::string imagePath);
-    void MouseCallbacks(sf::Event);
+    void MouseCallbacks(sf::Event event);
+    void KeyBoadrCallbacks(sf::Event event);
+    void ZoomViewAt(sf::Vector2i pixel, float zoom);
 
 public:
     MapEditor(MapEditor const&) = delete;
