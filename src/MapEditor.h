@@ -21,7 +21,7 @@ private:
         CurrentPathFile  = "";
         ImagesFormats.push_back(".png");
         ImagesFormats.push_back(".jpg");
-        CameraSpeed = 1.2f;
+        CameraSpeed = 2.0f;
     }
     ~MapEditor() {}
     std::vector<std::shared_ptr<MapEntity>> ObjList;
@@ -39,7 +39,7 @@ private:
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void AddObject(std::string imagePath);
     void MouseCallbacks(sf::Event event);
-    void KeyBoadrCallbacks(sf::Event event);
+    void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
 
 public:

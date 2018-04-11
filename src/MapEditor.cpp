@@ -40,7 +40,6 @@ bool MapEditor::initWindow()
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
-    //    MainCamera.zoom(2.0f);
     window.setView(MainCamera);
     sf::Vector2i Mouse = sf::Mouse::getPosition(window);
     while (window.isOpen())
@@ -53,13 +52,13 @@ bool MapEditor::initWindow()
             {
                 window.close();
             }
-            if (event.type == sf::Event::Resized)
-            {
-                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-                window.setView(sf::View(visibleArea));
-            }
+            //            if (event.type == sf::Event::Resized)
+            //            {
+            //                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+            //                window.setView(sf::View(visibleArea));
+            //            }
             MouseCallbacks(event);
-            KeyBoadrCallbacks(event);
+            KeyBoardCallbacks(event);
             gui.handleEvent(event);
         }
         for (auto t : TileMap)
@@ -119,10 +118,11 @@ void MapEditor::drawTileMap()
     for (uint i = 0; i < height * width - 1; i++)
     {
         TileMap.push_back(std::move(std::shared_ptr<MapEntity>(
-                new MapEntity("", 0, 0))));
+                new MapEntity("", {.0f, .0f}))));
     }
     //set position
     uint x = 0, y = 0;
+
     for (auto t : TileMap)
     {
         t->setPosition(x * 65, y * 65);
@@ -165,10 +165,10 @@ void MapEditor::MouseCallbacks(sf::Event event)
             {
                 if (!CurrentPathFile.empty())
                 {
-
-                    if (event.mouseButton.x > t->getPosition().x && event.mouseButton.y > t->getPosition().y
-                        && event.mouseButton.x < t->getPosition().x + t->getSize().x
-                        && event.mouseButton.y < t->getPosition().y + t->getSize().y)
+                    sf::Vector2f MglobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
+                    if (MglobalPosition.x > t->getPosition().x && MglobalPosition.y > t->getPosition().y
+                        && MglobalPosition.x < t->getPosition().x + t->getSize().x
+                        && MglobalPosition.y < t->getPosition().y + t->getSize().y)
                     {
                         for (auto o : ObjList)
                         {
@@ -185,7 +185,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                             }
                         }
                         ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-                                new MapEntity(CurrentPathFile, t->getPosition().x, t->getPosition().y))));
+                                new MapEntity(CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
                     }
                 } else
                 {
@@ -204,11 +204,11 @@ void MapEditor::ZoomViewAt(sf::Vector2i pixel, float zoom)
     MainCamera.move(offsetCoords);
     window.setView(MainCamera);
 }
-void MapEditor::KeyBoadrCallbacks(sf::Event event)
+void MapEditor::KeyBoardCallbacks(sf::Event event)
 {
-    if(event.type == sf::Event::KeyPressed)
+    if (event.type == sf::Event::KeyPressed)
     {
-        if(event.key.code == sf::Keyboard::Escape)
+        if (event.key.code == sf::Keyboard::Escape)
         {
             window.close();
         }

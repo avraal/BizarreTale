@@ -3,7 +3,7 @@
 //
 #include "MapEntity.h"
 
-MapEntity::MapEntity(const std::string imagePath, float posX, float posY)
+MapEntity::MapEntity(const std::string imagePath, sf::Vector2f position)
 {
     if (!texture.loadFromFile(imagePath))
     {
@@ -16,9 +16,9 @@ MapEntity::MapEntity(const std::string imagePath, float posX, float posY)
     {
         sprite.setTexture(texture);
     }
-    sprite.setPosition(posX, posY);
-
+    sprite.setPosition(position.x, position.y);
 }
+
 void MapEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     target.draw(sprite, states);
@@ -26,7 +26,7 @@ void MapEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 MapEntity::~MapEntity()
 {
-//    std::cout << "Dcor??" << std::endl;
+    //    std::cout << "Dcor??" << std::endl;
 }
 void MapEntity::setPosition(float x, float y)
 {
@@ -42,13 +42,17 @@ const sf::Vector2f &MapEntity::getScale() const
 }
 MapEntity::MapEntity(const MapEntity &entity)
 {
-//    std::cout << "Copy ctor??" << std::endl;
+    //    std::cout << "Copy ctor??" << std::endl;
 }
 MapEntity::MapEntity(const MapEntity &&entity)
 {
-//    std::cout << "Move ctor??" << std::endl;
+    //    std::cout << "Move ctor??" << std::endl;
 }
 sf::Vector2u MapEntity::getSize() const
 {
     return texture.getSize();
+}
+void MapEntity::setPosition(sf::Vector2f Position)
+{
+    sprite.setPosition(Position);
 }
