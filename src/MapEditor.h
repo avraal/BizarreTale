@@ -17,6 +17,8 @@ class MapEditor
 private:
     MapEditor()
     {
+        CurrentDirectory = "";
+        CurrentPathFile  = "";
         ImagesFormats.push_back(".png");
         ImagesFormats.push_back(".jpg");
     }
@@ -24,8 +26,10 @@ private:
     std::vector<std::shared_ptr<MapEntity>> ObjList;
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
+    std::vector<std::shared_ptr<MapEntity>> TileMap;
     std::string CurrentPathFile;
     sf::RenderWindow window;
+    void drawTileMap();
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void AddObject(std::string imagePath);
 
@@ -39,7 +43,6 @@ public:
     }
 
     bool initWindow();
-    std::string CurrentDirectory = "";
-    void display();
+    std::string CurrentDirectory;
 };
 #endif //BIZARRETALE_MAPEDITOR_H
