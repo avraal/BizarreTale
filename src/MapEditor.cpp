@@ -115,7 +115,7 @@ void MapEditor::drawTileMap()
     Formats.push_back(".png");
     findAllFiles(Tiles, Formats);
     //added tiles
-    for (uint i = 0; i < height * width - 1; i++)
+    for (uint i = 1; i <= height * width; i++)
     {
         TileMap.push_back(std::move(std::shared_ptr<MapEntity>(
                 new MapEntity("", {.0f, .0f}))));
@@ -127,7 +127,8 @@ void MapEditor::drawTileMap()
     {
         t->setPosition(x * 65, y * 65);
 
-        if (x++ == width)
+        x++;
+        if (x == width)
         {
             y++;
             x = 0;
