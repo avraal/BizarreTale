@@ -29,9 +29,11 @@ private:
     std::vector<std::shared_ptr<MapEntity>> TileMap;
     std::string CurrentPathFile;
     sf::RenderWindow window;
+    tgui::ScrollablePanel::Ptr scrollPanel;
     void drawTileMap();
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void AddObject(std::string imagePath);
+    void MouseCallbacks(sf::Event);
 
 public:
     MapEditor(MapEditor const&) = delete;

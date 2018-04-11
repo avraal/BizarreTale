@@ -22,8 +22,13 @@ protected:
 
 public:
     MapEntity(const std::string imagePath, float posX = 0.f, float posY = 0.f);
+    MapEntity(const MapEntity &entity);
+    MapEntity(const MapEntity &&entity);
     virtual ~MapEntity();
     virtual void setPosition(float x, float y);
+    virtual const sf::Vector2f &getPosition() const;
+    virtual const sf::Vector2f &getScale() const;
+    virtual sf::Vector2u getSize() const;
 };
 
 #endif //BIZARRETALE_MAPENTITY_H

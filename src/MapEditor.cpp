@@ -12,7 +12,7 @@ bool MapEditor::initWindow()
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
-    auto scrollPanel = tgui::ScrollablePanel::create({"20%", "80%"});
+    scrollPanel = tgui::ScrollablePanel::create({"20%", "80%"});
     auto grid = tgui::Grid::create();
     scrollPanel->setPosition(10, 10);
     grid->setPosition(20, 20);
@@ -35,8 +35,6 @@ bool MapEditor::initWindow()
     scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
     scrollPanel->add(grid);
 
-
-
     gui.add(scrollPanel);
 
     window.setVerticalSyncEnabled(true);
@@ -52,25 +50,8 @@ bool MapEditor::initWindow()
             {
                 window.close();
             }
-            if (event.type == sf::Event::MouseButtonPressed)
-            {
-                if (event.mouseButton.button == sf::Mouse::Right)
-                {
-                    window.create(sf::VideoMode(720, 480), "");
-                }
-                if (event.mouseButton.button == sf::Mouse::Left &&
-                    !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
-                {
-                    if(!CurrentPathFile.empty())
-                    {
-                        ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-                                new MapEntity(CurrentPathFile, event.mouseButton.x, event.mouseButton.y))));
-                    } else
-                    {
-                        std::cout << "[WARNING | MapEditor]: Current Path File is empty" << std::endl;
-                    }
-                }
-            }
+            MouseCallbacks(event);
+
             gui.handleEvent(event);
         }
         for (auto t : TileMap)
@@ -121,27 +102,73 @@ void MapEditor::AddObject(std::string imagePath)
 void MapEditor::drawTileMap()
 {
     int height = 10;
-    int width  = 10;
+    int width = 10;
     std::vector<std::string> Tiles;
     std::vector<std::string> Formats;
     Formats.push_back(".png");
     findAllFiles(Tiles, Formats);
     //added tiles
-    for(uint i = 0; i < height * width - 1; i++)
+    for (uint i = 0; i < height * width - 1; i++)
     {
         TileMap.push_back(std::move(std::shared_ptr<MapEntity>(
                 new MapEntity("", 0, 0))));
     }
     //set position
     uint x = 0, y = 0;
-    for(auto t : TileMap)
+    for (auto t : TileMap)
     {
-        t->setPosition(x*65, y*65);
+        t->setPosition(x * 65, y * 65);
 
-        if(x++ == width)
+        if (x++ == width)
         {
             y++;
             x = 0;
+        }
+    }
+}
+void MapEditor::MouseCallbacks(sf::Event event)
+{
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+        if (event.mouseButton.button == sf::Mouse::Right)
+        {
+            window.create(sf::VideoMode(720, 480), "");
+        }
+
+        if (event.mouseButton.button == sf::Mouse::Left &&
+            !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+        {
+            for (auto t : TileMap)
+            {
+                if (!CurrentPathFile.empty())
+                {
+
+                    if (event.mouseButton.x > t->getPosition().x && event.mouseButton.y > t->getPosition().y
+                        && event.mouseButton.x < t->getPosition().x + t->getSize().x
+                        && event.mouseButton.y < t->getPosition().y + t->getSize().y)
+                    {
+                        for (auto o : ObjList)
+                        {
+                            if (o != nullptr)
+                            {
+                                if (t->getPosition() == o->getPosition())
+                                {
+                                    auto it = std::find(ObjList.begin(), ObjList.end(), o);
+                                    if (it != ObjList.end())
+                                    {
+                                        ObjList.erase(it);
+                                    }
+                                }
+                            }
+                        }
+                        ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
+                                new MapEntity(CurrentPathFile, t->getPosition().x, t->getPosition().y))));
+                    }
+                } else
+                {
+                    std::cout << "[WARNING | MapEditor]: Current Path File is empty" << std::endl;
+                }
+            }
         }
     }
 }
