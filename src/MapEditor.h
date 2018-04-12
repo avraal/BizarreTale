@@ -11,6 +11,7 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <dirent.h>
 #include "MapEntity.h"
+#include "CONST_DEFINITIONS.h"
 
 class MapEditor
 {
@@ -21,7 +22,7 @@ private:
         CurrentPathFile  = "";
         ImagesFormats.push_back(".png");
         ImagesFormats.push_back(".jpg");
-        CameraSpeed = 2.0f;
+        CameraSpeed = 4.0f;
     }
     ~MapEditor() {}
     std::vector<std::shared_ptr<MapEntity>> ObjList;

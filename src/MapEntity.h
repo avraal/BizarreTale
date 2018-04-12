@@ -11,6 +11,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include "CONST_DEFINITIONS.h"
 
 class MapEntity : public sf::Drawable
 {

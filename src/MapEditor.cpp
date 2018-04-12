@@ -125,7 +125,7 @@ void MapEditor::drawTileMap()
 
     for (auto t : TileMap)
     {
-        t->setPosition(x * 64, y * 64);
+        t->setPosition(x * TILE_SIZE_DEFAULT, y * TILE_SIZE_DEFAULT);
 
         x++;
         if (x == width)

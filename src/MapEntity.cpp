@@ -9,7 +9,7 @@ MapEntity::MapEntity(const std::string imagePath, sf::Vector2f position)
     {
         std::cerr << "[WARNING | MapEntity]: Failure load texture file" << std::endl;
         sf::Image image;
-        image.create(64, 64, sf::Color(91, 97, 91));
+        image.create(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT, sf::Color(91, 97, 91));
         texture.loadFromImage(image);
         sprite.setTexture(texture);
     } else

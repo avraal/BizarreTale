@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        toFile << "Date: "      << std::ctime(&time) << std::endl;
+        toFile << "Date: "      << std::ctime(&time)             << std::endl;
         toFile << "MapEntity: " << sizeof(MapEntity) << " bytes" << std::endl;
         toFile << "MapEditor: " << sizeof(MapEditor) << " bytes" << std::endl;
         toFile << "--------------------------------------------" << std::endl;
