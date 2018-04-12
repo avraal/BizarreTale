@@ -125,7 +125,7 @@ void MapEditor::drawTileMap()
 
     for (auto t : TileMap)
     {
-        t->setPosition(x * 65, y * 65);
+        t->setPosition(x * 64, y * 64);
 
         x++;
         if (x == width)
@@ -217,25 +217,25 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
         {
             case sf::Keyboard::Right:
             {
-                MainCamera.move(-CameraSpeed, 0.0f);
+                MainCamera.move(CameraSpeed, 0.0f);
                 window.setView(MainCamera);
                 break;
             }
             case sf::Keyboard::Left:
             {
-                MainCamera.move(CameraSpeed, 0.0f);
+                MainCamera.move(-CameraSpeed, 0.0f);
                 window.setView(MainCamera);
                 break;
             }
             case sf::Keyboard::Up:
             {
-                MainCamera.move(0.0f, CameraSpeed);
+                MainCamera.move(0.0f, -CameraSpeed);
                 window.setView(MainCamera);
                 break;
             }
             case sf::Keyboard::Down:
             {
-                MainCamera.move(0.0f, -CameraSpeed);
+                MainCamera.move(0.0f, CameraSpeed);
                 window.setView(MainCamera);
                 break;
             }
