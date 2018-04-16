@@ -3,7 +3,7 @@
 //
 
 #include "ClassAnalizer.h"
-void ClassAnalizer::start()
+void ClassAnalizer::start(bool showDebug)
 {
     std::vector<ClassData> readData;
     ClassData data;
@@ -11,7 +11,7 @@ void ClassAnalizer::start()
     std::ofstream toFile("Info.dat", std::ios_base::app);
     if (!toFile)
     {
-        std::cerr << "[Main | toFile] " << "File not found" << std::endl;
+        std::cerr << "[ClassAnalizer | toFile] " << "File not found" << std::endl;
     } else
     {
         toFile.write((char *) &data, sizeof(data));
@@ -21,7 +21,7 @@ void ClassAnalizer::start()
     std::ifstream fromFile("Info.dat", std::ios_base::in);
     if (!fromFile)
     {
-        std::cerr << "[Main | fromFile] " << "File not found" << std::endl;
+        std::cerr << "[ClassAnalizer | fromFile] " << "File not found" << std::endl;
     } else
     {
         while (fromFile.read((char *) &data, sizeof(data)))
@@ -31,15 +31,17 @@ void ClassAnalizer::start()
     }
     fromFile.close();
 
-    std::cout << "Before: " << std::endl;
-    for (auto d : readData)
+    if(showDebug)
     {
-        std::cout << "Date: " << std::ctime(&d.time);
-        std::cout << "MapEntity: " << d._entity << std::endl;
-        std::cout << "MapEditor: " << d._editor << std::endl;
-        std::cout << "------------------" << std::endl;
+        std::cout << "Before: " << std::endl;
+        for (auto d : readData)
+        {
+            std::cout << "Date: " << std::ctime(&d.time);
+            std::cout << "MapEntity: " << d._entity << std::endl;
+            std::cout << "MapEditor: " << d._editor << std::endl;
+            std::cout << "------------------" << std::endl;
+        }
     }
-
     if (readData.size() >= 2)
     {
         auto f = readData[readData.size()-1];
@@ -51,19 +53,21 @@ void ClassAnalizer::start()
         }
     }
 
-    std::cout << "After: " << std::endl;
-    for (auto d : readData)
+    if(showDebug)
     {
-        std::cout << "Date: " << std::ctime(&d.time);
-        std::cout << "MapEntity: " << d._entity << std::endl;
-        std::cout << "MapEditor: " << d._editor << std::endl;
-        std::cout << "------------------" << std::endl;
+        std::cout << "After: " << std::endl;
+        for (auto d : readData)
+        {
+            std::cout << "Date: " << std::ctime(&d.time);
+            std::cout << "MapEntity: " << d._entity << std::endl;
+            std::cout << "MapEditor: " << d._editor << std::endl;
+            std::cout << "------------------" << std::endl;
+        }
     }
-
     toFile.open("Info.dat", std::ios_base::trunc);
     if (!toFile)
     {
-        std::cerr << "[Main | toFile] " << "File not found" << std::endl;
+        std::cerr << "[ClassAnalizer | toFile] " << "File not found" << std::endl;
     } else
     {
         for (auto d : readData)

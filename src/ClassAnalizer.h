@@ -23,7 +23,7 @@ private:
     };
 
 public:
-    void start();
+    void start(bool showDebug = false);
     ClassAnalizer (ClassAnalizer const&) = delete;
     ClassAnalizer (ClassAnalizer const &&) = delete;
     ClassAnalizer &operator=(ClassAnalizer const&) = delete;
