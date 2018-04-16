@@ -12,6 +12,7 @@
 #include <dirent.h>
 #include <string>
 #include "MapEntity.h"
+#include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
 
 class MapEditor
@@ -42,6 +43,8 @@ private:
     bool showInfo;
     bool canScroled;
     float CameraSpeed;
+
+    MapIO &mio = MapIO::Instance();
 
     void drawTileMap();
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);

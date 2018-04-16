@@ -17,7 +17,6 @@ class MapEntity : public sf::Drawable
 {
 private:
     sf::Texture texture;
-
     sf::Sprite sprite;
 
 protected:
@@ -33,6 +32,8 @@ public:
     virtual const sf::Vector2f &getPosition() const;
     virtual const sf::Vector2f &getScale() const;
     virtual sf::Vector2u getSize() const;
+    std::string name;
+
 };
 
 #endif //BIZARRETALE_MAPENTITY_H

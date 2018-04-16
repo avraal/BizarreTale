@@ -17,6 +17,7 @@ MapEntity::MapEntity(const std::string imagePath, sf::Vector2f position)
         sprite.setTexture(texture);
     }
     sprite.setPosition(position.x, position.y);
+    name = "Obj";
 }
 
 void MapEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -42,11 +43,11 @@ const sf::Vector2f &MapEntity::getScale() const
 }
 MapEntity::MapEntity(const MapEntity &entity)
 {
-    //    std::cout << "Copy ctor??" << std::endl;
+        std::cout << "Copy ctor??" << std::endl;
 }
 MapEntity::MapEntity(const MapEntity &&entity)
 {
-    //    std::cout << "Move ctor??" << std::endl;
+        std::cout << "Move ctor??" << std::endl;
 }
 sf::Vector2u MapEntity::getSize() const
 {

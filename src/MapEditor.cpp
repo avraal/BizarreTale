@@ -76,11 +76,11 @@ bool MapEditor::initWindow()
             {
                 window.close();
             }
-//            if (event.type == sf::Event::Resized)
-//            {
-//                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-//                window.setView(sf::View(visibleArea));
-//            }
+            //            if (event.type == sf::Event::Resized)
+            //            {
+            //                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+            //                window.setView(sf::View(visibleArea));
+            //            }
             MouseCallbacks(event);
             KeyBoardCallbacks(event);
             gui.handleEvent(event);
@@ -167,7 +167,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
 {
     if (event.type == sf::Event::MouseWheelScrolled)
     {
-        if(canScroled)
+        if (canScroled)
         {
             if (event.mouseWheelScroll.delta > 0)
             {
@@ -274,6 +274,12 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 {
                     infoPanel->hide();
                 }
+                break;
+            }
+            case sf::Keyboard::Space:
+            {
+                mio.SaveToFile("test.mio", ObjList, TileMap);
+                mio.LoadFromFIle("test.mio");
                 break;
             }
         }
