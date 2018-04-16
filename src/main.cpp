@@ -5,6 +5,8 @@
 #include <chrono>
 #include "MapEntity.h"
 #include "MapEditor.h"
+#include "ClassAnalizer.h"
+
 
 int main(int argc, char **argv)
 {
@@ -17,20 +19,8 @@ int main(int argc, char **argv)
 
     Editor.initWindow();
 
-    std::ofstream toFile("Info.dat", std::ios_base::app);
-    auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    if(!toFile)
-    {
-        std::cerr << "[Main] File not found" << std::endl;
-    }
-    else
-    {
-        toFile << "Date: "      << std::ctime(&time)             << std::endl;
-        toFile << "MapEntity: " << sizeof(MapEntity) << " bytes" << std::endl;
-        toFile << "MapEditor: " << sizeof(MapEditor) << " bytes" << std::endl;
-        toFile << "--------------------------------------------" << std::endl;
-    }
+    ClassAnalizer &ca = ClassAnalizer::Instance();
+    ca.start();
 
-    toFile.close();
     return 0;
 }

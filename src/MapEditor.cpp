@@ -6,16 +6,18 @@
 
 bool MapEditor::initWindow()
 {
-    window.create(sf::VideoMode(1280, 720), "Hello, SFML"/*, sf::Style::Titlebar | sf::Style::Close*/);
-    MainCamera = sf::View(sf::FloatRect(0, 0, 1280, 720));
+    window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT),
+                  "Bizarre Tale: Map Editor"/*, sf::Style::Titlebar | sf::Style::Close*/);
+    MainCamera = window.getView();
+    MainCamera.setCenter(300, 320);
     findAllFiles(PathToImages, ImagesFormats);
     drawTileMap();
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
-    scrollPanel = tgui::ScrollablePanel::create({"20%", "80%"});
+    scrollPanel = tgui::ScrollablePanel::create({"20%", "100%"});
     auto grid = tgui::Grid::create();
-    scrollPanel->setPosition(10, 10);
+    scrollPanel->setPosition(0, 0);
     grid->setPosition(20, 20);
     scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
 
@@ -40,12 +42,11 @@ bool MapEditor::initWindow()
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
-    window.setView(MainCamera);
-    sf::Vector2i Mouse = sf::Mouse::getPosition(window);
     while (window.isOpen())
     {
         sf::Event event;
         window.clear(sf::Color(42, 76, 61));
+
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -61,6 +62,9 @@ bool MapEditor::initWindow()
             KeyBoardCallbacks(event);
             gui.handleEvent(event);
         }
+
+        window.setView(MainCamera);
+
         for (auto t : TileMap)
         {
             window.draw(*t);
@@ -122,10 +126,9 @@ void MapEditor::drawTileMap()
     }
     //set position
     uint x = 0, y = 0;
-
     for (auto t : TileMap)
     {
-        t->setPosition(x * TILE_SIZE_DEFAULT, y * TILE_SIZE_DEFAULT);
+        t->setPosition(x * (TILE_SIZE_DEFAULT + 1), y * (TILE_SIZE_DEFAULT + 1));
 
         x++;
         if (x == width)
@@ -156,7 +159,6 @@ void MapEditor::MouseCallbacks(sf::Event event)
             float w = window.mapPixelToCoords(Mouse).x;
             float h = window.mapPixelToCoords(Mouse).y;
             MainCamera.setCenter(w, h);
-            window.setView(MainCamera);
         }
 
         if (event.mouseButton.button == sf::Mouse::Left &&
@@ -203,7 +205,6 @@ void MapEditor::ZoomViewAt(sf::Vector2i pixel, float zoom)
     const sf::Vector2f afterCoord{window.mapPixelToCoords(pixel)};
     const sf::Vector2f offsetCoords{beforeCoord - afterCoord};
     MainCamera.move(offsetCoords);
-    window.setView(MainCamera);
 }
 void MapEditor::KeyBoardCallbacks(sf::Event event)
 {
@@ -218,25 +219,21 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::Right:
             {
                 MainCamera.move(CameraSpeed, 0.0f);
-                window.setView(MainCamera);
                 break;
             }
             case sf::Keyboard::Left:
             {
                 MainCamera.move(-CameraSpeed, 0.0f);
-                window.setView(MainCamera);
                 break;
             }
             case sf::Keyboard::Up:
             {
                 MainCamera.move(0.0f, -CameraSpeed);
-                window.setView(MainCamera);
                 break;
             }
             case sf::Keyboard::Down:
             {
                 MainCamera.move(0.0f, CameraSpeed);
-                window.setView(MainCamera);
                 break;
             }
         }
