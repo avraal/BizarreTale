@@ -31,7 +31,7 @@ void ClassAnalizer::start(bool showDebug)
     }
     fromFile.close();
 
-    if(showDebug)
+    if (showDebug)
     {
         std::cout << "Before: " << std::endl;
         for (auto d : readData)
@@ -44,16 +44,17 @@ void ClassAnalizer::start(bool showDebug)
     }
     if (readData.size() >= 2)
     {
-        auto f = readData[readData.size()-1];
-        auto s = readData[readData.size()-2];
-        if(f._editor == s._editor && f._entity == s._entity)
+        auto f = readData[readData.size() - 1];
+        auto s = readData[readData.size() - 2];
+        if (f._editor == s._editor && f._entity == s._entity)
         {
-            std::cout << "Remove element" << std::endl;
+            if (showDebug)
+                std::cout << "Remove element" << std::endl;
             readData.pop_back();
         }
     }
 
-    if(showDebug)
+    if (showDebug)
     {
         std::cout << "After: " << std::endl;
         for (auto d : readData)
