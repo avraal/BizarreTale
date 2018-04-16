@@ -38,8 +38,9 @@ private:
     tgui::Label::Ptr infoObjCountLabel;
     tgui::Label::Ptr infoFPSLabel;
     tgui::Panel::Ptr infoPanel;
-    bool showInfo;
 
+    bool showInfo;
+    bool canScroled;
     float CameraSpeed;
 
     void drawTileMap();
@@ -48,7 +49,7 @@ private:
     void MouseCallbacks(sf::Event event);
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
-    void ShowInfo();
+    void ChangeScrollablePanelStatus(bool val);
 
 public:
     MapEditor(MapEditor const&) = delete;

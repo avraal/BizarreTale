@@ -17,18 +17,18 @@ bool MapEditor::initWindow()
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
-    scrollPanel = tgui::ScrollablePanel::create({"20%", "100%"});
+    scrollPanel = tgui::ScrollablePanel::create({"100%", "25%"});
     auto grid = tgui::Grid::create();
-    scrollPanel->setPosition(0, 0);
+    scrollPanel->setPosition(0, window.getSize().y - (window.getSize().y * 25 / 100));
     grid->setPosition(20, 20);
-    scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
+    scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 225));
 
     uint x = 0, y = 0;
     for (auto i : PathToImages)
     {
         auto pic = tgui::Picture::create(i);
         pic->connect(pic->onClick.getName(), &MapEditor::AddObject, this, i);
-        if (y == 2)
+        if (y == 14)
         {
             x++;
             y = 0;
@@ -46,17 +46,20 @@ bool MapEditor::initWindow()
 
     infoObjCountLabel = tgui::Label::create();
     infoObjCountLabel->getRenderer()->setTextColor(sf::Color::White);
-    infoObjCountLabel->setTextSize(12);
+    infoObjCountLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
 
     infoFPSLabel = tgui::Label::create();
     infoFPSLabel->getRenderer()->setTextColor(sf::Color::White);
-    infoFPSLabel->setTextSize(12);
-    infoFPSLabel->setPosition(0, 14);
+    infoFPSLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
+    infoFPSLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
     infoPanel->add(infoObjCountLabel);
     infoPanel->add(infoFPSLabel);
 
     gui.add(infoPanel);
     gui.add(scrollPanel);
+
+    scrollPanel->connect(scrollPanel->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
+    scrollPanel->connect(scrollPanel->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
@@ -64,7 +67,6 @@ bool MapEditor::initWindow()
     {
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / currentTime;
-        lastTime = currentTime;
         sf::Event event;
         window.clear(sf::Color(42, 76, 61));
 
@@ -74,11 +76,11 @@ bool MapEditor::initWindow()
             {
                 window.close();
             }
-            //            if (event.type == sf::Event::Resized)
-            //            {
-            //                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-            //                window.setView(sf::View(visibleArea));
-            //            }
+//            if (event.type == sf::Event::Resized)
+//            {
+//                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+//                window.setView(sf::View(visibleArea));
+//            }
             MouseCallbacks(event);
             KeyBoardCallbacks(event);
             gui.handleEvent(event);
@@ -95,7 +97,7 @@ bool MapEditor::initWindow()
             window.draw(*o);
         }
         infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
-        infoFPSLabel->setText("FPS: " + std::to_string((int)fps));
+        infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
         gui.draw();
         window.display();
     }
@@ -165,12 +167,15 @@ void MapEditor::MouseCallbacks(sf::Event event)
 {
     if (event.type == sf::Event::MouseWheelScrolled)
     {
-        if (event.mouseWheelScroll.delta > 0)
+        if(canScroled)
         {
-            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, (1.f / 1.1f));
-        } else if (event.mouseWheelScroll.delta < 0)
-        {
-            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, 1.1f);
+            if (event.mouseWheelScroll.delta > 0)
+            {
+                ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, (1.f / 1.1f));
+            } else if (event.mouseWheelScroll.delta < 0)
+            {
+                ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, 1.1f);
+            }
         }
     }
 
@@ -262,7 +267,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::F3:
             {
                 showInfo = !showInfo;
-                if(showInfo)
+                if (showInfo)
                 {
                     infoPanel->show();
                 } else
@@ -273,4 +278,8 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             }
         }
     }
+}
+void MapEditor::ChangeScrollablePanelStatus(bool val)
+{
+    canScroled = val;
 }
