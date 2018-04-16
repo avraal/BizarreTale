@@ -6,6 +6,8 @@
 
 bool MapEditor::initWindow()
 {
+    showInfo = true;
+    float lastTime = 0;
     window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT),
                   "Bizarre Tale: Map Editor"/*, sf::Style::Titlebar | sf::Style::Close*/);
     MainCamera = window.getView();
@@ -38,12 +40,31 @@ bool MapEditor::initWindow()
     scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
     scrollPanel->add(grid);
 
+    infoPanel = tgui::Panel::create({200, "10%"});
+    infoPanel->setPosition(window.getSize().x - infoPanel->getSize().x, 0);
+    infoPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
+
+    infoObjCountLabel = tgui::Label::create();
+    infoObjCountLabel->getRenderer()->setTextColor(sf::Color::White);
+    infoObjCountLabel->setTextSize(12);
+
+    infoFPSLabel = tgui::Label::create();
+    infoFPSLabel->getRenderer()->setTextColor(sf::Color::White);
+    infoFPSLabel->setTextSize(12);
+    infoFPSLabel->setPosition(0, 14);
+    infoPanel->add(infoObjCountLabel);
+    infoPanel->add(infoFPSLabel);
+
+    gui.add(infoPanel);
     gui.add(scrollPanel);
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen())
     {
+        float currentTime = clock.restart().asSeconds();
+        float fps = 1.f / currentTime;
+        lastTime = currentTime;
         sf::Event event;
         window.clear(sf::Color(42, 76, 61));
 
@@ -73,6 +94,8 @@ bool MapEditor::initWindow()
         {
             window.draw(*o);
         }
+        infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
+        infoFPSLabel->setText("FPS: " + std::to_string((int)fps));
         gui.draw();
         window.display();
     }
@@ -234,6 +257,18 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::Down:
             {
                 MainCamera.move(0.0f, CameraSpeed);
+                break;
+            }
+            case sf::Keyboard::F3:
+            {
+                showInfo = !showInfo;
+                if(showInfo)
+                {
+                    infoPanel->show();
+                } else
+                {
+                    infoPanel->hide();
+                }
                 break;
             }
         }

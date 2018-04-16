@@ -10,6 +10,7 @@
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <dirent.h>
+#include <string>
 #include "MapEntity.h"
 #include "CONST_DEFINITIONS.h"
 
@@ -32,7 +33,12 @@ private:
     std::string CurrentPathFile;
     sf::RenderWindow window;
     sf::View MainCamera;
+    sf::Clock clock;
     tgui::ScrollablePanel::Ptr scrollPanel;
+    tgui::Label::Ptr infoObjCountLabel;
+    tgui::Label::Ptr infoFPSLabel;
+    tgui::Panel::Ptr infoPanel;
+    bool showInfo;
 
     float CameraSpeed;
 
@@ -42,6 +48,7 @@ private:
     void MouseCallbacks(sf::Event event);
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
+    void ShowInfo();
 
 public:
     MapEditor(MapEditor const&) = delete;
