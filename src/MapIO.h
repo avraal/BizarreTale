@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <memory>
+#include <cstring>
 #include "MapEntity.h"
 
 class MapIO
@@ -26,7 +27,7 @@ public:
 
 
     void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj, std::vector<std::shared_ptr<MapEntity>> tiles);
-    void LoadFromFIle(std::string fileName);
+    void LoadFromFIle(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
 };
 
 #endif //BIZARRETALE_MAPIO_H

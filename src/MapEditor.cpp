@@ -216,7 +216,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                             }
                         }
                         ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-                                new MapEntity(CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
+                                new MapEntity(CurrentPathFile.c_str(), {t->getPosition().x, t->getPosition().y}))));
                     }
                 } else
                 {
@@ -231,8 +231,8 @@ void MapEditor::ZoomViewAt(sf::Vector2i pixel, float zoom)
     const sf::Vector2f beforeCoord{window.mapPixelToCoords(pixel)};
     MainCamera.zoom(zoom);
     const sf::Vector2f afterCoord{window.mapPixelToCoords(pixel)};
-    const sf::Vector2f offsetCoords{beforeCoord - afterCoord};
-    MainCamera.move(offsetCoords);
+    const sf::Vector2f offsetCoord{beforeCoord - afterCoord};
+    MainCamera.move(offsetCoord);
 }
 void MapEditor::KeyBoardCallbacks(sf::Event event)
 {
@@ -279,7 +279,11 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::Space:
             {
                 mio.SaveToFile("test.mio", ObjList, TileMap);
-                mio.LoadFromFIle("test.mio");
+                break;
+            }
+            case sf::Keyboard::LControl:
+            {
+                mio.LoadFromFIle("test.mio", ObjList);
                 break;
             }
         }
