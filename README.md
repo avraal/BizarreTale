@@ -7,6 +7,9 @@ Guide for using BizarreTale Editor v. 0.1
 ```c++
 SingletonClass &obj = SingletonClass::Instance();
 ```
+### Other information for Singleton:
+- Has private ctor and dtor
+- Copy and move ctors has specificator **delete**
 
 # MapIO
 ### Pattern: Singleton
