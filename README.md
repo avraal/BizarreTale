@@ -38,4 +38,4 @@ Start editor:
 Editor.initWindow();
 ```
 
-[CurrentDirectory]: <http://angularjs.org>
+[CurrentDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
