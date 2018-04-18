@@ -55,6 +55,12 @@ Might be started before or after MapEditor
 ```c++
 ca.start();
 ```
+or
+
+```c++
+ca.start(true);
+```
+
 Method "start" has a default argument, which determine: print info in console or not. By default it's - **false**.
 
 > But this class have a defect: if i add a new class to project, ClassAnalizer will be read file as file which already has information about new class. In this case, ClassAnalizer write garbage.
