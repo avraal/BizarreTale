@@ -3,7 +3,7 @@ Simple constuctor for gamedev
 
 Guide for using BizarreTale Editor v. 0.1
 
-## How create a Singleton object:
+## How to create a Singleton object:
 ```c++
 SingletonClass &obj = SingletonClass::Instance();
 ```
