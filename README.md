@@ -40,4 +40,4 @@ Editor.initWindow();
 ```
 
 [CurrentDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
-[initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#Start>
+[initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
