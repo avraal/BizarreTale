@@ -8,10 +8,27 @@ SingletonClass &obj = SingletonClass::Instance();
 
 # MapIO
 Pattern: Singleton
-it's a class, who is intendent writing and reading files.
+
+It's a class, who is intendent writing and reading files.
 
 Use LoadFromFile and SaveToFile to using his scope.
 ```sh
 obj.SaveToFile("filename.format", objectContainer);
 obj.LoadFromFile("filename.fromat", objectContainer);
 ```
+# MapEditor
+Pattern: Singleton
+
+Has a public fields:
+- CurrentDirectory - to identify directory, where find images
+Init CurrentDirectory:
+```sh
+Editor.CurrentDirectory.clear();
+Editor.CurrentDirectory.append(argv[0]);
+Editor.CurrentDirectory = Editor.CurrentDirectory.substr(0, Editor.CurrentDirectory.size() - 11);
+```
+> argv[0] = "BizarreTale" (11 sybmols)
+Start editor:
+```sh
+Editor.initWindow();
+``
