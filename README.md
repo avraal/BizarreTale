@@ -57,5 +57,7 @@ ca.start();
 ```
 Method "start" has a default argument, which determine: print info in console or not. By default it's - **false**.
 
+> But this class have a defect: if i add a new class to project, ClassAnalizer will be read file as file which already has information about new class. In this case, ClassAnalizer write garbage.
+
 [CurrentDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
