@@ -22,9 +22,10 @@ obj.LoadFromFile("filename.fromat", objectContainer);
 ### Pattern: Singleton
 
 Has a public fields:
-- [CurrentDirectory] - to identify directory, where find images;
+- [CurrentDirectory];
 
-Init CurrentDirectory:
+#### CurrentDirectory
+Init:
 ```c++
 Editor.CurrentDirectory.clear();
 Editor.CurrentDirectory.append(argv[0]);
