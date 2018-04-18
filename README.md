@@ -52,7 +52,7 @@ Might be started before or after MapEditor
 ```c++
 ca.start();
 ```
-Method "start" has a default argument, which determine: print info in console or not. By default it's - false.
+Method "start" has a default argument, which determine: print info in console or not. By default it's - **false**.
 
 [CurrentDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
