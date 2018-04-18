@@ -20,7 +20,7 @@ obj.LoadFromFile("filename.fromat", objectContainer);
 Pattern: Singleton
 
 Has a public fields:
-- CurrentDirectory - to identify directory, where find images:
+- CurrentDirectory - to identify directory, where find images;
 
 Init CurrentDirectory
 ```sh
@@ -30,7 +30,7 @@ Editor.CurrentDirectory = Editor.CurrentDirectory.substr(0, Editor.CurrentDirect
 ```
 > argv[0] = "BizarreTale" (11 sybmols)
 
-Start editor:
+Start editor
 ```sh
 Editor.initWindow();
 ```
