@@ -22,7 +22,7 @@ obj.LoadFromFile("filename.fromat", objectContainer);
 ### Pattern: Singleton
 
 Has a public fields:
-- CurrentDirectory - to identify directory, where find images;
+- [CurrentDirectory] - to identify directory, where find images;
 
 Init CurrentDirectory:
 ```c++
@@ -36,3 +36,5 @@ Start editor:
 ```c++
 Editor.initWindow();
 ```
+
+[CurrentDirectory]: <http://angularjs.org>
