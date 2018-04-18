@@ -21,8 +21,9 @@ obj.LoadFromFile("filename.fromat", objectContainer);
 # MapEditor
 ### Pattern: Singleton
 
-Has a public fields:
+Has a:
 - [CurrentDirectory];
+- [initWindow]
 
 #### CurrentDirectory
 Init:
@@ -33,9 +34,10 @@ Editor.CurrentDirectory = Editor.CurrentDirectory.substr(0, Editor.CurrentDirect
 ```
 > argv[0] = "BizarreTale" (11 sybmols)
 
-Start editor:
+####Start:
 ```c++
 Editor.initWindow();
 ```
 
 [CurrentDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
+[initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#Start>
