@@ -34,7 +34,7 @@ Editor.CurrentDirectory = Editor.CurrentDirectory.substr(0, Editor.CurrentDirect
 ```
 > argv[0] = "BizarreTale" (11 sybmols)
 
-####Start:
+#### Start:
 ```c++
 Editor.initWindow();
 ```
