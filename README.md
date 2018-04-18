@@ -26,6 +26,8 @@ Has a:
 - [initWindow]
 
 #### CurrentDirectory
+Identify of directory, where find images
+
 Init:
 ```c++
 Editor.CurrentDirectory.clear();
