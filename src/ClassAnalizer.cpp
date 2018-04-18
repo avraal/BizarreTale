@@ -39,6 +39,8 @@ void ClassAnalizer::start(bool showDebug)
             std::cout << "Date: " << std::ctime(&d.time);
             std::cout << "MapEntity: " << d._entity << std::endl;
             std::cout << "MapEditor: " << d._editor << std::endl;
+            std::cout << "MapIO:" << d._map << std::endl;
+            std::cout << "ClassAnalizer: " << d._anal << std::endl;
             std::cout << "------------------" << std::endl;
         }
     }
@@ -46,7 +48,8 @@ void ClassAnalizer::start(bool showDebug)
     {
         auto f = readData[readData.size() - 1];
         auto s = readData[readData.size() - 2];
-        if (f._editor == s._editor && f._entity == s._entity)
+        if (f._editor == s._editor && f._entity == s._entity &&
+            f._map    == s._map    && f._anal   == s._anal)
         {
             if (showDebug)
                 std::cout << "Remove element" << std::endl;
@@ -62,6 +65,8 @@ void ClassAnalizer::start(bool showDebug)
             std::cout << "Date: " << std::ctime(&d.time);
             std::cout << "MapEntity: " << d._entity << std::endl;
             std::cout << "MapEditor: " << d._editor << std::endl;
+            std::cout << "MapIO:" << d._map << std::endl;
+            std::cout << "ClassAnalizer: " << d._anal << std::endl;
             std::cout << "------------------" << std::endl;
         }
     }

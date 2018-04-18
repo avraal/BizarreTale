@@ -20,6 +20,8 @@ private:
         long time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         size_t _entity = sizeof(MapEntity);
         size_t _editor = sizeof(MapEditor);
+        size_t _map    = sizeof(MapIO);
+        size_t _anal   = sizeof(ClassAnalizer);
     };
 
 public:
