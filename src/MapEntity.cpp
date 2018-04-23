@@ -17,7 +17,7 @@ void MapEntity::LoadTexture(std::string imagePath)
 {
     if(!texture.loadFromFile(imagePath))
     {
-        std::cerr << "[WARNING | MapEntity]: Failure load texture file" << std::endl;
+//        std::cerr << "[WARNING | MapEntity]: Failure load texture file" << std::endl;
         sf::Image image;
         image.create(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT, sf::Color(91, 97, 91));
         texture.loadFromImage(image);
@@ -62,7 +62,7 @@ void MapEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 MapEntity::~MapEntity()
 {
-    std::cout << "Dcor??" << std::endl;
+//    std::cout << "Dcor??" << std::endl;
 }
 void MapEntity::setPosition(float x, float y)
 {

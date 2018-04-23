@@ -7,11 +7,9 @@
 #include "MapEditor.h"
 #include "ClassAnalizer.h"
 
-
 int main(int argc, char **argv)
 {
     std::cout << argv[0] << std::endl;
-    std::vector<std::shared_ptr<MapEntity>> ObjList;
     MapEditor &Editor = MapEditor::Instance();
     Editor.CurrentDirectory.clear();
     Editor.CurrentDirectory.append(argv[0]);
@@ -21,6 +19,7 @@ int main(int argc, char **argv)
 
     ClassAnalizer &ca = ClassAnalizer::Instance();
     ca.start();
+
 
     return 0;
 }

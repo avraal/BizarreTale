@@ -267,13 +267,14 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::F3:
             {
                 showInfo = !showInfo;
-                if (showInfo)
-                {
-                    infoPanel->show();
-                } else
-                {
-                    infoPanel->hide();
-                }
+//                if (showInfo)
+//                {
+//                    infoPanel->show();
+//                } else
+//                {
+//                    infoPanel->hide();
+//                }
+                infoPanel->setVisible(showInfo);
                 break;
             }
             case sf::Keyboard::Space:

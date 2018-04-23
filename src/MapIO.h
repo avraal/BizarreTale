@@ -9,24 +9,34 @@
 #include <memory>
 #include <cstring>
 #include "MapEntity.h"
+#include "LuaScripts.h"
 
 class MapIO
 {
 private:
-    MapIO() {}
-    ~MapIO() {}
+    LuaScripts script;
 
+    MapIO()
+    {
+        script.Create();
+        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaSaveToFile), "SaveMapEntityToFile");
+        script.DoFile("EntityIO.lua");
+    }
+    ~MapIO()
+    {
+        script.Close();
+    }
 public:
-    MapIO(MapIO const&) = delete;
-    MapIO &operator=(MapIO const&) = delete;
+    MapIO(MapIO const &) = delete;
+    MapIO &operator=(MapIO const &) = delete;
     static MapIO &Instance()
     {
         static MapIO mio;
         return mio;
     }
-
-
-    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj, std::vector<std::shared_ptr<MapEntity>> tiles);
+    int LuaSaveToFile(lua_State*);
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj,
+                    std::vector<std::shared_ptr<MapEntity>> tiles);
     void LoadFromFIle(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
 };
 
