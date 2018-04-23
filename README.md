@@ -27,22 +27,22 @@ obj.LoadFromFile("filename.fromat", objectContainer);
 Simple editor for game maps
 
 Has a public fields:
-- [CurrentDirectory];
+- [ImageDirectory];
 - [initWindow].
 
-#### CurrentDirectory
+#### ImageDirectory
 Identify of directory, where find images
 
 Init:
 ```c++
-Editor.CurrentDirectory.clear();
-Editor.CurrentDirectory.append(argv[0]);
-Editor.CurrentDirectory = Editor.CurrentDirectory.substr(0, Editor.CurrentDirectory.size() - 11);
+Editor.ImageDirectory.clear();
+Editor.ImageDirectory.append(argv[0]);
+Editor.ImageDirectory = Editor.ImageDirectory.substr(0, Editor.ImageDirectory.size() - 11);
 ```
 > argv[0] = "BizarreTale" (11 sybmols)
 
 #### Start:
-After CurrentDirectory identified, editor might be started
+After ImageDirectory identified, editor might be started
 ```c++
 Editor.initWindow();
 ```
@@ -65,5 +65,5 @@ Method "start" has a default argument, which determine: print info in console or
 
 > But this class have a defect: if i add a new class to project, ClassAnalizer will be read file as file which already has information about new class. In this case, ClassAnalizer write garbage.
 
-[CurrentDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
+[ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>

@@ -108,7 +108,7 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
 {
     DIR *dir;
     dirent *directory;
-    if ((dir = opendir(MapEditor::CurrentDirectory.c_str())) != NULL)
+    if ((dir = opendir(MapEditor::ImageDirectory.c_str())) != NULL)
     {
         while ((directory = readdir(dir)) != NULL)
         {
@@ -119,8 +119,8 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
                 {
                     if (strcmp(last, f.c_str()) == 0)
                     {
-                        std::cout << MapEditor::CurrentDirectory << directory->d_name << " added to stack" << std::endl;
-                        Container.push_back(MapEditor::CurrentDirectory + directory->d_name);
+                        std::cout << MapEditor::ImageDirectory << directory->d_name << " added to stack" << std::endl;
+                        Container.push_back(MapEditor::ImageDirectory + directory->d_name);
                     }
                 }
             }

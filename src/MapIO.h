@@ -20,7 +20,7 @@ private:
     {
         script.Create();
         script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaSaveToFile), "SaveMapEntityToFile");
-        script.DoFile("EntityIO.lua");
+        script.DoFile("Res/Lua/EntityIO.lua");
     }
     ~MapIO()
     {

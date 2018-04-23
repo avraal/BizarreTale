@@ -20,7 +20,7 @@ class MapEditor
 private:
     MapEditor()
     {
-        CurrentDirectory = "";
+        ImageDirectory = "";
         CurrentPathFile  = "";
         ImagesFormats.push_back(".png");
         ImagesFormats.push_back(".jpg");
@@ -64,6 +64,7 @@ public:
     }
 
     bool initWindow();
-    std::string CurrentDirectory;
+    std::string ImageDirectory;
+    std::string LuaDirectory;
 };
 #endif //BIZARRETALE_MAPEDITOR_H
