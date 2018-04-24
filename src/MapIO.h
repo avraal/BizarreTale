@@ -23,6 +23,7 @@ private:
     {
         script.Create();
         script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaSaveToFile), "SaveMapEntityToFile");
+        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaLoadFromFile), "LoadMapEntityFromFile");
         script.DoFile("Res/Lua/EntityIO.lua");
     }
     ~MapIO()
@@ -38,6 +39,7 @@ public:
         return mio;
     }
     int LuaSaveToFile(lua_State*);
+    int LuaLoadFromFile(lua_State*);
     void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj,
                     std::vector<std::shared_ptr<MapEntity>> tiles);
     void LoadFromFIle(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);

@@ -13,6 +13,7 @@
 #include "lauxlib.h"
 #include "MapEntity.h"
 #include <iostream>
+#include <memory>
 
 class LuaScripts
 {
@@ -30,7 +31,8 @@ public:
     template <class T>
             void RegisterConstant(T value, char *constName);
 
-    void SaveToFile(MapEntity *value, const char *fileName);
+    void SaveToFile(const char *fileName, std::vector<std::shared_ptr<MapEntity>> obj);
+    void LoadFromFile(const char *fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
 };
 
 #endif //BIZARRETALE_LUASCRIPTS_H

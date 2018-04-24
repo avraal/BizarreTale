@@ -12,8 +12,8 @@ void LuaScripts::Create()
 
     static const luaL_Reg lualibs[] =
             {
-                    {"base", luaopen_base},
-                    {"io",   luaopen_io},
+                    {"base",   luaopen_base},
+                    {"io",     luaopen_io},
                     {"string", luaopen_string},
                     {NULL, NULL}
             };
@@ -41,12 +41,12 @@ void LuaScripts::RegisterConstant<lua_CFunction>(lua_CFunction value, char *cons
     lua_setglobal(lua_state, constName);
 }
 template<>
-void LuaScripts::Push<char*>(char *value)
+void LuaScripts::Push<char *>(char *value)
 {
     lua_pushstring(lua_state, value);
 }
 template<>
-void LuaScripts::Push<const char*>(const char* value)
+void LuaScripts::Push<const char *>(const char *value)
 {
     lua_pushstring(lua_state, value);
 }
@@ -60,20 +60,67 @@ void LuaScripts::Push<double>(double value)
 {
     lua_pushnumber(lua_state, value);
 }
-template <>
+template<>
 void LuaScripts::Push<int>(int value)
 {
     lua_pushinteger(lua_state, value);
 }
 
-void LuaScripts::SaveToFile(MapEntity *value, const char *fileName)
+void LuaScripts::SaveToFile(const char *fileName, std::vector<std::shared_ptr<MapEntity>> obj)
 {
     lua_getglobal(lua_state, "SaveMapEntityToFile");
+
+    Push<const char *>(fileName);
+
+    lua_newtable(lua_state);
+    for (int i = 0; i < obj.size(); i++)
+    {
+        Push<const char*>(std::to_string(i).c_str());
+        lua_newtable(lua_state);
+        Push<char *>("name");
+        Push<char *>(obj[i]->name);
+        lua_settable(lua_state, -3);
+        Push<char *>("imagePath");
+        Push<char *>(obj[i]->getImagePath());
+        lua_settable(lua_state, -3);
+        Push<char *>("x");
+        Push<double>(obj[i]->getPosition().x);
+        lua_settable(lua_state, -3);
+        Push<char *>("y");
+        Push<double>(obj[i]->getPosition().y);
+        lua_settable(lua_state, -3);
+        lua_settable(lua_state, -3);
+    }
+
+    lua_call(lua_state, 2, 0);
+    lua_pop(lua_state, 1);
+}
+void LuaScripts::LoadFromFile(const char *fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
+{
+    lua_getglobal(lua_state, "LoadMapEntityFromFile");
     Push<const char*>(fileName);
-    Push<char*>(value->name);
-    Push<char*>(value->getImagePath());
-    Push<double>(value->getPosition().x);
-    Push<double>(value->getPosition().y);
-    lua_call(lua_state, 5, 0);
+    lua_call(lua_state, 1, 1);
+
+    lua_getfield(lua_state, 1, "u");
+//    for(int i = 0; i < 2; i++)
+    int i = 0;
+    while(true)
+    {
+        lua_getfield(lua_state, 1, std::to_string(i).c_str());
+        lua_getfield(lua_state, -1, "imagePath");
+        std::string imagePath = lua_tostring(lua_state, -1);
+        std::cout << "Path: " <<lua_tostring(lua_state, -1) << std::endl;
+        lua_getfield(lua_state, -2, "name");
+        std::cout << "Name: " << lua_tostring(lua_state, -1) << std::endl;
+        lua_getfield(lua_state, -3, "x");
+        float x = lua_tonumber(lua_state, -1);
+        std::cout << "X: " << lua_tonumber(lua_state, -1) << std::endl;
+        lua_getfield(lua_state, -4, "y");
+        float y = lua_tonumber(lua_state, -1);
+        std::cout << "Y: " << lua_tonumber(lua_state, -1) << std::endl;
+//        obj.push_back(std::move(std::shared_ptr<MapEntity>(new MapEntity(imagePath.c_str(), {x, y}))));
+        i++;
+    }
+
     lua_pop(lua_state, 1);
 }
