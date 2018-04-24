@@ -1,3 +1,6 @@
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 //
 // Created by andrew on 02.04.18.
 //
@@ -30,6 +33,8 @@ public:
     MapEntity(const char *imagePath, sf::Vector2f position = {.0f, .0f});
     MapEntity(const MapEntity &entity);
     MapEntity(const MapEntity &&entity);
+    MapEntity& operator=(sf::Drawable const&) = delete;
+    MapEntity& operator=(MapEntity const& me);
     MapEntity();
     virtual ~MapEntity();
     virtual void setPosition(float x, float y);

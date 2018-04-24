@@ -1,3 +1,6 @@
+
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 //
 // Created by andrew on 03.04.18.
 //
@@ -6,7 +9,6 @@
 
 bool MapEditor::initWindow()
 {
-    showInfo = true;
     float lastTime = 0;
     window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT),
                   "Bizarre Tale: Map Editor"/*, sf::Style::Titlebar | sf::Style::Close*/);
@@ -207,11 +209,11 @@ void MapEditor::MouseCallbacks(sf::Event event)
                             {
                                 if (t->getPosition() == o->getPosition())
                                 {
-                                    auto it = std::find(ObjList.begin(), ObjList.end(), o);
-                                    if (it != ObjList.end())
-                                    {
-                                        ObjList.erase(it);
-                                    }
+//                                    auto it = std::find(ObjList.begin(), ObjList.end(), o);
+//                                    if (it != ObjList.end())
+//                                    {
+//                                        ObjList.erase(it);
+//                                    }
                                 }
                             }
                         }

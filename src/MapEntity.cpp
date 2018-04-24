@@ -1,3 +1,6 @@
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 //
 // Created by andrew on 02.04.18.
 //
@@ -31,8 +34,8 @@ void MapEntity::LoadTexture(std::string imagePath)
 
 MapEntity::MapEntity(const char *imagePath, sf::Vector2f position)
 {
-    _imagePath = new char[1024];
     name = new char[512];
+    _imagePath = new char[1024];
     strcpy(_imagePath, imagePath);
     strcpy(name, "Obj");
     LoadTexture(_imagePath);
@@ -42,8 +45,8 @@ MapEntity::MapEntity(const char *imagePath, sf::Vector2f position)
 MapEntity::MapEntity(const MapEntity &entity)
 {
     std::cout << "Copy ctor??" << std::endl;
-    _imagePath = new char[1024];
     name = new char[512];
+    _imagePath = new char[1024];
     strcpy(_imagePath, entity.getImagePath());
     strcpy(name, entity.name);
     LoadTexture(_imagePath);
@@ -53,6 +56,12 @@ MapEntity::MapEntity(const MapEntity &entity)
 MapEntity::MapEntity(const MapEntity &&entity)
 {
     std::cout << "Move ctor??" << std::endl;
+    name = new char[512];
+    _imagePath = new char[1024];
+    strcpy(this->name, entity.name);
+    strcpy(this->_imagePath, entity.getImagePath());
+    LoadTexture(_imagePath);
+    sprite.setPosition(entity.getPosition());
 }
 
 void MapEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -91,4 +100,15 @@ char *MapEntity::getImagePath() const
 void MapEntity::LoadTexture(const char *imagePath)
 {
     LoadTexture(std::string{imagePath});
+}
+MapEntity &MapEntity::operator=(MapEntity const &me)
+{
+    if(this != &me)
+    {
+        strcpy(_imagePath, me.getImagePath());
+        strcpy(name, me.name);
+        setPosition(me.getPosition());
+        LoadTexture(_imagePath);
+    }
+    return *this;
 }

@@ -1,3 +1,6 @@
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 //
 // Created by andrew on 03.04.18.
 //
@@ -25,6 +28,8 @@ private:
         ImagesFormats.push_back(".png");
         ImagesFormats.push_back(".jpg");
         CameraSpeed = 4.0f;
+        showInfo = true;
+        canScroled = true;
     }
     ~MapEditor() {}
     std::vector<std::shared_ptr<MapEntity>> ObjList;
