@@ -72,6 +72,6 @@ Method "start" has a default argument, which determine: print info in console or
 
 > But this class have a defect: if i add a new class to project, ClassAnalyzer will be read file as file which already has information about new class. In this case, ClassAnalyzer write garbage.
 
-[ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
+[ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
 [LuaDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#luadirectory>
