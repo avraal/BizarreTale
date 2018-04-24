@@ -209,11 +209,12 @@ void MapEditor::MouseCallbacks(sf::Event event)
                             {
                                 if (t->getPosition() == o->getPosition())
                                 {
-//                                    auto it = std::find(ObjList.begin(), ObjList.end(), o);
-//                                    if (it != ObjList.end())
-//                                    {
-//                                        ObjList.erase(it);
-//                                    }
+                                    //Delete object that after cycle add new MapEntity
+                                    auto it = std::find(ObjList.begin(), ObjList.end(), o);
+                                    if (it != ObjList.end())
+                                    {
+                                        ObjList.erase(it);
+                                    }
                                 }
                             }
                         }

@@ -9,11 +9,11 @@
 #include <fstream>
 #include "MapEditor.h"
 
-class ClassAnalizer
+class ClassAnalyzer
 {
 private:
-    ClassAnalizer() {}
-    ~ClassAnalizer() {}
+    ClassAnalyzer() {}
+    ~ClassAnalyzer() {}
 
     struct ClassData
     {
@@ -21,17 +21,17 @@ private:
         size_t _entity = sizeof(MapEntity);
         size_t _editor = sizeof(MapEditor);
         size_t _map    = sizeof(MapIO);
-        size_t _anal   = sizeof(ClassAnalizer);
+        size_t _anal   = sizeof(ClassAnalyzer);
     };
 
 public:
     void start(bool showDebug = false);
-    ClassAnalizer (ClassAnalizer const&) = delete;
-    ClassAnalizer (ClassAnalizer const &&) = delete;
-    ClassAnalizer &operator=(ClassAnalizer const&) = delete;
-    static ClassAnalizer &Instance()
+    ClassAnalyzer (ClassAnalyzer const&) = delete;
+    ClassAnalyzer (ClassAnalyzer const &&) = delete;
+    ClassAnalyzer &operator=(ClassAnalyzer const&) = delete;
+    static ClassAnalyzer &Instance()
     {
-        static ClassAnalizer ca;
+        static ClassAnalyzer ca;
         return ca;
     }
 };

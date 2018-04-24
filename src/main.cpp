@@ -8,7 +8,7 @@
 #include <chrono>
 #include "MapEntity.h"
 #include "MapEditor.h"
-#include "ClassAnalizer.h"
+#include "ClassAnalyzer.h"
 
 int main(int argc, char **argv)
 {
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     Editor.initWindow();
 
-    ClassAnalizer &ca = ClassAnalizer::Instance();
+    ClassAnalyzer &ca = ClassAnalyzer::Instance();
     ca.start();
 
 
