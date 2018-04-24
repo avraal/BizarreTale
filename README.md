@@ -72,6 +72,32 @@ Method "start" has a default argument, which determine: print info in console or
 
 > But this class have a defect: if i add a new class to project, ClassAnalyzer will be read file as file which already has information about new class. In this case, ClassAnalyzer write garbage.
 
+# LuaScripts
+### Pattern: none
+
+Use for set contact with Lua scripts. For use, needed add LuaScripts object in class
+
+Start:
+```c++
+script.Create();
+script.DoFile("PathToLuaScript.lua");
+```
+
+If you want to call lua function, you needed a register her
+```c++
+script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&YouClass::YouHandler), "YouFunction");
+```
+
+Where 'YouHandler' - is a c++ method this like style
+```c++
+int YouClass::YouHandler(lua_State*)
+{
+  //...
+  return 0;
+}
+```
+After this, you need to create a c ++ function in Lua Script.c ++, but this is a bad idea. With time I change this approach
+
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
 [LuaDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#luadirectory>
