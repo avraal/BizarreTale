@@ -28,16 +28,23 @@ Simple editor for game maps
 
 Has a public fields:
 - [ImageDirectory];
+- [LuaDirectory];
 - [initWindow].
 
 #### ImageDirectory
 Identify of directory, where find images
 
-Init:
+#### LuaDirectory
+Identify of directory, where find lua scripts
+
+Init directories:
 ```c++
 Editor.ImageDirectory.clear();
 Editor.ImageDirectory.append(argv[0]);
 Editor.ImageDirectory = Editor.ImageDirectory.substr(0, Editor.ImageDirectory.size() - 11);
+Editor.LuaDirectory = Editor.ImageDirectory;
+Editor.ImageDirectory.append("Res/Images/");
+Editor.LuaDirectory.append("Res/Lua/");
 ```
 > argv[0] = "BizarreTale" (11 sybmols)
 
@@ -46,7 +53,7 @@ After ImageDirectory identified, editor might be started
 ```c++
 Editor.initWindow();
 ```
-# ClassAnalizer
+# ClassAnalyzer
 ### Pattern: Singleton
 
 Checks size of classes and write it in file
@@ -63,7 +70,8 @@ ca.start(true);
 
 Method "start" has a default argument, which determine: print info in console or not. By default it's - **false**.
 
-> But this class have a defect: if i add a new class to project, ClassAnalizer will be read file as file which already has information about new class. In this case, ClassAnalizer write garbage.
+> But this class have a defect: if i add a new class to project, ClassAnalyzer will be read file as file which already has information about new class. In this case, ClassAnalyzer write garbage.
 
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#currentdirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
+[LuaDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#luadirectory>
