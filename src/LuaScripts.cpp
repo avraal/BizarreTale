@@ -100,11 +100,11 @@ void LuaScripts::LoadFromFile(const char *fileName, std::vector<std::shared_ptr<
     lua_getglobal(lua_state, "LoadMapEntityFromFile");
     Push<const char*>(fileName);
     lua_call(lua_state, 1, 1);
-
+    size_t size = luaL_len(lua_state,2);
     lua_getfield(lua_state, 1, "u");
-//    for(int i = 0; i < 2; i++)
-    int i = 0;
-    while(true)
+
+    std::cout << size << std::endl;
+    for(int i = 0; i < 2; i++)
     {
         lua_getfield(lua_state, 1, std::to_string(i).c_str());
         lua_getfield(lua_state, -1, "imagePath");
@@ -118,8 +118,7 @@ void LuaScripts::LoadFromFile(const char *fileName, std::vector<std::shared_ptr<
         lua_getfield(lua_state, -4, "y");
         float y = lua_tonumber(lua_state, -1);
         std::cout << "Y: " << lua_tonumber(lua_state, -1) << std::endl;
-//        obj.push_back(std::move(std::shared_ptr<MapEntity>(new MapEntity(imagePath.c_str(), {x, y}))));
-        i++;
+        obj.push_back(std::move(std::shared_ptr<MapEntity>(new MapEntity(imagePath.c_str(), {x, y}))));
     }
 
     lua_pop(lua_state, 1);
