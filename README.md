@@ -1,6 +1,6 @@
 # BizarreTale
 Simple constuctor for gamedev
-
+(Guide version is depricated)
 Guide for using BizarreTale Editor v. 0.1
 
 ## How to create a Singleton object:
