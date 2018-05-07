@@ -22,14 +22,18 @@ private:
     MapIO()
     {
         script.Create();
-        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaSaveToFile), "SaveMapEntityToFile");
-        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaLoadFromFile), "LoadMapEntityFromFile");
+        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaSaveToFile),
+                                               "SaveMapEntityToFile");
+        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaLoadFromFile),
+                                               "LoadMapEntityFromFile");
         script.DoFile("Res/Lua/EntityIO.lua");
     }
     ~MapIO()
     {
         script.Close();
     }
+    int LuaSaveToFile(lua_State *);
+    int LuaLoadFromFile(lua_State *);
 public:
     MapIO(MapIO const &) = delete;
     MapIO &operator=(MapIO const &) = delete;
@@ -38,11 +42,9 @@ public:
         static MapIO mio;
         return mio;
     }
-    int LuaSaveToFile(lua_State*);
-    int LuaLoadFromFile(lua_State*);
-    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj,
-                    std::vector<std::shared_ptr<MapEntity>> tiles);
-    void LoadFromFIle(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
+
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
+    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
 };
 
 #endif //BIZARRETALE_MAPIO_H

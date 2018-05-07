@@ -5,18 +5,20 @@
 // Created by andrew on 16.04.18.
 //
 
+#include <thread>
 #include "MapIO.h"
-void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj,
-                       std::vector<std::shared_ptr<MapEntity>> tiles)
+void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
 {
     std::cout << "Preparing to write..." << std::endl;
 
     script.SaveToFile(fileName.c_str(), obj);
 }
-void MapIO::LoadFromFIle(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
+void MapIO::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
 {
     std::cout << "Preparing to read..." << std::endl;
+
     obj.clear();
+
     script.LoadFromFile(fileName.c_str(), obj);
 }
 int MapIO::LuaSaveToFile(lua_State *)

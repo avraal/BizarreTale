@@ -8,6 +8,7 @@
 
 MapEntity::MapEntity()
 {
+    std::cout << "Default ctor" << std::endl;
     _imagePath = new char[1024];
     name = new char[512];
     strcpy(_imagePath, "");
@@ -34,6 +35,7 @@ void MapEntity::LoadTexture(std::string imagePath)
 
 MapEntity::MapEntity(const char *imagePath, sf::Vector2f position)
 {
+    std::cout << "Ctor" << std::endl;
     name = new char[512];
     _imagePath = new char[1024];
     strcpy(_imagePath, imagePath);

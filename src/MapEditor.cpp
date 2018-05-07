@@ -5,11 +5,11 @@
 // Created by andrew on 03.04.18.
 //
 
+#include <thread>
 #include "MapEditor.h"
 
 bool MapEditor::initWindow()
 {
-    float lastTime = 0;
     window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT),
                   "Bizarre Tale: Map Editor"/*, sf::Style::Titlebar | sf::Style::Close*/);
     MainCamera = window.getView();
@@ -282,12 +282,14 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             }
             case sf::Keyboard::Space:
             {
-                mio.SaveToFile("test.mio", ObjList, TileMap);
+                mio.SaveToFile("test.mio", ObjList);
                 break;
             }
             case sf::Keyboard::LControl:
             {
-                mio.LoadFromFIle("test.mio", ObjList);
+                std::thread thr(&MapEditor::LoadFromFile, this, "test.mio", std::ref(ObjList));
+                thr.join();
+//                mio.LoadFromFile("test.mio", ObjList);
                 break;
             }
         }
@@ -296,4 +298,8 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
 void MapEditor::ChangeScrollablePanelStatus(bool val)
 {
     canScroled = val;
+}
+void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
+{
+    mio.LoadFromFile(fileName, obj);
 }

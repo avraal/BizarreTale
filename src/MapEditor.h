@@ -71,5 +71,8 @@ public:
     bool initWindow();
     std::string ImageDirectory;
     std::string LuaDirectory;
+
+    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
+
 };
 #endif //BIZARRETALE_MAPEDITOR_H

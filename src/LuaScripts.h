@@ -20,6 +20,8 @@ class LuaScripts
 private:
     lua_State *lua_state;
 
+    int LuaGetTableSize(lua_State *);
+
 public:
     void Create();
     void Close();
@@ -31,8 +33,9 @@ public:
     template <class T>
             void RegisterConstant(T value, char *constName);
 
-    void SaveToFile(const char *fileName, std::vector<std::shared_ptr<MapEntity>> obj);
-    void LoadFromFile(const char *fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
+    void SaveToFile   (const char *fileName, std::vector<std::shared_ptr<MapEntity>> obj);
+    void LoadFromFile (const char *fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
+    int getTableSize  (const char *fileName);
 };
 
 #endif //BIZARRETALE_LUASCRIPTS_H
