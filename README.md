@@ -1,6 +1,5 @@
 # BizarreTale
-Simple constuctor for gamedev
-(Guide version is depricated)
+Simple constructor for gamedev
 Guide for using BizarreTale Editor v. 0.1
 
 ## How to create a Singleton object:
@@ -16,12 +15,12 @@ SingletonClass &obj = SingletonClass::Instance();
 # MapIO
 ### Pattern: Singleton
 
-It's a class, who is intendent writing and reading files.
+It's a class, who is writing and reading files.
 
 Use LoadFromFile and SaveToFile to using his scope.
 ```c++
 obj.SaveToFile("filename.format", objectContainer);
-obj.LoadFromFile("filename.fromat", objectContainer);
+obj.LoadFromFile("filename.format", objectContainer);
 ```
 <br>
 
@@ -59,7 +58,7 @@ After directories identified, editor might be started
 Editor.initWindow();
 ```
 #### LoadFromFile:
-Has a two parametres:
+Has a two parameters:
 * `fileName` - where objects are load
 * `obj` - container in which objects are loaded
 
