@@ -31,9 +31,9 @@ obj.LoadFromFile("filename.fromat", objectContainer);
 Simple editor for game maps
 
 Has a public fields:
-- [ImageDirectory];
-- [LuaDirectory];
-- [initWindow].
+- [ImageDirectory]
+- [LuaDirectory]
+- [initWindow]
 
 #### ImageDirectory
 Identify of directory, where find images
@@ -50,7 +50,7 @@ Editor.LuaDirectory = Editor.ImageDirectory;
 Editor.ImageDirectory.append("Res/Images/");
 Editor.LuaDirectory.append("Res/Lua/");
 ```
-> argv[0] = "BizarreTale" (11 sybmols)
+> argv[0] = "BizarreTale" (11 symbols)
 
 #### Start:
 After ImageDirectory identified, editor might be started
