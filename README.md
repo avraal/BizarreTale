@@ -11,6 +11,8 @@ SingletonClass &obj = SingletonClass::Instance();
 - Has private ctor and dtor
 - Copy and move ctors has specificator **delete**
 
+<br>
+
 # MapIO
 ### Pattern: Singleton
 
@@ -21,6 +23,8 @@ Use LoadFromFile and SaveToFile to using his scope.
 obj.SaveToFile("filename.format", objectContainer);
 obj.LoadFromFile("filename.fromat", objectContainer);
 ```
+<br>
+
 # MapEditor
 ### Pattern: Singleton
 
@@ -53,6 +57,9 @@ After ImageDirectory identified, editor might be started
 ```c++
 Editor.initWindow();
 ```
+
+<br>
+
 # ClassAnalyzer
 ### Pattern: Singleton
 
@@ -71,6 +78,8 @@ ca.start(true);
 Method "start" has a default argument, which determine: print info in console or not. By default it's - **false**.
 
 > But this class have a defect: if i add a new class to project, ClassAnalyzer will be read file as file which already has information about new class. In this case, ClassAnalyzer write garbage.
+
+<br>
 
 # LuaScripts
 ### Pattern: none
