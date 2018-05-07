@@ -138,8 +138,8 @@ int YouClass::YouHandler(lua_State*)
 > After this you might use your dirty methods
 
 Now LuaScripts have 3 methods related to work with files:
-* `SaveToFile` - writing collection of objects to file
-* `LoadFromFile` - reading objects from file
+* `SaveToFile` - send objects to lua script and serialize their to lua table
+* `LoadFromFile` - find lua table in file and return her
 * `getTableSize` - finds lua table in file and returns her size
 
 
