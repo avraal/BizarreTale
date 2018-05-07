@@ -82,7 +82,7 @@ or
 ca.start(true);
 ```
 
-Method "start" has a default argument, which determine: print info in console or not. By default it's - **false**.
+Method `start` has a default argument, which determine: print info in console or not. By default it's - **false**.
 
 > But this class have a defect: if i add a new class to project, ClassAnalyzer will be read file as file which already has information about new class. In this case, ClassAnalyzer write garbage.
 
@@ -104,7 +104,7 @@ If you want to call lua function, you needed a register her
 script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&YouClass::YouHandler), "YouFunction");
 ```
 
-Method 'RegisterConstant' - is a specialized template. For example:
+Method `RegisterConstant` - is a specialized template. For example:
 ```c++
 template<>
 void LuaScripts::RegisterConstant<lua_CFunction>(lua_CFunction value, char *constName)
@@ -121,13 +121,13 @@ void LuaScripts::Push<int>(int value)
     lua_pushinteger(lua_state, value);
 }
 ```
-Except `int`, he have a templates for next types:
+Except **int**, he have a templates for next types:
 - char*
 - const char*
 - bool
 - double
 
-Where 'YouHandler' - is a c++ method this like style
+Where `YouHandler` - is a c++ method this like style
 ```c++
 int YouClass::YouHandler(lua_State*)
 {
