@@ -54,7 +54,7 @@ Editor.LuaDirectory.append("Res/Lua/");
 > argv[0] = "BizarreTale" (11 symbols)
 
 #### Start:
-After ImageDirectory identified, editor might be started
+After directories identified, editor might be started
 ```c++
 Editor.initWindow();
 ```
@@ -104,6 +104,29 @@ If you want to call lua function, you needed a register her
 script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&YouClass::YouHandler), "YouFunction");
 ```
 
+Method 'RegisterConstant' - is a specialized template. For example:
+```c++
+template<>
+void LuaScripts::RegisterConstant<lua_CFunction>(lua_CFunction value, char *constName)
+{
+    lua_pushcfunction(lua_state, value);
+    lua_setglobal(lua_state, constName);
+}
+```
+Except him, this class have another one specialized template - method `Push`. For example:
+```c++
+template<>
+void LuaScripts::Push<int>(int value)
+{
+    lua_pushinteger(lua_state, value);
+}
+```
+Except `int`, he have a templates for next types:
+- char*
+- const char*
+- bool
+- double
+
 Where 'YouHandler' - is a c++ method this like style
 ```c++
 int YouClass::YouHandler(lua_State*)
@@ -112,7 +135,14 @@ int YouClass::YouHandler(lua_State*)
   return 0;
 }
 ```
-After this, you need to create a c ++ function in Lua Script.c ++, but this is a bad idea. With time I change this approach
+> After this you might use your dirty methods
+
+Now LuaScripts have 3 methods related to work with files:
+* `SaveToFile` - writing collection of objects to file
+* `LoadFromFile` - reading objects from file
+* `getTableSize` - finds lua table in file and returns her size
+
+
 
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
