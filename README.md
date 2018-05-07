@@ -142,7 +142,7 @@ Now LuaScripts have 3 methods related to work with files:
 * `LoadFromFile` - find lua table in file and return her
 * `getTableSize` - finds lua table in file and returns her size
 
-
+Call `Close` method in destructor your class
 
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
