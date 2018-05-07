@@ -270,26 +270,19 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::F3:
             {
                 showInfo = !showInfo;
-//                if (showInfo)
-//                {
-//                    infoPanel->show();
-//                } else
-//                {
-//                    infoPanel->hide();
-//                }
                 infoPanel->setVisible(showInfo);
                 break;
             }
             case sf::Keyboard::Space:
             {
-                mio.SaveToFile("test.mio", ObjList);
+                std::thread thr(&MapEditor::SaveToFile, this, "test.mio", ObjList);
+                thr.join();
                 break;
             }
             case sf::Keyboard::LControl:
             {
                 std::thread thr(&MapEditor::LoadFromFile, this, "test.mio", std::ref(ObjList));
                 thr.join();
-//                mio.LoadFromFile("test.mio", ObjList);
                 break;
             }
         }
@@ -302,4 +295,8 @@ void MapEditor::ChangeScrollablePanelStatus(bool val)
 void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
 {
     mio.LoadFromFile(fileName, obj);
+}
+void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> obj)
+{
+    mio.SaveToFile(fileName, obj);
 }

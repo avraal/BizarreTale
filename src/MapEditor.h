@@ -72,7 +72,7 @@ public:
     std::string ImageDirectory;
     std::string LuaDirectory;
 
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> obj);
     void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
-
 };
 #endif //BIZARRETALE_MAPEDITOR_H

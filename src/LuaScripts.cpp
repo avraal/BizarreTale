@@ -103,7 +103,7 @@ void LuaScripts::SaveToFile(const char *fileName, std::vector<std::shared_ptr<Ma
     }
 
     lua_call(lua_state, 2, 0);
-    lua_pop(lua_state, 1);
+    lua_pop(lua_state, 0);
 }
 void LuaScripts::LoadFromFile(const char *fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
 {

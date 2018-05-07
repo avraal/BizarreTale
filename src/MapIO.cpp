@@ -7,7 +7,7 @@
 
 #include <thread>
 #include "MapIO.h"
-void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
+void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> obj)
 {
     std::cout << "Preparing to write..." << std::endl;
 

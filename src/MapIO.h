@@ -43,7 +43,7 @@ public:
         return mio;
     }
 
-    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> obj);
     void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
 };
 
