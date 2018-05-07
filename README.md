@@ -11,6 +11,8 @@ SingletonClass &obj = SingletonClass::Instance();
 - Has private ctor and dtor
 - Copy and move ctors has specificator **delete**
 
+<br>
+
 # MapIO
 ### Pattern: Singleton
 
@@ -21,15 +23,18 @@ Use LoadFromFile and SaveToFile to using his scope.
 obj.SaveToFile("filename.format", objectContainer);
 obj.LoadFromFile("filename.fromat", objectContainer);
 ```
+<br>
+
 # MapEditor
 ### Pattern: Singleton
 
 Simple editor for game maps
 
 Has a public fields:
-- [ImageDirectory];
-- [LuaDirectory];
-- [initWindow].
+- [ImageDirectory]
+- [LuaDirectory]
+- [initWindow]
+- [LoadFromFile]
 
 #### ImageDirectory
 Identify of directory, where find images
@@ -46,13 +51,22 @@ Editor.LuaDirectory = Editor.ImageDirectory;
 Editor.ImageDirectory.append("Res/Images/");
 Editor.LuaDirectory.append("Res/Lua/");
 ```
-> argv[0] = "BizarreTale" (11 sybmols)
+> argv[0] = "BizarreTale" (11 symbols)
 
 #### Start:
 After ImageDirectory identified, editor might be started
 ```c++
 Editor.initWindow();
 ```
+#### LoadFromFile:
+Has a two parametres:
+* `fileName` - where objects are load
+* `obj` - container in which objects are loaded
+
+This method start a new thread, which blocked other threads and call `LoadFromFile` from MapIO.
+
+<br>
+
 # ClassAnalyzer
 ### Pattern: Singleton
 
@@ -71,6 +85,8 @@ ca.start(true);
 Method "start" has a default argument, which determine: print info in console or not. By default it's - **false**.
 
 > But this class have a defect: if i add a new class to project, ClassAnalyzer will be read file as file which already has information about new class. In this case, ClassAnalyzer write garbage.
+
+<br>
 
 # LuaScripts
 ### Pattern: none
@@ -101,3 +117,4 @@ After this, you need to create a c ++ function in Lua Script.c ++, but this is a
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
 [LuaDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#luadirectory>
+[LoadFromFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#loadfromfile>
