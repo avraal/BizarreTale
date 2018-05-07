@@ -34,6 +34,7 @@ Has a public fields:
 - [ImageDirectory]
 - [LuaDirectory]
 - [initWindow]
+- [LoadFromFile]
 
 #### ImageDirectory
 Identify of directory, where find images
@@ -57,6 +58,12 @@ After ImageDirectory identified, editor might be started
 ```c++
 Editor.initWindow();
 ```
+#### LoadFromFile:
+Has a two parametres:
+* `fileName` - where objects are load
+* `obj` - container in which objects are loaded
+
+This method start a new thread, which blocked other threads and call `LoadFromFile` from MapIO.
 
 <br>
 
@@ -110,3 +117,4 @@ After this, you need to create a c ++ function in Lua Script.c ++, but this is a
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
 [LuaDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#luadirectory>
+[LoadFromFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#loadfromfile>
