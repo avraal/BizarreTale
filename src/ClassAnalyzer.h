@@ -22,6 +22,7 @@ private:
         size_t _editor = sizeof(MapEditor);
         size_t _map    = sizeof(MapIO);
         size_t _anal   = sizeof(ClassAnalyzer);
+        size_t _lua    = sizeof(LuaScripts);
     };
 
 public:
