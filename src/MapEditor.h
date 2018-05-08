@@ -30,6 +30,7 @@ private:
         CameraSpeed = 4.0f;
         showInfo = true;
         canScroled = true;
+        CurrentMode = EditorMode::EDIT;
     }
     ~MapEditor() {}
 //    std::vector<std::shared_ptr<MapEntity>> ObjList;
@@ -53,9 +54,13 @@ private:
 
     MapIO &mio = MapIO::Instance();
 
+    enum EditorMode {ADD, EDIT};
+
+    EditorMode CurrentMode;
+
     void drawTileMap();
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
-    void AddObject(std::string imagePath);
+    void SelectImage(std::string imagePath);
     void MouseCallbacks(sf::Event event);
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);

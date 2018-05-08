@@ -29,7 +29,7 @@ bool MapEditor::initWindow()
     for (auto i : PathToImages)
     {
         auto pic = tgui::Picture::create(i);
-        pic->connect(pic->onClick.getName(), &MapEditor::AddObject, this, i);
+        pic->connect(pic->onClick.getName(), &MapEditor::SelectImage, this, i);
         if (y == 14)
         {
             x++;
@@ -133,9 +133,11 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
         std::cerr << "Cant open a dir" << std::endl;
     }
 }
-void MapEditor::AddObject(std::string imagePath)
+void MapEditor::SelectImage(std::string imagePath)
 {
     CurrentPathFile = imagePath;
+    CurrentMode = EditorMode::ADD;
+    std::cout << "Prepare to add object" << std::endl;
 }
 void MapEditor::drawTileMap()
 {
@@ -196,34 +198,38 @@ void MapEditor::MouseCallbacks(sf::Event event)
         {
             for (auto t : TileMap)
             {
-                if (!CurrentPathFile.empty())
+                sf::Vector2f MouseglobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
+                bool clickCondition =
+                        MouseglobalPosition.x > t->getPosition().x && MouseglobalPosition.y > t->getPosition().y
+                        && MouseglobalPosition.x < t->getPosition().x + t->getSize().x
+                        && MouseglobalPosition.y < t->getPosition().y + t->getSize().y;
+                if (clickCondition)
                 {
-                    sf::Vector2f MglobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
-                    if (MglobalPosition.x > t->getPosition().x && MglobalPosition.y > t->getPosition().y
-                        && MglobalPosition.x < t->getPosition().x + t->getSize().x
-                        && MglobalPosition.y < t->getPosition().y + t->getSize().y)
+                    std::cout << "Current mode = " << CurrentMode << std::endl;
+                    switch (CurrentMode)
                     {
-                        for (auto o : ObjList)
+                        case EditorMode::ADD:
                         {
-                            if (o != nullptr)
+                            ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
+                                    new MapEntity(CurrentPathFile.c_str(), {t->getPosition().x, t->getPosition().y}))));
+                            break;
+                        }
+                        case EditorMode::EDIT:
+                        {
+                            for (auto o : ObjList)
                             {
-                                if (t->getPosition() == o->getPosition())
+                                if (o != nullptr)
                                 {
-                                    //Delete object that after cycle add new MapEntity
-                                    auto it = std::find(ObjList.begin(), ObjList.end(), o);
-                                    if (it != ObjList.end())
+                                    if (t->getPosition() == o->getPosition())
                                     {
-                                        ObjList.erase(it);
+                                        std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
+                                                  << " object" << std::endl;
                                     }
                                 }
                             }
+                            break;
                         }
-                        ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-                                new MapEntity(CurrentPathFile.c_str(), {t->getPosition().x, t->getPosition().y}))));
                     }
-                } else
-                {
-                    std::cout << "[WARNING | MapEditor]: Current Path File is empty" << std::endl;
                 }
             }
         }
@@ -243,6 +249,12 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
     {
         switch (event.key.code)
         {
+            case sf::Keyboard::E:
+            {
+                CurrentMode = EditorMode::EDIT;
+                std::cout << "Edit mode enabled" << std::endl;
+                break;
+            }
             case sf::Keyboard::Escape:
             {
                 window.close();
