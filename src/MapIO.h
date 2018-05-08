@@ -11,6 +11,7 @@
 #include <fstream>
 #include <memory>
 #include <cstring>
+#include <list>
 #include "MapEntity.h"
 #include "LuaScripts.h"
 
@@ -43,8 +44,8 @@ public:
         return mio;
     }
 
-    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> obj);
-    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
+    void SaveToFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> obj);
+    void LoadFromFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> &obj);
 };
 
 #endif //BIZARRETALE_MAPIO_H

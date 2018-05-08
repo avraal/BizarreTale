@@ -241,12 +241,12 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
 {
     if (event.type == sf::Event::KeyPressed)
     {
-        if (event.key.code == sf::Keyboard::Escape)
-        {
-            window.close();
-        }
         switch (event.key.code)
         {
+            case sf::Keyboard::Escape:
+            {
+                window.close();
+            }
             case sf::Keyboard::Right:
             {
                 MainCamera.move(CameraSpeed, 0.0f);
@@ -292,11 +292,11 @@ void MapEditor::ChangeScrollablePanelStatus(bool val)
 {
     canScroled = val;
 }
-void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj)
+void MapEditor::LoadFromFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> &obj)
 {
     mio.LoadFromFile(fileName, obj);
 }
-void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> obj)
+void MapEditor::SaveToFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> obj)
 {
     mio.SaveToFile(fileName, obj);
 }
