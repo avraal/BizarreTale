@@ -8,7 +8,7 @@
 #include "LuaScripts.h"
 
 template<>
-void LuaScripts::RegisterConstant<lua_CFunction>(lua_CFunction value, char *constName)
+void LuaScripts::RegisterConstant<lua_CFunction>(lua_CFunction value, const char *constName)
 {
     lua_pushcfunction(lua_state, value);
     lua_setglobal(lua_state, constName);
@@ -70,7 +70,7 @@ void LuaScripts::Close()
         std::cerr << ex.what() << std::endl;
     }
 }
-int LuaScripts::DoFile(char *ScriptFileName)
+int LuaScripts::DoFile(const char *ScriptFileName)
 {
     luaL_dofile(lua_state, ScriptFileName);
     return lua_tointeger(lua_state, lua_gettop(lua_state));

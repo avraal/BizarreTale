@@ -26,13 +26,13 @@ private:
 public:
     void Create();
     void Close();
-    int DoFile(char *ScriptFileName);
+    int DoFile(const char *ScriptFileName);
 
     template <class T>
             void Push(T value);
 
     template <class T>
-            void RegisterConstant(T value, char *constName);
+            void RegisterConstant(T value, const char *constName);
 
     void SaveToFile   (const char *fileName, std::list<std::shared_ptr<MapEntity>> obj);
     void LoadFromFile (const char *fileName, std::list<std::shared_ptr<MapEntity>> &obj);
