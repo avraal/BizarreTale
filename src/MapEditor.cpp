@@ -110,6 +110,10 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
 {
     DIR *dir;
     dirent *directory;
+    if(FileFormats.empty())
+    {
+        FileFormats.push_back(".*");
+    }
     if ((dir = opendir(MapEditor::ImageDirectory.c_str())) != NULL)
     {
         while ((directory = readdir(dir)) != NULL)
