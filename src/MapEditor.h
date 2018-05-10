@@ -33,11 +33,9 @@ private:
         CurrentMode = EditorMode::EDIT;
     }
     ~MapEditor() {}
-//    std::vector<std::shared_ptr<TileEntity>> ObjList;
     std::list<std::shared_ptr<TileEntity>> ObjList;
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
-//    std::vector<std::shared_ptr<TileEntity>> TileMap;
     std::list<std::shared_ptr<TileEntity>> TileMap;
     std::string CurrentPathFile;
     sf::RenderWindow window;
@@ -79,8 +77,6 @@ public:
     std::string ImageDirectory;
     std::string LuaDirectory;
 
-//    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
-//    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
     void SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj);
     void LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj);
 };

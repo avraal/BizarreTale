@@ -24,13 +24,12 @@ private:
     sf::Sprite sprite;
 
     void LoadTexture(std::string imagePath);
-    void LoadTexture(const char* imagePath);
 
 protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 public:
-    TileEntity(const char *imagePath, sf::Vector2f position = {.0f, .0f});
+    TileEntity(std::string imagePath, sf::Vector2f position = {.0f, .0f});
     TileEntity(const TileEntity &entity);
     TileEntity(const TileEntity &&entity);
     TileEntity& operator=(sf::Drawable const&) = delete;
@@ -42,9 +41,9 @@ public:
     virtual const sf::Vector2f &getPosition() const;
     virtual const sf::Vector2f &getScale() const;
     virtual sf::Vector2u getSize() const;
-    char *getImagePath() const;
-    char *name;
-    char *_imagePath;
+    std::string getImagePath() const;
+    std::string name;
+    std::string _imagePath;
 
 };
 

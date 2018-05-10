@@ -89,10 +89,10 @@ void LuaScripts::SaveToFile(const char *fileName, std::list<std::shared_ptr<Tile
         Push<const char *>(std::to_string(pos).c_str());
         lua_newtable(lua_state);
         Push<char *>("name");
-        Push<char *>(o->name);
+        Push<const char *>(o->name.c_str());
         lua_settable(lua_state, -3);
         Push<char *>("imagePath");
-        Push<char *>(o->getImagePath());
+        Push<const char *>(o->getImagePath().c_str());
         lua_settable(lua_state, -3);
         Push<char *>("x");
         Push<double>(o->getPosition().x);

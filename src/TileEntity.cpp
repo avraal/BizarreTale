@@ -9,10 +9,8 @@
 TileEntity::TileEntity()
 {
     std::cout << "Default ctor" << std::endl;
-    _imagePath = new char[1024];
-    name = new char[512];
-    strcpy(_imagePath, "");
-    strcpy(name, "null");
+    _imagePath = "";
+    name = "Empty";
     LoadTexture(_imagePath);
     sprite.setPosition(0, 0);
 }
@@ -33,13 +31,11 @@ void TileEntity::LoadTexture(std::string imagePath)
     }
 }
 
-TileEntity::TileEntity(const char *imagePath, sf::Vector2f position)
+TileEntity::TileEntity(std::string imagePath, sf::Vector2f position)
 {
     std::cout << "Ctor" << std::endl;
-    name = new char[512];
-    _imagePath = new char[1024];
-    strcpy(_imagePath, imagePath);
-    strcpy(name, "Obj");
+    this->_imagePath = imagePath;
+    this->name = "Empty";
     LoadTexture(_imagePath);
     sprite.setPosition(position.x, position.y);
 }
@@ -47,10 +43,8 @@ TileEntity::TileEntity(const char *imagePath, sf::Vector2f position)
 TileEntity::TileEntity(const TileEntity &entity)
 {
     std::cout << "Copy ctor??" << std::endl;
-    name = new char[512];
-    _imagePath = new char[1024];
-    strcpy(_imagePath, entity.getImagePath());
-    strcpy(name, entity.name);
+    this->_imagePath = entity.getImagePath();
+    this->name = entity.name;
     LoadTexture(_imagePath);
     sprite.setPosition(entity.getPosition());
 }
@@ -58,10 +52,8 @@ TileEntity::TileEntity(const TileEntity &entity)
 TileEntity::TileEntity(const TileEntity &&entity)
 {
     std::cout << "Move ctor??" << std::endl;
-    name = new char[512];
-    _imagePath = new char[1024];
-    strcpy(this->name, entity.name);
-    strcpy(this->_imagePath, entity.getImagePath());
+    this->_imagePath = entity.getImagePath();
+    this->name = entity.name;
     LoadTexture(_imagePath);
     sprite.setPosition(entity.getPosition());
 }
@@ -95,20 +87,17 @@ void TileEntity::setPosition(sf::Vector2f Position)
 {
     sprite.setPosition(Position);
 }
-char *TileEntity::getImagePath() const
+std::string TileEntity::getImagePath() const
 {
     return _imagePath;
 }
-void TileEntity::LoadTexture(const char *imagePath)
-{
-    LoadTexture(std::string{imagePath});
-}
+
 TileEntity &TileEntity::operator=(TileEntity const &me)
 {
     if(this != &me)
     {
-        strcpy(_imagePath, me.getImagePath());
-        strcpy(name, me.name);
+        this->_imagePath = me.getImagePath();
+        this->name = me.name;
         setPosition(me.getPosition());
         LoadTexture(_imagePath);
     }
