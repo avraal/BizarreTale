@@ -14,6 +14,7 @@ SingletonClass &obj = SingletonClass::Instance();
 
 # MapIO
 ### Pattern: Singleton
+### Parent: none
 
 It's a class, who is writing and reading files.
 
@@ -32,8 +33,17 @@ Basic unit for render.
 
 <br>
 
+# PrimitiveQuad
+### Pattern: none
+### Parents: sf::Drawable, sf::Transformable
+
+Represents array of vertex `(sf::VertexArray)`.
+
+<br>
+
 # MapEditor
 ### Pattern: Singleton
+### Parent: none
 
 Simple editor for game maps
 
@@ -82,6 +92,7 @@ This method start a new thread, which blocked other threads and call `SaveToFile
 
 # ClassAnalyzer
 ### Pattern: Singleton
+### Parent: none
 
 Checks size of classes and write it in file
 
@@ -103,6 +114,7 @@ Method `start` has a default argument, which determine: print info in console or
 
 # LuaScripts
 ### Pattern: none
+### Parent: none
 
 Use for set contact with Lua scripts. For use, needed add LuaScripts object in class
 
