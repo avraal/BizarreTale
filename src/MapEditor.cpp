@@ -225,9 +225,8 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                     count++;
                                 }
                             }
-//                            std::cout << "I found " << count << " object(s) if this coords" << std::endl;
                             ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
-                                    new TileEntity(CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
+                                    new TileEntity(std::string("Obj" + std::to_string(count)) , CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
 
                             ObjList.back()->setIndex(count);
                             break;
@@ -242,7 +241,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                     if (t->getPosition() == o->getPosition())
                                     {
                                         std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
-                                                  << " object" << " (index: " << o->getIndex() << ")" << std::endl;
+                                                  << " object" << " (index: " << o->getIndex() << ") Name: " << o->Name << std::endl;
 
                                     }
                                 }

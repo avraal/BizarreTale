@@ -31,7 +31,7 @@ protected:
 
 public:
     TileEntity();
-    TileEntity(std::string ImagePath, sf::Vector2f position = {.0f, .0f});
+    TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position = {.0f, .0f});
     TileEntity(const TileEntity &entity);
     TileEntity(const TileEntity &&entity);
     TileEntity &operator=(sf::Drawable const &) = delete;
