@@ -1,6 +1,6 @@
 # BizarreTale
 Simple constructor for gamedev
-Guide for using BizarreTale Editor v. 0.1
+Guide for using BizarreTale Editor v. 0.2
 
 ## How to create a Singleton object:
 ```c++
@@ -26,6 +26,7 @@ obj.LoadFromFile("filename.format", objectContainer);
 
 # TileEntity
 ### Pattern: none
+### Parent: PrimiriveQuad
 
 Basic unit for render.
 
@@ -41,6 +42,7 @@ Has a public fields:
 - [LuaDirectory]
 - [initWindow]
 - [LoadFromFile]
+- [SaveToFile]
 
 #### ImageDirectory
 Identify of directory, where find images
@@ -70,6 +72,11 @@ Has a two parameters:
 * `obj` - container in which objects are loaded
 
 This method start a new thread, which blocked other threads and call `LoadFromFile` from MapIO.
+
+#### SaveToFile:
+Just like a `LoadFromFile` has a two parameters.
+
+This method start a new thread, which blocked other threads and call `SaveToFile` from MapIO.
 
 <br>
 
@@ -154,3 +161,4 @@ Call `Close` method in destructor your class
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
 [LuaDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#luadirectory>
 [LoadFromFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#loadfromfile>
+[SaveToFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#savetofile>
