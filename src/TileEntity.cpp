@@ -40,13 +40,15 @@ TileEntity::TileEntity(std::string imagePath, sf::Vector2f position)
     sprite.setPosition(position.x, position.y);
 }
 
-TileEntity::TileEntity(const TileEntity &entity)
+TileEntity::TileEntity(const TileEntity &entity) : TileEntity(entity.getImagePath(), entity.getPosition())
 {
+    /*
     std::cout << "Copy ctor??" << std::endl;
     this->_imagePath = entity.getImagePath();
     this->name = entity.name;
     LoadTexture(_imagePath);
     sprite.setPosition(entity.getPosition());
+    */
 }
 
 TileEntity::TileEntity(const TileEntity &&entity) : TileEntity(entity)
