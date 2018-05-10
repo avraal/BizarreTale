@@ -49,13 +49,15 @@ TileEntity::TileEntity(const TileEntity &entity)
     sprite.setPosition(entity.getPosition());
 }
 
-TileEntity::TileEntity(const TileEntity &&entity)
+TileEntity::TileEntity(const TileEntity &&entity) : TileEntity(entity)
 {
+    /*
     std::cout << "Move ctor??" << std::endl;
     this->_imagePath = entity.getImagePath();
     this->name = entity.name;
     LoadTexture(_imagePath);
     sprite.setPosition(entity.getPosition());
+     */
 }
 
 void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
