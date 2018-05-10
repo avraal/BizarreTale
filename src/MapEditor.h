@@ -17,6 +17,7 @@
 #include "TileEntity.h"
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
+#include "PrimitiveQuad.hpp"
 
 class MapEditor
 {
@@ -34,9 +35,9 @@ private:
     }
     ~MapEditor() {}
     std::list<std::shared_ptr<TileEntity>> ObjList;
+    std::list<std::shared_ptr<PrimitiveQuad>> TileMap;
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
-    std::list<std::shared_ptr<TileEntity>> TileMap;
     std::string CurrentPathFile;
     sf::RenderWindow window;
     sf::View MainCamera;

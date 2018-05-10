@@ -6,60 +6,39 @@
 //
 #include "TileEntity.h"
 
-TileEntity::TileEntity()
+TileEntity::TileEntity() : PrimitiveQuad()
 {
     std::cout << "Default ctor" << std::endl;
-    _imagePath = "";
-    name = "Empty";
-    LoadTexture(_imagePath);
-    sprite.setPosition(0, 0);
+    ImagePath = "";
+    Name = "Empty";
+    LoadTexture(ImagePath);
+    sprite.setPosition(getPosition());
 }
 
-void TileEntity::LoadTexture(std::string imagePath)
+void TileEntity::LoadTexture(std::string ImagePath)
 {
-    if(!texture.loadFromFile(imagePath))
+    if(!ImagePath.empty())
     {
-//        std::cerr << "[WARNING | TileEntity]: Failure load texture file" << std::endl;
-        sf::Image image;
-        image.create(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT, sf::Color(91, 97, 91));
-        texture.loadFromImage(image);
-        sprite.setTexture(texture);
+        texture.loadFromFile(ImagePath);
     }
-    else
-    {
-        sprite.setTexture(texture);
-    }
+    sprite.setTexture(texture);
 }
 
-TileEntity::TileEntity(std::string imagePath, sf::Vector2f position)
+TileEntity::TileEntity(std::string ImagePath, sf::Vector2f position)
 {
     std::cout << "Ctor" << std::endl;
-    this->_imagePath = imagePath;
-    this->name = "Empty";
-    LoadTexture(_imagePath);
-    sprite.setPosition(position.x, position.y);
+    this->ImagePath = ImagePath;
+    this->Name = "Empty";
+    LoadTexture(ImagePath);
+    SetPosition(position.x, position.y);
 }
 
-TileEntity::TileEntity(const TileEntity &entity) : TileEntity(entity.getImagePath(), entity.getPosition())
+TileEntity::TileEntity(const TileEntity &entity) : TileEntity(entity.GetImagePath(), entity.getPosition())
 {
-    /*
-    std::cout << "Copy ctor??" << std::endl;
-    this->_imagePath = entity.getImagePath();
-    this->name = entity.name;
-    LoadTexture(_imagePath);
-    sprite.setPosition(entity.getPosition());
-    */
 }
 
 TileEntity::TileEntity(const TileEntity &&entity) : TileEntity(entity)
 {
-    /*
-    std::cout << "Move ctor??" << std::endl;
-    this->_imagePath = entity.getImagePath();
-    this->name = entity.name;
-    LoadTexture(_imagePath);
-    sprite.setPosition(entity.getPosition());
-     */
 }
 
 void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -67,43 +46,28 @@ void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(sprite, states);
 }
 
-TileEntity::~TileEntity()
+//TileEntity::~TileEntity()
+//{
+////    std::cout << "Dcor??" << std::endl;
+//}
+void TileEntity::SetPosition(float x, float y)
 {
-//    std::cout << "Dcor??" << std::endl;
-}
-void TileEntity::setPosition(float x, float y)
-{
+    setPosition(x, y);
     sprite.setPosition(x, y);
 }
-const sf::Vector2f &TileEntity::getPosition() const
+std::string TileEntity::GetImagePath() const
 {
-    return sprite.getPosition();
-}
-const sf::Vector2f &TileEntity::getScale() const
-{
-    return sprite.getScale();
-}
-sf::Vector2u TileEntity::getSize() const
-{
-    return texture.getSize();
-}
-void TileEntity::setPosition(sf::Vector2f Position)
-{
-    sprite.setPosition(Position);
-}
-std::string TileEntity::getImagePath() const
-{
-    return _imagePath;
+    return ImagePath;
 }
 
 TileEntity &TileEntity::operator=(TileEntity const &me)
 {
     if(this != &me)
     {
-        this->_imagePath = me.getImagePath();
-        this->name = me.name;
+        this->ImagePath = me.GetImagePath();
+        this->Name = me.Name;
         setPosition(me.getPosition());
-        LoadTexture(_imagePath);
+        LoadTexture(ImagePath);
     }
     return *this;
 }

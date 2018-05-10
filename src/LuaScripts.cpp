@@ -89,10 +89,10 @@ void LuaScripts::SaveToFile(const char *fileName, std::list<std::shared_ptr<Tile
         Push<const char *>(std::to_string(pos).c_str());
         lua_newtable(lua_state);
         Push<char *>("name");
-        Push<const char *>(o->name.c_str());
+        Push<const char *>(o->Name.c_str());
         lua_settable(lua_state, -3);
         Push<char *>("imagePath");
-        Push<const char *>(o->getImagePath().c_str());
+        Push<const char *>(o->GetImagePath().c_str());
         lua_settable(lua_state, -3);
         Push<char *>("x");
         Push<double>(o->getPosition().x);
@@ -130,7 +130,7 @@ void LuaScripts::LoadFromFile(const char *fileName, std::list<std::shared_ptr<Ti
         lua_getfield(lua_state, -4, "y");
         float y = lua_tonumber(lua_state, -1);
         //        std::cout << "Y: " << lua_tonumber(lua_state, -1) << std::endl;
-        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(imagePath.c_str(), {x, y}))));
+        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(imagePath, {x, y}))));
     }
 
     lua_pop(lua_state, 1);

@@ -7,6 +7,7 @@
 
 #include <thread>
 #include "MapEditor.h"
+#include "PrimitiveQuad.hpp"
 
 bool MapEditor::initWindow()
 {
@@ -90,14 +91,16 @@ bool MapEditor::initWindow()
 
         window.setView(MainCamera);
 
-        for (auto t : TileMap)
+        for(auto t : TileMap)
         {
             window.draw(*t);
         }
-        for (auto o : ObjList)
+
+        for(auto o : ObjList)
         {
             window.draw(*o);
         }
+
         infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
         infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
         gui.draw();
@@ -154,17 +157,17 @@ void MapEditor::drawTileMap()
     //added tiles
     for (uint i = 1; i <= height * width; i++)
     {
-        TileMap.push_back(std::move(std::shared_ptr<TileEntity>(
-                new TileEntity("", {.0f, .0f}))));
+        TileMap.push_back(std::move(std::shared_ptr<PrimitiveQuad>(new PrimitiveQuad)));
     }
     //set position
+
     uint x = 0, y = 0;
-    for (auto t : TileMap)
+    for(auto t : TileMap)
     {
         t->setPosition(x * (TILE_SIZE_DEFAULT + 1), y * (TILE_SIZE_DEFAULT + 1));
 
         x++;
-        if (x == width)
+        if(x == width)
         {
             y++;
             x = 0;
@@ -202,11 +205,11 @@ void MapEditor::MouseCallbacks(sf::Event event)
         {
             for (auto t : TileMap)
             {
-                sf::Vector2f MouseglobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
+                sf::Vector2f MouseGlobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
                 bool clickCondition =
-                        MouseglobalPosition.x > t->getPosition().x && MouseglobalPosition.y > t->getPosition().y
-                        && MouseglobalPosition.x < t->getPosition().x + t->getSize().x
-                        && MouseglobalPosition.y < t->getPosition().y + t->getSize().y;
+                        MouseGlobalPosition.x > t->getPosition().x && MouseGlobalPosition.y > t->getPosition().y
+                        && MouseGlobalPosition.x < t->getPosition().x + t->getSize().x
+                        && MouseGlobalPosition.y < t->getPosition().y + t->getSize().y;
                 if (clickCondition)
                 {
                     std::cout << "Current mode = " << CurrentMode << std::endl;
@@ -214,20 +217,21 @@ void MapEditor::MouseCallbacks(sf::Event event)
                     {
                         case EditorMode::ADD:
                         {
-                            ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
-                                    new TileEntity(CurrentPathFile.c_str(), {t->getPosition().x, t->getPosition().y}))));
+                            ObjList.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
                             break;
                         }
                         case EditorMode::EDIT:
                         {
-                            for (auto o : ObjList)
+
+                            for(auto o : ObjList)
                             {
-                                if (o != nullptr)
+                                if(o != nullptr)
                                 {
-                                    if (t->getPosition() == o->getPosition())
+                                    if(t->getPosition() == o->getPosition())
                                     {
                                         std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
                                                   << " object" << std::endl;
+
                                     }
                                 }
                             }

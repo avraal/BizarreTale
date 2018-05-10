@@ -14,37 +14,35 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
 #include <cstring>
 #include "CONST_DEFINITIONS.h"
+#include "PrimitiveQuad.hpp"
 
-class TileEntity : public sf::Drawable
+class TileEntity : public PrimitiveQuad
 {
 private:
-    sf::Texture texture;
     sf::Sprite sprite;
-
-    void LoadTexture(std::string imagePath);
+    std::string ImagePath;
 
 protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 public:
-    TileEntity(std::string imagePath, sf::Vector2f position = {.0f, .0f});
+    TileEntity();
+    TileEntity(std::string ImagePath, sf::Vector2f position = {.0f, .0f});
     TileEntity(const TileEntity &entity);
     TileEntity(const TileEntity &&entity);
-    TileEntity& operator=(sf::Drawable const&) = delete;
-    TileEntity& operator=(TileEntity const& me);
-    TileEntity();
-    virtual ~TileEntity();
-    virtual void setPosition(float x, float y);
-    virtual void setPosition(sf::Vector2f Position);
-    virtual const sf::Vector2f &getPosition() const;
-    virtual const sf::Vector2f &getScale() const;
-    virtual sf::Vector2u getSize() const;
-    std::string getImagePath() const;
-    std::string name;
-    std::string _imagePath;
+    TileEntity &operator=(sf::Drawable const &) = delete;
+    TileEntity &operator=(TileEntity const &me);
 
+
+//    virtual ~TileEntity();
+    void LoadTexture(std::string ImagePath);
+    void SetPosition(float x, float y);
+    std::string GetImagePath() const;
+
+    std::string Name;
 };
 
 #endif //BIZARRETALE_MAPENTITY_H
