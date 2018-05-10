@@ -11,7 +11,7 @@
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-#include "MapEntity.h"
+#include "TileEntity.h"
 #include <iostream>
 #include <list>
 #include <memory>
@@ -34,8 +34,8 @@ public:
     template <class T>
             void RegisterConstant(T value, const char *constName);
 
-    void SaveToFile   (const char *fileName, std::list<std::shared_ptr<MapEntity>> obj);
-    void LoadFromFile (const char *fileName, std::list<std::shared_ptr<MapEntity>> &obj);
+    void SaveToFile   (const char *fileName, std::list<std::shared_ptr<TileEntity>> obj);
+    void LoadFromFile (const char *fileName, std::list<std::shared_ptr<TileEntity>> &obj);
     int getTableSize  (const char *fileName);
 };
 

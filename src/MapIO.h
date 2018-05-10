@@ -12,7 +12,7 @@
 #include <memory>
 #include <cstring>
 #include <list>
-#include "MapEntity.h"
+#include "TileEntity.h"
 #include "LuaScripts.h"
 
 class MapIO
@@ -44,8 +44,8 @@ public:
         return mio;
     }
 
-    void SaveToFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> obj);
-    void LoadFromFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> &obj);
+    void SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj);
+    void LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj);
 };
 
 #endif //BIZARRETALE_MAPIO_H

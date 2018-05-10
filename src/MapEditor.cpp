@@ -154,8 +154,8 @@ void MapEditor::drawTileMap()
     //added tiles
     for (uint i = 1; i <= height * width; i++)
     {
-        TileMap.push_back(std::move(std::shared_ptr<MapEntity>(
-                new MapEntity("", {.0f, .0f}))));
+        TileMap.push_back(std::move(std::shared_ptr<TileEntity>(
+                new TileEntity("", {.0f, .0f}))));
     }
     //set position
     uint x = 0, y = 0;
@@ -214,8 +214,8 @@ void MapEditor::MouseCallbacks(sf::Event event)
                     {
                         case EditorMode::ADD:
                         {
-                            ObjList.push_back(std::move(std::shared_ptr<MapEntity>(
-                                    new MapEntity(CurrentPathFile.c_str(), {t->getPosition().x, t->getPosition().y}))));
+                            ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
+                                    new TileEntity(CurrentPathFile.c_str(), {t->getPosition().x, t->getPosition().y}))));
                             break;
                         }
                         case EditorMode::EDIT:
@@ -308,11 +308,11 @@ void MapEditor::ChangeScrollablePanelStatus(bool val)
 {
     canScroled = val;
 }
-void MapEditor::LoadFromFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> &obj)
+void MapEditor::LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj)
 {
     mio.LoadFromFile(fileName, obj);
 }
-void MapEditor::SaveToFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> obj)
+void MapEditor::SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj)
 {
     mio.SaveToFile(fileName, obj);
 }

@@ -4,9 +4,9 @@
 //
 // Created by andrew on 02.04.18.
 //
-#include "MapEntity.h"
+#include "TileEntity.h"
 
-MapEntity::MapEntity()
+TileEntity::TileEntity()
 {
     std::cout << "Default ctor" << std::endl;
     _imagePath = new char[1024];
@@ -17,11 +17,11 @@ MapEntity::MapEntity()
     sprite.setPosition(0, 0);
 }
 
-void MapEntity::LoadTexture(std::string imagePath)
+void TileEntity::LoadTexture(std::string imagePath)
 {
     if(!texture.loadFromFile(imagePath))
     {
-//        std::cerr << "[WARNING | MapEntity]: Failure load texture file" << std::endl;
+//        std::cerr << "[WARNING | TileEntity]: Failure load texture file" << std::endl;
         sf::Image image;
         image.create(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT, sf::Color(91, 97, 91));
         texture.loadFromImage(image);
@@ -33,7 +33,7 @@ void MapEntity::LoadTexture(std::string imagePath)
     }
 }
 
-MapEntity::MapEntity(const char *imagePath, sf::Vector2f position)
+TileEntity::TileEntity(const char *imagePath, sf::Vector2f position)
 {
     std::cout << "Ctor" << std::endl;
     name = new char[512];
@@ -44,7 +44,7 @@ MapEntity::MapEntity(const char *imagePath, sf::Vector2f position)
     sprite.setPosition(position.x, position.y);
 }
 
-MapEntity::MapEntity(const MapEntity &entity)
+TileEntity::TileEntity(const TileEntity &entity)
 {
     std::cout << "Copy ctor??" << std::endl;
     name = new char[512];
@@ -55,7 +55,7 @@ MapEntity::MapEntity(const MapEntity &entity)
     sprite.setPosition(entity.getPosition());
 }
 
-MapEntity::MapEntity(const MapEntity &&entity)
+TileEntity::TileEntity(const TileEntity &&entity)
 {
     std::cout << "Move ctor??" << std::endl;
     name = new char[512];
@@ -66,44 +66,44 @@ MapEntity::MapEntity(const MapEntity &&entity)
     sprite.setPosition(entity.getPosition());
 }
 
-void MapEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
+void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     target.draw(sprite, states);
 }
 
-MapEntity::~MapEntity()
+TileEntity::~TileEntity()
 {
 //    std::cout << "Dcor??" << std::endl;
 }
-void MapEntity::setPosition(float x, float y)
+void TileEntity::setPosition(float x, float y)
 {
     sprite.setPosition(x, y);
 }
-const sf::Vector2f &MapEntity::getPosition() const
+const sf::Vector2f &TileEntity::getPosition() const
 {
     return sprite.getPosition();
 }
-const sf::Vector2f &MapEntity::getScale() const
+const sf::Vector2f &TileEntity::getScale() const
 {
     return sprite.getScale();
 }
-sf::Vector2u MapEntity::getSize() const
+sf::Vector2u TileEntity::getSize() const
 {
     return texture.getSize();
 }
-void MapEntity::setPosition(sf::Vector2f Position)
+void TileEntity::setPosition(sf::Vector2f Position)
 {
     sprite.setPosition(Position);
 }
-char *MapEntity::getImagePath() const
+char *TileEntity::getImagePath() const
 {
     return _imagePath;
 }
-void MapEntity::LoadTexture(const char *imagePath)
+void TileEntity::LoadTexture(const char *imagePath)
 {
     LoadTexture(std::string{imagePath});
 }
-MapEntity &MapEntity::operator=(MapEntity const &me)
+TileEntity &TileEntity::operator=(TileEntity const &me)
 {
     if(this != &me)
     {

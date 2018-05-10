@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <chrono>
-#include "MapEntity.h"
+#include "TileEntity.h"
 #include "MapEditor.h"
 #include "ClassAnalyzer.h"
 

@@ -40,7 +40,7 @@ void ClassAnalyzer::start(bool showDebug)
         for (auto d : readData)
         {
             std::cout << "Date: " << std::ctime(&d.time);
-            std::cout << "MapEntity: " << d._entity << std::endl;
+            std::cout << "TileEntity: " << d._entity << std::endl;
             std::cout << "MapEditor: " << d._editor << std::endl;
             std::cout << "MapIO:" << d._map << std::endl;
             std::cout << "ClassAnalyzer: " << d._anal << std::endl;
@@ -68,7 +68,7 @@ void ClassAnalyzer::start(bool showDebug)
         for (auto d : readData)
         {
             std::cout << "Date: " << std::ctime(&d.time);
-            std::cout << "MapEntity: " << d._entity << std::endl;
+            std::cout << "TileEntity: " << d._entity << std::endl;
             std::cout << "MapEditor: " << d._editor << std::endl;
             std::cout << "MapIO:" << d._map << std::endl;
             std::cout << "ClassAnalyzer: " << d._anal << std::endl;

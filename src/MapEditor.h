@@ -14,7 +14,7 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <dirent.h>
 #include <string>
-#include "MapEntity.h"
+#include "TileEntity.h"
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
 
@@ -33,12 +33,12 @@ private:
         CurrentMode = EditorMode::EDIT;
     }
     ~MapEditor() {}
-//    std::vector<std::shared_ptr<MapEntity>> ObjList;
-    std::list<std::shared_ptr<MapEntity>> ObjList;
+//    std::vector<std::shared_ptr<TileEntity>> ObjList;
+    std::list<std::shared_ptr<TileEntity>> ObjList;
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
-//    std::vector<std::shared_ptr<MapEntity>> TileMap;
-    std::list<std::shared_ptr<MapEntity>> TileMap;
+//    std::vector<std::shared_ptr<TileEntity>> TileMap;
+    std::list<std::shared_ptr<TileEntity>> TileMap;
     std::string CurrentPathFile;
     sf::RenderWindow window;
     sf::View MainCamera;
@@ -79,9 +79,9 @@ public:
     std::string ImageDirectory;
     std::string LuaDirectory;
 
-//    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> obj);
-//    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<MapEntity>> &obj);
-    void SaveToFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> obj);
-    void LoadFromFile(std::string fileName, std::list<std::shared_ptr<MapEntity>> &obj);
+//    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
+//    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
+    void SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj);
+    void LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj);
 };
 #endif //BIZARRETALE_MAPEDITOR_H

@@ -17,7 +17,7 @@
 #include <cstring>
 #include "CONST_DEFINITIONS.h"
 
-class MapEntity : public sf::Drawable
+class TileEntity : public sf::Drawable
 {
 private:
     sf::Texture texture;
@@ -30,13 +30,13 @@ protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 public:
-    MapEntity(const char *imagePath, sf::Vector2f position = {.0f, .0f});
-    MapEntity(const MapEntity &entity);
-    MapEntity(const MapEntity &&entity);
-    MapEntity& operator=(sf::Drawable const&) = delete;
-    MapEntity& operator=(MapEntity const& me);
-    MapEntity();
-    virtual ~MapEntity();
+    TileEntity(const char *imagePath, sf::Vector2f position = {.0f, .0f});
+    TileEntity(const TileEntity &entity);
+    TileEntity(const TileEntity &&entity);
+    TileEntity& operator=(sf::Drawable const&) = delete;
+    TileEntity& operator=(TileEntity const& me);
+    TileEntity();
+    virtual ~TileEntity();
     virtual void setPosition(float x, float y);
     virtual void setPosition(sf::Vector2f Position);
     virtual const sf::Vector2f &getPosition() const;

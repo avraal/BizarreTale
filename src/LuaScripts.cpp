@@ -76,7 +76,7 @@ int LuaScripts::DoFile(const char *ScriptFileName)
     return lua_tointeger(lua_state, lua_gettop(lua_state));
 }
 
-void LuaScripts::SaveToFile(const char *fileName, std::list<std::shared_ptr<MapEntity>> obj)
+void LuaScripts::SaveToFile(const char *fileName, std::list<std::shared_ptr<TileEntity>> obj)
 {
     lua_getglobal(lua_state, "SaveMapEntityToFile");
 
@@ -107,7 +107,7 @@ void LuaScripts::SaveToFile(const char *fileName, std::list<std::shared_ptr<MapE
     lua_call(lua_state, 2, 0);
     lua_pop(lua_state, 0);
 }
-void LuaScripts::LoadFromFile(const char *fileName, std::list<std::shared_ptr<MapEntity>> &obj)
+void LuaScripts::LoadFromFile(const char *fileName, std::list<std::shared_ptr<TileEntity>> &obj)
 {
     int size = getTableSize(fileName);
 
@@ -130,7 +130,7 @@ void LuaScripts::LoadFromFile(const char *fileName, std::list<std::shared_ptr<Ma
         lua_getfield(lua_state, -4, "y");
         float y = lua_tonumber(lua_state, -1);
         //        std::cout << "Y: " << lua_tonumber(lua_state, -1) << std::endl;
-        obj.push_back(std::move(std::shared_ptr<MapEntity>(new MapEntity(imagePath.c_str(), {x, y}))));
+        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(imagePath.c_str(), {x, y}))));
     }
 
     lua_pop(lua_state, 1);
