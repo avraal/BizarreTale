@@ -24,6 +24,7 @@ class TileEntity : public PrimitiveQuad
 private:
     sf::Sprite sprite;
     std::string ImagePath;
+    int index = 0;
 
 protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
@@ -37,10 +38,12 @@ public:
     TileEntity &operator=(TileEntity const &me);
 
 
-//    virtual ~TileEntity();
+    virtual ~TileEntity();
     void LoadTexture(std::string ImagePath);
     void SetPosition(float x, float y);
+    void setIndex(int index);
     std::string GetImagePath() const;
+    int getIndex();
 
     std::string Name;
 };

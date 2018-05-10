@@ -91,12 +91,12 @@ bool MapEditor::initWindow()
 
         window.setView(MainCamera);
 
-        for(auto t : TileMap)
+        for (auto t : TileMap)
         {
             window.draw(*t);
         }
 
-        for(auto o : ObjList)
+        for (auto o : ObjList)
         {
             window.draw(*o);
         }
@@ -113,7 +113,7 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
 {
     DIR *dir;
     dirent *directory;
-    if(FileFormats.empty())
+    if (FileFormats.empty())
     {
         FileFormats.push_back(".*");
     }
@@ -162,12 +162,12 @@ void MapEditor::drawTileMap()
     //set position
 
     uint x = 0, y = 0;
-    for(auto t : TileMap)
+    for (auto t : TileMap)
     {
         t->setPosition(x * (TILE_SIZE_DEFAULT + 1), y * (TILE_SIZE_DEFAULT + 1));
 
         x++;
-        if(x == width)
+        if (x == width)
         {
             y++;
             x = 0;
@@ -217,20 +217,32 @@ void MapEditor::MouseCallbacks(sf::Event event)
                     {
                         case EditorMode::ADD:
                         {
-                            ObjList.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
+                            int count = 0;
+                            for(auto o : ObjList)
+                            {
+                                if(o->getPosition() == t->getPosition())
+                                {
+                                    count++;
+                                }
+                            }
+//                            std::cout << "I found " << count << " object(s) if this coords" << std::endl;
+                            ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
+                                    new TileEntity(CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
+
+                            ObjList.back()->setIndex(count);
                             break;
                         }
                         case EditorMode::EDIT:
                         {
 
-                            for(auto o : ObjList)
+                            for (auto o : ObjList)
                             {
-                                if(o != nullptr)
+                                if (o != nullptr)
                                 {
-                                    if(t->getPosition() == o->getPosition())
+                                    if (t->getPosition() == o->getPosition())
                                     {
                                         std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
-                                                  << " object" << std::endl;
+                                                  << " object" << " (index: " << o->getIndex() << ")" << std::endl;
 
                                     }
                                 }

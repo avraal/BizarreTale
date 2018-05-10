@@ -17,7 +17,7 @@ TileEntity::TileEntity() : PrimitiveQuad()
 
 void TileEntity::LoadTexture(std::string ImagePath)
 {
-    if(!ImagePath.empty())
+    if (!ImagePath.empty())
     {
         texture.loadFromFile(ImagePath);
     }
@@ -46,10 +46,10 @@ void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(sprite, states);
 }
 
-//TileEntity::~TileEntity()
-//{
-////    std::cout << "Dcor??" << std::endl;
-//}
+TileEntity::~TileEntity()
+{
+//    std::cout << "Dcor??" << std::endl;
+}
 void TileEntity::SetPosition(float x, float y)
 {
     setPosition(x, y);
@@ -62,7 +62,7 @@ std::string TileEntity::GetImagePath() const
 
 TileEntity &TileEntity::operator=(TileEntity const &me)
 {
-    if(this != &me)
+    if (this != &me)
     {
         this->ImagePath = me.GetImagePath();
         this->Name = me.Name;
@@ -70,4 +70,12 @@ TileEntity &TileEntity::operator=(TileEntity const &me)
         LoadTexture(ImagePath);
     }
     return *this;
+}
+void TileEntity::setIndex(int index)
+{
+    this->index = index;
+}
+int TileEntity::getIndex()
+{
+    return index;
 }
