@@ -24,6 +24,13 @@ obj.LoadFromFile("filename.format", objectContainer);
 ```
 <br>
 
+# TileEntity
+### Pattern: none
+
+Basic unit for render.
+
+<br>
+
 # MapEditor
 ### Pattern: Singleton
 
