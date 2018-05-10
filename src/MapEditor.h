@@ -46,6 +46,7 @@ private:
     tgui::Label::Ptr infoObjCountLabel;
     tgui::Label::Ptr infoFPSLabel;
     tgui::Panel::Ptr infoPanel;
+    tgui::ListBox::Ptr ObjectListBox;
 
     bool showInfo;
     bool canScroled;

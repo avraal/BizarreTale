@@ -20,27 +20,40 @@ bool MapEditor::initWindow()
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
+    ObjectListBox = ::tgui::ListBox::create();
+    ObjectListBox->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
+    ObjectListBox->getRenderer()->setTextColor(sf::Color::White);
+    ObjectListBox->setSize(250, window.getSize().y);
+    ObjectListBox->setItemHeight(25);
+    ObjectListBox->setPosition(0, 0);
+
     scrollPanel = tgui::ScrollablePanel::create({"100%", "25%"});
     auto grid = tgui::Grid::create();
-    scrollPanel->setPosition(0, window.getSize().y - (window.getSize().y * 25 / 100));
-    grid->setPosition(20, 20);
-    scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 225));
+    scrollPanel->setPosition(ObjectListBox->getSize().x, window.getSize().y - (window.getSize().y * 25 / 100));
 
+    scrollPanel->setSize(window.getSize().x - ObjectListBox->getSize().x, 250);
+    grid->setPosition(20, 20);
+
+    scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 225));
+    auto imgInRow = scrollPanel->getSize().x / 64 - (PathToImages.size() * 0.25);
+    std::cout << imgInRow << std::endl;
     uint x = 0, y = 0;
     for (auto i : PathToImages)
     {
         auto pic = tgui::Picture::create(i);
         pic->connect(pic->onClick.getName(), &MapEditor::SelectImage, this, i);
-        if (y == 14)
+        if (y == ceil(imgInRow))
         {
             x++;
             y = 0;
         }
         y++;
-        grid->addWidget(pic, x, y, {10, 10, 10, 10});
+        grid->addWidget(pic, x, y ,{5, 5, 5, 5});
     }
 
+
     scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+    scrollPanel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
     scrollPanel->add(grid);
 
     infoPanel = tgui::Panel::create({200, "10%"});
@@ -60,6 +73,7 @@ bool MapEditor::initWindow()
 
     gui.add(infoPanel);
     gui.add(scrollPanel);
+    gui.add(ObjectListBox);
 
     scrollPanel->connect(scrollPanel->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
     scrollPanel->connect(scrollPanel->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
@@ -218,17 +232,19 @@ void MapEditor::MouseCallbacks(sf::Event event)
                         case EditorMode::ADD:
                         {
                             int count = 0;
-                            for(auto o : ObjList)
+                            for (auto o : ObjList)
                             {
-                                if(o->getPosition() == t->getPosition())
+                                if (o->getPosition() == t->getPosition())
                                 {
                                     count++;
                                 }
                             }
                             ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
-                                    new TileEntity(std::string("Obj" + std::to_string(count)) , CurrentPathFile, {t->getPosition().x, t->getPosition().y}))));
+                                    new TileEntity(std::string("Obj" + std::to_string(ObjList.size())), CurrentPathFile,
+                                                   {t->getPosition().x, t->getPosition().y}))));
 
                             ObjList.back()->setIndex(count);
+                            ObjectListBox->addItem(ObjList.back()->Name);
                             break;
                         }
                         case EditorMode::EDIT:
@@ -241,7 +257,8 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                     if (t->getPosition() == o->getPosition())
                                     {
                                         std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
-                                                  << " object" << " (index: " << o->getIndex() << ") Name: " << o->Name << std::endl;
+                                                  << " object" << " (index: " << o->getIndex() << ") Name: " << o->Name
+                                                  << std::endl;
 
                                     }
                                 }
