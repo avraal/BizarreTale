@@ -14,6 +14,9 @@
 #include <list>
 #include "TileEntity.h"
 #include "LuaScripts.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 class MapIO
 {
