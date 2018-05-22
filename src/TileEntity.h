@@ -31,19 +31,21 @@ protected:
 
 public:
     TileEntity();
-    TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position = {.0f, .0f});
+    TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position = {.0f, .0f}, int index = 0);
     TileEntity(const TileEntity &entity);
     TileEntity(const TileEntity &&entity);
     TileEntity &operator=(sf::Drawable const &) = delete;
     TileEntity &operator=(TileEntity const &me);
 
-
     virtual ~TileEntity();
     void LoadTexture(std::string ImagePath);
     void SetPosition(float x, float y);
     void setIndex(int index);
+    virtual void setSize(sf::Vector2f s) override;
     std::string GetImagePath() const;
-    int getIndex();
+    int getIndex() const;
+
+    sf::Vector2f getSize() const;
 
     std::string Name;
 };

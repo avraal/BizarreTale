@@ -24,25 +24,30 @@ void TileEntity::LoadTexture(std::string ImagePath)
     sprite.setTexture(texture);
 }
 
-TileEntity::TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position)
+TileEntity::TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position, int index) : PrimitiveQuad()
 {
     std::cout << "Ctor" << std::endl;
     this->ImagePath = ImagePath;
     this->Name = Name;
     LoadTexture(ImagePath);
+    setIndex(index);
     SetPosition(position.x, position.y);
 }
 
-TileEntity::TileEntity(const TileEntity &entity) : TileEntity(entity.Name, entity.GetImagePath(), entity.getPosition())
+TileEntity::TileEntity(const TileEntity &entity) : TileEntity(entity.Name, entity.GetImagePath(), entity.getPosition(),
+                                                              entity.getIndex())
 {
+    std::cout << "Copy ctor" << std::endl;
 }
 
 TileEntity::TileEntity(const TileEntity &&entity) : TileEntity(entity)
 {
+    std::cout << "Move ctor" << std::endl;
 }
 
 void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+//    states.texture = &texture;
     target.draw(sprite, states);
 }
 
@@ -75,7 +80,15 @@ void TileEntity::setIndex(int index)
 {
     this->index = index;
 }
-int TileEntity::getIndex()
+int TileEntity::getIndex() const
 {
     return index;
+}
+void TileEntity::setSize(sf::Vector2f s)
+{
+    sprite.setScale(s.x / sprite.getLocalBounds().width, s.y / sprite.getLocalBounds().height);
+}
+sf::Vector2f TileEntity::getSize() const
+{
+    return sprite.getScale();
 }
