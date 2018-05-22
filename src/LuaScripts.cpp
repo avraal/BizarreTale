@@ -100,6 +100,9 @@ void LuaScripts::SaveToFile(const char *fileName, std::list<std::shared_ptr<Tile
         Push<char *>("y");
         Push<double>(o->getPosition().y);
         lua_settable(lua_state, -3);
+        Push<char*>("Index");
+        Push<int >(o->getIndex());
+        lua_settable(lua_state, -3);
         lua_settable(lua_state, -3);
         pos++;
     }
@@ -121,16 +124,16 @@ void LuaScripts::LoadFromFile(const char *fileName, std::list<std::shared_ptr<Ti
         lua_getfield(lua_state, 1, std::to_string(i).c_str());
         lua_getfield(lua_state, -1, "imagePath");
         std::string imagePath = lua_tostring(lua_state, -1);
-        //        std::cout << "Path: " << lua_tostring(lua_state, -1) << std::endl;
         lua_getfield(lua_state, -2, "name");
-        //        std::cout << "Name: " << lua_tostring(lua_state, -1) << std::endl;
+        std::string name = lua_tostring(lua_state, -1);
+        std::cout << "Name: " << name << std::endl;
         lua_getfield(lua_state, -3, "x");
         float x = lua_tonumber(lua_state, -1);
-        //        std::cout << "X: " << lua_tonumber(lua_state, -1) << std::endl;
         lua_getfield(lua_state, -4, "y");
         float y = lua_tonumber(lua_state, -1);
-        //        std::cout << "Y: " << lua_tonumber(lua_state, -1) << std::endl;
-        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(imagePath, {x, y}))));
+        lua_getfield(lua_state, -5, "Index");
+        int index = lua_tonumber(lua_state, -1);
+        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(name, imagePath, {x, y}, index))));
     }
 
     lua_pop(lua_state, 1);
