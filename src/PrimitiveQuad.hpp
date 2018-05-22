@@ -22,11 +22,15 @@ class PrimitiveQuad : public sf::Drawable, public sf::Transformable
 {
 public:
     PrimitiveQuad();
-    virtual sf::Vector2u getSize() const;
+    virtual ~PrimitiveQuad();
+    sf::Vector2u getSize() const;
+    virtual void setSize(sf::Vector2f s);
+    bool getChanged();
 protected:
     sf::VertexArray body;
     sf::Texture texture;
     sf::Image image;
+    mutable bool hasChanged;
 protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };
