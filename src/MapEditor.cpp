@@ -16,7 +16,7 @@ bool MapEditor::initWindow()
     MainCamera = window.getView();
     MainCamera.setCenter(300, 320);
     findAllFiles(PathToImages, ImagesFormats);
-    drawTileMap();
+    drawTileMap(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT);
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
@@ -48,9 +48,8 @@ bool MapEditor::initWindow()
             y = 0;
         }
         y++;
-        grid->addWidget(pic, x, y ,{5, 5, 5, 5});
+        grid->addWidget(pic, x, y, {5, 5, 5, 5});
     }
-
 
     scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
     scrollPanel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
@@ -80,6 +79,7 @@ bool MapEditor::initWindow()
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
+
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -160,8 +160,9 @@ void MapEditor::SelectImage(std::string imagePath)
     CurrentMode = EditorMode::ADD;
     std::cout << "Prepare to add object" << std::endl;
 }
-void MapEditor::drawTileMap()
+void MapEditor::drawTileMap(float size_x, float size_y)
 {
+    TileMap.clear();
     int height = 10;
     int width = 10;
     std::vector<std::string> Tiles;
@@ -178,7 +179,7 @@ void MapEditor::drawTileMap()
     uint x = 0, y = 0;
     for (auto t : TileMap)
     {
-        t->setPosition(x * (TILE_SIZE_DEFAULT + 1), y * (TILE_SIZE_DEFAULT + 1));
+        t->setPosition(x * (size_x + 1), y * (size_y + 1));
 
         x++;
         if (x == width)
@@ -241,9 +242,9 @@ void MapEditor::MouseCallbacks(sf::Event event)
                             }
                             ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
                                     new TileEntity(std::string("Obj" + std::to_string(ObjList.size())), CurrentPathFile,
-                                                   {t->getPosition().x, t->getPosition().y}))));
+                                                   {t->getPosition().x, t->getPosition().y}, count))));
 
-                            ObjList.back()->setIndex(count);
+//                            ObjList.back()->setIndex(count);
                             ObjectListBox->addItem(ObjList.back()->Name);
                             break;
                         }
@@ -333,6 +334,19 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 thr.join();
                 break;
             }
+            case sf::Keyboard::R:
+            {
+                drawTileMap(128, 128);
+                for(auto t : TileMap)
+                {
+                    t->setSize({128, 128});
+                }
+                for(auto o : ObjList)
+                {
+                    o->setSize({128, 128});
+                }
+                break;
+            }
         }
     }
 }
@@ -342,9 +356,18 @@ void MapEditor::ChangeScrollablePanelStatus(bool val)
 }
 void MapEditor::LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj)
 {
+    b_mutex.lock();
     mio.LoadFromFile(fileName, obj);
+    b_mutex.unlock();
+    ObjectListBox->removeAllItems();
+    for(auto o : obj)
+    {
+        ObjectListBox->addItem(o->Name);
+    }
 }
 void MapEditor::SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj)
 {
+    b_mutex.lock();
     mio.SaveToFile(fileName, obj);
+    b_mutex.unlock();
 }

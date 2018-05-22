@@ -14,6 +14,7 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <dirent.h>
 #include <string>
+#include <mutex>
 #include "TileEntity.h"
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
@@ -33,7 +34,9 @@ private:
         canScroled = true;
         CurrentMode = EditorMode::EDIT;
     }
-    ~MapEditor() {}
+    ~MapEditor()
+    {
+    }
     std::list<std::shared_ptr<TileEntity>> ObjList;
     std::list<std::shared_ptr<PrimitiveQuad>> TileMap;
     std::vector<std::string> PathToImages;
@@ -58,7 +61,9 @@ private:
 
     EditorMode CurrentMode;
 
-    void drawTileMap();
+    std::mutex b_mutex;
+
+    void drawTileMap(float size_x, float size_y);
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void SelectImage(std::string imagePath);
     void MouseCallbacks(sf::Event event);
