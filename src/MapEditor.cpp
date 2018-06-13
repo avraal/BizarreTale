@@ -80,8 +80,6 @@ bool MapEditor::initWindow()
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
 
-
-
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -186,8 +184,8 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     {
         TileMap.push_back(std::move(std::shared_ptr<PrimitiveQuad>(new PrimitiveQuad)));
     }
-    //set position
 
+    //set position
     uint x = 0, y = 0;
     for (auto t : TileMap)
     {
@@ -201,12 +199,26 @@ void MapEditor::drawTileMap(float size_x, float size_y)
         }
     }
 
-    sf::Vertex line[] =
-            {
-                    sf::Vertex({TileMap.front()->getPosition().x, TileMap.front()->getPosition().y}),
-                    sf::Vertex({TileMap.back()->getPosition().x + TILE_SIZE_DEFAULT, TileMap.front()->getPosition().y})
-            };
-    LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
+    //draw horizontal lines
+    for(uint i = 1; i < y; i++)
+    {
+        sf::Vertex line[] =
+                {
+                    sf::Vertex({TileMap[i * width]->getPosition().x, TileMap[i * width]->getPosition().y}, sf::Color(42, 76, 61)),
+                    sf::Vertex({TileMap[width-1]->getPosition().x + TILE_SIZE_DEFAULT, TileMap[i * width]->getPosition().y}, sf::Color(42, 76, 61))
+                };
+        LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
+    }
+    //draw vertical lines
+    for(uint i = 1; i < width; i++)
+    {
+        sf::Vertex line[] =
+                {
+                        sf::Vertex({TileMap[i]->getPosition().x, TileMap[i]->getPosition().y}, sf::Color(42, 76, 61)),
+                        sf::Vertex({TileMap[i]->getPosition().x, TileMap[width * height - 1]->getPosition().y + TILE_SIZE_DEFAULT}, sf::Color(42, 76, 61))
+                };
+        LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
+    }
 
 }
 void MapEditor::MouseCallbacks(sf::Event event)
@@ -374,7 +386,7 @@ void MapEditor::ChangeScrollablePanelStatus(bool val)
 {
     canScroled = val;
 }
-void MapEditor::LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj)
+void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj)
 {
     b_mutex.lock();
     mio.LoadFromFile(fileName, obj);
@@ -385,7 +397,7 @@ void MapEditor::LoadFromFile(std::string fileName, std::list<std::shared_ptr<Til
         ObjectListBox->addItem(o->Name);
     }
 }
-void MapEditor::SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj)
+void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj)
 {
     b_mutex.lock();
     mio.SaveToFile(fileName, obj);

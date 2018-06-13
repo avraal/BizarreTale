@@ -37,8 +37,8 @@ private:
     ~MapEditor()
     {
     }
-    std::list<std::shared_ptr<TileEntity>> ObjList;
-    std::list<std::shared_ptr<PrimitiveQuad>> TileMap;
+    std::vector<std::shared_ptr<TileEntity>> ObjList;
+    std::vector<std::shared_ptr<PrimitiveQuad>> TileMap;
     //Why list?
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
@@ -87,7 +87,7 @@ public:
     std::string ImageDirectory;
     std::string LuaDirectory;
 
-    void SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj);
-    void LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj);
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
+    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
 };
 #endif //BIZARRETALE_MAPEDITOR_H
