@@ -80,6 +80,8 @@ bool MapEditor::initWindow()
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
 
+
+
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -113,6 +115,16 @@ bool MapEditor::initWindow()
         for (auto o : ObjList)
         {
             window.draw(*o);
+        }
+
+        for(auto g : LineGrid)
+        {
+            sf::Vertex line[] =
+                    {
+                        g.first,
+                        g.second
+                    };
+            window.draw(line, 2, sf::Lines);
         }
 
         infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
@@ -179,7 +191,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     uint x = 0, y = 0;
     for (auto t : TileMap)
     {
-        t->setPosition(x * (size_x + 1), y * (size_y + 1));
+        t->setPosition(x * size_x, y * size_y);
 
         x++;
         if (x == width)
@@ -188,6 +200,14 @@ void MapEditor::drawTileMap(float size_x, float size_y)
             x = 0;
         }
     }
+
+    sf::Vertex line[] =
+            {
+                    sf::Vertex({TileMap.front()->getPosition().x, TileMap.front()->getPosition().y}),
+                    sf::Vertex({TileMap.back()->getPosition().x + TILE_SIZE_DEFAULT, TileMap.front()->getPosition().y})
+            };
+    LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
+
 }
 void MapEditor::MouseCallbacks(sf::Event event)
 {

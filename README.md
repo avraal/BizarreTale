@@ -49,16 +49,12 @@ Simple editor for game maps
 
 Has a public fields:
 - [ImageDirectory]
-- [LuaDirectory]
 - [initWindow]
 - [LoadFromFile]
 - [SaveToFile]
 
 #### ImageDirectory
 Identify of directory, where find images
-
-#### LuaDirectory
-Identify of directory, where find lua scripts
 
 Init directories:
 ```c++
@@ -112,66 +108,7 @@ Method `start` has a default argument, which determine: print info in console or
 
 <br>
 
-# LuaScripts
-### Status: Unused
-### Pattern: none
-### Parent: none
-
-Use for set contact with Lua scripts. For use, needed add LuaScripts object in class
-
-Start:
-```c++
-script.Create();
-script.DoFile("PathToLuaScript.lua");
-```
-
-If you want to call lua function, you needed a register her
-```c++
-script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&YouClass::YouHandler), "YouFunction");
-```
-
-Method `RegisterConstant` - is a specialized template. For example:
-```c++
-template<>
-void LuaScripts::RegisterConstant<lua_CFunction>(lua_CFunction value, char *constName)
-{
-    lua_pushcfunction(lua_state, value);
-    lua_setglobal(lua_state, constName);
-}
-```
-Except him, this class have another one specialized template - method `Push`. For example:
-```c++
-template<>
-void LuaScripts::Push<int>(int value)
-{
-    lua_pushinteger(lua_state, value);
-}
-```
-Except **int**, he have a templates for next types:
-- char*
-- const char*
-- bool
-- double
-
-Where `YouHandler` - is a c++ method this like style
-```c++
-int YouClass::YouHandler(lua_State*)
-{
-  //...
-  return 0;
-}
-```
-> After this you might use your dirty methods
-
-Now LuaScripts have 3 methods related to work with files:
-* `SaveToFile` - send objects to lua script and serialize their to lua table
-* `LoadFromFile` - find lua table in file and return her
-* `getTableSize` - finds lua table in file and returns her size
-
-Call `Close` method in destructor your class
-
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
 [initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
-[LuaDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#luadirectory>
 [LoadFromFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#loadfromfile>
 [SaveToFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#savetofile>

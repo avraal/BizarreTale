@@ -67,16 +67,4 @@ void MapIO::LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEnt
         obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(name, imagePath, {posX, posY}, index))));
         obj.back()->setSize({sizeX, sizeY});
     }
-
-//    script.LoadFromFile(fileName.c_str(), obj);
-}
-int MapIO::LuaSaveToFile(lua_State *)
-{
-    std::cout << "Writing..." << std::endl;
-    return 0;
-}
-int MapIO::LuaLoadFromFile(lua_State *)
-{
-    std::cout << "Reading..." << std::endl;
-    return 0;
 }

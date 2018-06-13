@@ -44,7 +44,6 @@ void ClassAnalyzer::start(bool showDebug)
             std::cout << "MapEditor: "          << d._editor << std::endl;
             std::cout << "MapIO:"               << d._map << std::endl;
             std::cout << "ClassAnalyzer: "      << d._anal << std::endl;
-            std::cout << "LuaScripts: "         << d._lua << std::endl;
             std::cout << "PrimitiveQuad: "      << d._prq << std::endl;
             std::cout << "------------------"   << std::endl;
         }
@@ -55,7 +54,7 @@ void ClassAnalyzer::start(bool showDebug)
         auto s = readData[readData.size() - 2];
         if (f._editor == s._editor && f._entity == s._entity &&
             f._map    == s._map    && f._anal   == s._anal   &&
-            f._lua    == s._lua    && f._prq    == s._prq)
+            f._prq    == s._prq)
         {
             if (showDebug)
                 std::cout << "Remove element" << std::endl;
@@ -73,7 +72,6 @@ void ClassAnalyzer::start(bool showDebug)
             std::cout << "MapEditor: "          << d._editor << std::endl;
             std::cout << "MapIO:"               << d._map << std::endl;
             std::cout << "ClassAnalyzer: "      << d._anal << std::endl;
-            std::cout << "LuaScripts: "         << d._lua << std::endl;
             std::cout << "PrimitiveQuad: "      << d._prq << std::endl;
             std::cout << "------------------"   << std::endl;
         }

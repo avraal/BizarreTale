@@ -39,8 +39,11 @@ private:
     }
     std::list<std::shared_ptr<TileEntity>> ObjList;
     std::list<std::shared_ptr<PrimitiveQuad>> TileMap;
+    //Why list?
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
+//    std::multimap<sf::Vertex, sf::Vertex> LineGrid;
+    std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;
     std::string CurrentPathFile;
     sf::RenderWindow window;
     sf::View MainCamera;

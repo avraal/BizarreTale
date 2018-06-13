@@ -13,7 +13,6 @@
 #include <cstring>
 #include <list>
 #include "TileEntity.h"
-#include "LuaScripts.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -21,23 +20,14 @@ using json = nlohmann::json;
 class MapIO
 {
 private:
-    LuaScripts script;
 
     MapIO()
     {
-        script.Create();
-        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaSaveToFile),
-                                               "SaveMapEntityToFile");
-        script.RegisterConstant<lua_CFunction>(reinterpret_cast<lua_CFunction>(&MapIO::LuaLoadFromFile),
-                                               "LoadMapEntityFromFile");
-        script.DoFile("Res/Lua/EntityIO.lua");
     }
     ~MapIO()
     {
-        script.Close();
     }
-    int LuaSaveToFile(lua_State *);
-    int LuaLoadFromFile(lua_State *);
+
 public:
     MapIO(MapIO const &) = delete;
     MapIO &operator=(MapIO const &) = delete;
