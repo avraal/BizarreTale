@@ -8,7 +8,7 @@
 #include <thread>
 #include <deque>
 #include "MapIO.h"
-void MapIO::SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj)
+void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj)
 {
     std::cout << "Preparing to write..." << std::endl;
 
@@ -33,7 +33,7 @@ void MapIO::SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntit
 
 //    script.SaveToFile(fileName.c_str(), obj);
 }
-void MapIO::LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj)
+void MapIO::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj)
 {
     std::cout << "Preparing to read..." << std::endl;
     obj.clear();

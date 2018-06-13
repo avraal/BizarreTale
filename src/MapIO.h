@@ -37,8 +37,8 @@ public:
         return mio;
     }
 
-    void SaveToFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> obj);
-    void LoadFromFile(std::string fileName, std::list<std::shared_ptr<TileEntity>> &obj);
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
+    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
 };
 
 #endif //BIZARRETALE_MAPIO_H
