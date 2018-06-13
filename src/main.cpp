@@ -17,18 +17,14 @@ int main(int argc, char **argv)
     Editor.ImageDirectory.clear();
     Editor.ImageDirectory.append(argv[0]);
     Editor.ImageDirectory = Editor.ImageDirectory.substr(0, Editor.ImageDirectory.size() - 11);
-    Editor.LuaDirectory = Editor.ImageDirectory;
     Editor.ImageDirectory.append("Res/Images/");
-    Editor.LuaDirectory.append("Res/Lua/");
 
     std::cout << Editor.ImageDirectory << std::endl;
-    std::cout << Editor.LuaDirectory << std::endl;
 
     Editor.initWindow();
 
     ClassAnalyzer &ca = ClassAnalyzer::Instance();
     ca.start();
-
 
     return 0;
 }

@@ -21,17 +21,24 @@ bool MapEditor::initWindow()
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
     ObjectListBox = ::tgui::ListBox::create();
+    scrollPanel = tgui::ScrollablePanel::create({"100%", "25%"});
+    objectProperties = tgui::Panel::create();
+
+    scrollPanel->setPosition(0, window.getSize().y - 200);
+    scrollPanel->setSize(window.getSize().x, 200);
+
+    ObjectListBox->setPosition(0, 0);
+    ObjectListBox->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    ObjectListBox->setItemHeight(25);
     ObjectListBox->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
     ObjectListBox->getRenderer()->setTextColor(sf::Color::White);
-    ObjectListBox->setSize(250, window.getSize().y);
-    ObjectListBox->setItemHeight(25);
-    ObjectListBox->setPosition(0, 0);
 
-    scrollPanel = tgui::ScrollablePanel::create({"100%", "25%"});
+    objectProperties->setPosition(window.getSize().x - 200, 0);
+    objectProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    objectProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
+
     auto grid = tgui::Grid::create();
-    scrollPanel->setPosition(ObjectListBox->getSize().x, window.getSize().y - (window.getSize().y * 25 / 100));
 
-    scrollPanel->setSize(window.getSize().x - ObjectListBox->getSize().x, 250);
     grid->setPosition(20, 20);
 
     scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 225));
@@ -56,7 +63,7 @@ bool MapEditor::initWindow()
     scrollPanel->add(grid);
 
     infoPanel = tgui::Panel::create({200, "10%"});
-    infoPanel->setPosition(window.getSize().x - infoPanel->getSize().x, 0);
+    infoPanel->setPosition(objectProperties->getPosition().x - infoPanel->getSize().x, 0);
     infoPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
 
     infoObjCountLabel = tgui::Label::create();
@@ -73,6 +80,7 @@ bool MapEditor::initWindow()
     gui.add(infoPanel);
     gui.add(scrollPanel);
     gui.add(ObjectListBox);
+    gui.add(objectProperties);
 
     scrollPanel->connect(scrollPanel->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
     scrollPanel->connect(scrollPanel->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
@@ -115,12 +123,12 @@ bool MapEditor::initWindow()
             window.draw(*o);
         }
 
-        for(auto g : LineGrid)
+        for (auto g : LineGrid)
         {
             sf::Vertex line[] =
                     {
-                        g.first,
-                        g.second
+                            g.first,
+                            g.second
                     };
             window.draw(line, 2, sf::Lines);
         }
@@ -174,7 +182,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
 {
     TileMap.clear();
     int height = 10;
-    int width = 10;
+    int width = 15;
     std::vector<std::string> Tiles;
     std::vector<std::string> Formats;
     Formats.push_back(".png");
@@ -200,22 +208,26 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     }
 
     //draw horizontal lines
-    for(uint i = 1; i < y; i++)
+    for (uint i = 1; i < y; i++)
     {
         sf::Vertex line[] =
                 {
-                    sf::Vertex({TileMap[i * width]->getPosition().x, TileMap[i * width]->getPosition().y}, sf::Color(42, 76, 61)),
-                    sf::Vertex({TileMap[width-1]->getPosition().x + TILE_SIZE_DEFAULT, TileMap[i * width]->getPosition().y}, sf::Color(42, 76, 61))
+                        sf::Vertex({TileMap[i * width]->getPosition().x, TileMap[i * width]->getPosition().y},
+                                   sf::Color(42, 76, 61)),
+                        sf::Vertex({TileMap[width - 1]->getPosition().x + TILE_SIZE_DEFAULT,
+                                    TileMap[i * width]->getPosition().y}, sf::Color(42, 76, 61))
                 };
         LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
     //draw vertical lines
-    for(uint i = 1; i < width; i++)
+    for (uint i = 1; i < width; i++)
     {
         sf::Vertex line[] =
                 {
                         sf::Vertex({TileMap[i]->getPosition().x, TileMap[i]->getPosition().y}, sf::Color(42, 76, 61)),
-                        sf::Vertex({TileMap[i]->getPosition().x, TileMap[width * height - 1]->getPosition().y + TILE_SIZE_DEFAULT}, sf::Color(42, 76, 61))
+                        sf::Vertex({TileMap[i]->getPosition().x,
+                                    TileMap[width * height - 1]->getPosition().y + TILE_SIZE_DEFAULT},
+                                   sf::Color(42, 76, 61))
                 };
         LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
@@ -276,7 +288,6 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                     new TileEntity(std::string("Obj" + std::to_string(ObjList.size())), CurrentPathFile,
                                                    {t->getPosition().x, t->getPosition().y}, count))));
 
-//                            ObjList.back()->setIndex(count);
                             ObjectListBox->addItem(ObjList.back()->Name);
                             break;
                         }
@@ -369,11 +380,11 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::R:
             {
                 drawTileMap(128, 128);
-                for(auto t : TileMap)
+                for (auto t : TileMap)
                 {
                     t->setSize({128, 128});
                 }
-                for(auto o : ObjList)
+                for (auto o : ObjList)
                 {
                     o->setSize({128, 128});
                 }
@@ -392,7 +403,7 @@ void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<T
     mio.LoadFromFile(fileName, obj);
     b_mutex.unlock();
     ObjectListBox->removeAllItems();
-    for(auto o : obj)
+    for (auto o : obj)
     {
         ObjectListBox->addItem(o->Name);
     }

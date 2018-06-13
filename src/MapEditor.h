@@ -39,10 +39,8 @@ private:
     }
     std::vector<std::shared_ptr<TileEntity>> ObjList;
     std::vector<std::shared_ptr<PrimitiveQuad>> TileMap;
-    //Why list?
     std::vector<std::string> PathToImages;
     std::vector<std::string> ImagesFormats;
-//    std::multimap<sf::Vertex, sf::Vertex> LineGrid;
     std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;
     std::string CurrentPathFile;
     sf::RenderWindow window;
@@ -52,6 +50,7 @@ private:
     tgui::Label::Ptr infoObjCountLabel;
     tgui::Label::Ptr infoFPSLabel;
     tgui::Panel::Ptr infoPanel;
+    tgui::Panel::Ptr objectProperties;
     tgui::ListBox::Ptr ObjectListBox;
 
     bool showInfo;
@@ -85,7 +84,6 @@ public:
 
     bool initWindow();
     std::string ImageDirectory;
-    std::string LuaDirectory;
 
     void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
     void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
