@@ -49,7 +49,7 @@ public:
 
     int getIndex() const;
 
-    sf::Vector2f getSize() const;
+    sf::Vector2f getSpriteScale() const;
 };
 
 #endif //BIZARRETALE_MAPENTITY_H

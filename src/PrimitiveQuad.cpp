@@ -24,7 +24,7 @@ void PrimitiveQuad::draw(sf::RenderTarget &target, sf::RenderStates states) cons
     target.draw(body, states);
     hasChanged = false;
 }
-sf::Vector2u PrimitiveQuad::getSize() const
+sf::Vector2u PrimitiveQuad::getTextureSize() const
 {
     return texture.getSize();
 }

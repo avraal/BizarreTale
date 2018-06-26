@@ -88,7 +88,7 @@ void TileEntity::setSize(sf::Vector2f s)
 {
     sprite.setScale(s.x / sprite.getLocalBounds().width, s.y / sprite.getLocalBounds().height);
 }
-sf::Vector2f TileEntity::getSize() const
+sf::Vector2f TileEntity::getSpriteScale() const
 {
     return sprite.getScale();
 }

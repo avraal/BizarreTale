@@ -17,7 +17,7 @@ void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEnt
     for(auto o : obj)
     {
         j[o->GetName()] = {{"index", o->getIndex()}, {"position", {o->getPosition().x, o->getPosition().y}},
-                      {"size", {o->getSize().x*TILE_SIZE_DEFAULT, o->getSize().y*TILE_SIZE_DEFAULT}}, {"image", o->GetImagePath()}};
+                      {"size", {o->getSpriteScale().x*TILE_SIZE_DEFAULT, o->getSpriteScale().y*TILE_SIZE_DEFAULT}}, {"image", o->GetImagePath()}};
     }
 
     std::string result = j.dump();

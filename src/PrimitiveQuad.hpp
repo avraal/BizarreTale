@@ -22,8 +22,8 @@ class PrimitiveQuad : public sf::Drawable, public sf::Transformable
 {
 public:
     PrimitiveQuad();
+    sf::Vector2u getTextureSize() const;
     virtual ~PrimitiveQuad();
-    sf::Vector2u getSize() const;
     virtual void setSize(sf::Vector2f s);
     bool getChanged();
 protected:
