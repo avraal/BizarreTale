@@ -31,12 +31,13 @@ private:
 public:
     void start(bool showDebug = false);
     ClassAnalyzer (ClassAnalyzer const&) = delete;
-    ClassAnalyzer (ClassAnalyzer const &&) = delete;
+    ClassAnalyzer (ClassAnalyzer&&) = delete;
     ClassAnalyzer &operator=(ClassAnalyzer const&) = delete;
+    ClassAnalyzer &operator=(ClassAnalyzer&&) = delete;
     static ClassAnalyzer &Instance()
     {
-        static ClassAnalyzer ca;
-        return ca;
+        static ClassAnalyzer *ca = new ClassAnalyzer();
+        return *ca;
     }
 };
 
