@@ -12,11 +12,12 @@
 #include <fstream>
 #include "MapEditor.h"
 
-class ClassAnalyzer
+class ClassAnalyzer : public Singleton<ClassAnalyzer>
 {
 private:
+    friend class Singleton<ClassAnalyzer>;
     ClassAnalyzer() {}
-    ~ClassAnalyzer() {}
+    virtual ~ClassAnalyzer() {}
 
     struct ClassData
     {
@@ -30,15 +31,6 @@ private:
 
 public:
     void start(bool showDebug = false);
-    ClassAnalyzer (ClassAnalyzer const&) = delete;
-    ClassAnalyzer (ClassAnalyzer&&) = delete;
-    ClassAnalyzer &operator=(ClassAnalyzer const&) = delete;
-    ClassAnalyzer &operator=(ClassAnalyzer&&) = delete;
-    static ClassAnalyzer &Instance()
-    {
-        static ClassAnalyzer *ca = new ClassAnalyzer();
-        return *ca;
-    }
 };
 
 #endif //BIZARRETALE_CLASSANALIZER_H

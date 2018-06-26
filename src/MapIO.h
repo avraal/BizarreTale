@@ -14,30 +14,22 @@
 #include <list>
 #include "TileEntity.h"
 #include "json.hpp"
+#include "Singleton.hpp"
 
 using json = nlohmann::json;
 
-class MapIO
+class MapIO : public Singleton<MapIO>
 {
 private:
-
+    friend class Singleton<MapIO>;
     MapIO()
     {
     }
-    ~MapIO()
+    virtual ~MapIO()
     {
     }
 
 public:
-    MapIO(MapIO const &) = delete;
-    MapIO(MapIO&&) = delete;
-    MapIO &operator=(MapIO const &) = delete;
-    MapIO &operator=(MapIO&&) = delete;
-    static MapIO &Instance()
-    {
-        static MapIO *mio = new MapIO();
-        return *mio;
-    }
 
     void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
     void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);

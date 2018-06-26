@@ -19,10 +19,12 @@
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
 #include "PrimitiveQuad.hpp"
+#include "Singleton.hpp"
 
-class MapEditor
+class MapEditor : public Singleton<MapEditor>
 {
 private:
+    friend class Singleton<MapEditor>;
     MapEditor()
     {
         ImageDirectory = "";
@@ -35,7 +37,7 @@ private:
         CurrentMode = EditorMode::EDIT;
         SelectedEntity = nullptr;
     }
-    ~MapEditor()
+    virtual ~MapEditor()
     {
     }
     std::vector<std::shared_ptr<TileEntity>> ObjList;
@@ -93,21 +95,10 @@ private:
 
     std::shared_ptr<TileEntity> &findEntityByName(std::string ObjName);
 public:
-    MapEditor(MapEditor const&) = delete;
-    MapEditor(MapEditor&&) = delete;
-    MapEditor &operator=(MapEditor const&) = delete;
-    MapEditor &operator=(MapEditor&&) = delete;
-
-    static MapEditor& Instance()
-    {
-        static MapEditor *e = new MapEditor();
-        return *e;
-    }
     bool initWindow();
 
     std::string ImageDirectory;
     void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
-
     void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
 };
 #endif //BIZARRETALE_MAPEDITOR_H
