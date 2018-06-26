@@ -32,10 +32,79 @@ bool MapEditor::initWindow()
     ObjectListBox->setItemHeight(25);
     ObjectListBox->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
     ObjectListBox->getRenderer()->setTextColor(sf::Color::White);
+    ObjectListBox->connect(ObjectListBox->onItemSelect.getName(), &MapEditor::addInfoToPropertiesPanel, this,
+                           ObjectListBox->getSelectedItem().toAnsiString());
+    //------------------------------------------------------------------------------------------------------------------
+    scrollProperties = tgui::ScrollablePanel::create();
+    scrollProperties->setPosition(window.getSize().x - 250, 0);
+    scrollProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    scrollProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
 
-    objectProperties->setPosition(window.getSize().x - 200, 0);
-    objectProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    scrollProperties->add(objectProperties);
+
+    objectProperties->setPosition(0, 0);
+    //    objectProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    //    objectProperties->setSize(scrollProperties->getSize());
     objectProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
+    objectProperties->getRenderer()->setPadding({5, 5});
+
+    objPropName = tgui::Label::create();
+    objPropName->getRenderer()->setTextColor(sf::Color::White);
+    objPropName->setTextSize(INFO_PANEL_TEXT_SIZE);
+    objPropName->setText("Object:");
+    objPropName->setPosition(0, 4);
+
+    objPropChangeNameBox = tgui::EditBox::create();
+    objPropChangeNameBox->setPosition(objPropName->getSize().x + 4, 0);
+    objPropChangeNameBox->setSize(objectProperties->getSize().x / 2, INFO_PANEL_TEXT_SIZE + 10);
+    objPropChangeNameBox->setTextSize(objPropName->getTextSize());
+    objPropChangeNameBox->getRenderer()->setTextColor(sf::Color(210, 210, 210));
+    objPropChangeNameBox->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 200));
+    objPropChangeNameBox->getRenderer()->setBackgroundColorDisabled(sf::Color(0, 0, 0, 225));
+    objPropChangeNameBox->getRenderer()->setBackgroundColorFocused(sf::Color(0, 0, 0, 200));
+    objPropChangeNameBox->getRenderer()->setBackgroundColorHover(sf::Color(0, 0, 0, 200));
+    objPropChangeNameBox->getRenderer()->setBorderColor(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->getRenderer()->setBorderColorDisabled(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->getRenderer()->setBorderColorFocused(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->getRenderer()->setBorderColorHover(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->connect(objPropChangeNameBox->onReturnKeyPress.getName(),
+                                  &MapEditor::UpdateObjectFromProperties, this);
+
+    objPositionLabel = tgui::Label::create();
+    objPositionLabel->getRenderer()->setTextColor(sf::Color::White);
+    objPositionLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
+    objPositionLabel->setText("Position");
+    objPositionLabel->setPosition(0, objPropName->getPosition().y + objPropName->getSize().y + 4);
+
+    objPositionLabelX = tgui::Label::copy(objPositionLabel);
+    objPositionLabelX->setText("x:");
+    objPositionLabelX->setPosition(0, objPositionLabel->getPosition().y + objPositionLabel->getSize().y + 4);
+
+    objPositionX = tgui::EditBox::copy(objPropChangeNameBox);
+    objPositionX->setPosition(objPositionLabelX->getSize().x + 4, objPositionLabelX->getPosition().y);
+
+    objPositionLabelY = tgui::Label::copy(objPositionLabel);
+    objPositionLabelY->setText("y:");
+    objPositionLabelY->setPosition(0, objPositionLabelX->getPosition().y + objPositionLabelX->getSize().y + 4);
+
+    objPositionY = tgui::EditBox::copy(objPropChangeNameBox);
+    objPositionY->setPosition(objPositionLabelY->getSize().x + 4, objPositionLabelY->getPosition().y);
+
+    objectProperties->add(objPropName);
+    objectProperties->add(objPropChangeNameBox);
+    objectProperties->add(objPositionLabel);
+    objectProperties->add(objPositionLabelX);
+    objectProperties->add(objPositionLabelY);
+    objectProperties->add(objPositionX);
+    objectProperties->add(objPositionY);
+
+    objConfirmChanges = tgui::Button::create();
+    scrollProperties->add(objConfirmChanges);
+    objConfirmChanges->setPosition(4, scrollProperties->getSize().y - objConfirmChanges->getSize().y - 4);
+    objConfirmChanges->setText("Confirm");
+    objConfirmChanges->connect(objConfirmChanges->onClick.getName(), &MapEditor::UpdateObjectFromProperties, this);
+
+    //------------------------------------------------------------------------------------------------------------------
 
     auto grid = tgui::Grid::create();
 
@@ -80,10 +149,18 @@ bool MapEditor::initWindow()
     gui.add(infoPanel);
     gui.add(scrollPanel);
     gui.add(ObjectListBox);
-    gui.add(objectProperties);
+    gui.add(scrollProperties);
 
     scrollPanel->connect(scrollPanel->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
     scrollPanel->connect(scrollPanel->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
+
+    scrollProperties->connect(scrollProperties->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this,
+                              true);
+    scrollProperties->connect(scrollProperties->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this,
+                              false);
+
+    ObjectListBox->connect(ObjectListBox->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
+    ObjectListBox->connect(ObjectListBox->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
@@ -180,6 +257,7 @@ void MapEditor::SelectImage(std::string imagePath)
 }
 void MapEditor::drawTileMap(float size_x, float size_y)
 {
+    LineGrid.clear();
     TileMap.clear();
     int height = 10;
     int width = 15;
@@ -260,7 +338,9 @@ void MapEditor::MouseCallbacks(sf::Event event)
         }
 
         if (event.mouseButton.button == sf::Mouse::Left &&
-            !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+            !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
+            !scrollProperties->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
+            !ObjectListBox->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
         {
             for (auto t : TileMap)
             {
@@ -288,12 +368,13 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                     new TileEntity(std::string("Obj" + std::to_string(ObjList.size())), CurrentPathFile,
                                                    {t->getPosition().x, t->getPosition().y}, count))));
 
-                            ObjectListBox->addItem(ObjList.back()->Name);
+                            ObjectListBox->addItem(ObjList.back()->GetName());
+                            ObjectListBox->setSelectedItem(ObjList.back()->GetName());
+                            addInfoToPropertiesPanel(ObjList.back()->GetName());
                             break;
                         }
                         case EditorMode::EDIT:
                         {
-
                             for (auto o : ObjList)
                             {
                                 if (o != nullptr)
@@ -301,9 +382,9 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                     if (t->getPosition() == o->getPosition())
                                     {
                                         std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
-                                                  << " object" << " (index: " << o->getIndex() << ") Name: " << o->Name
+                                                  << " object" << " (index: " << o->getIndex() << ") Name: " << o->GetName()
                                                   << std::endl;
-
+                                        addInfoToPropertiesPanel(o->GetName());
                                     }
                                 }
                             }
@@ -365,18 +446,18 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 infoPanel->setVisible(showInfo);
                 break;
             }
-            case sf::Keyboard::Space:
-            {
-                std::thread thr(&MapEditor::SaveToFile, this, "test.mio", ObjList);
-                thr.join();
-                break;
-            }
-            case sf::Keyboard::LControl:
-            {
-                std::thread thr(&MapEditor::LoadFromFile, this, "test.mio", std::ref(ObjList));
-                thr.join();
-                break;
-            }
+                //            case sf::Keyboard::Space:
+                //            {
+                //                std::thread thr(&MapEditor::SaveToFile, this, "test.mio", ObjList);
+                //                thr.join();
+                //                break;
+                //            }
+                //            case sf::Keyboard::LControl:
+                //            {
+                //                std::thread thr(&MapEditor::LoadFromFile, this, "test.mio", std::ref(ObjList));
+                //                thr.join();
+                //                break;
+                //            }
             case sf::Keyboard::R:
             {
                 drawTileMap(128, 128);
@@ -405,7 +486,7 @@ void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<T
     ObjectListBox->removeAllItems();
     for (auto o : obj)
     {
-        ObjectListBox->addItem(o->Name);
+        ObjectListBox->addItem(o->GetName());
     }
 }
 void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj)
@@ -413,4 +494,71 @@ void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<Til
     b_mutex.lock();
     mio.SaveToFile(fileName, obj);
     b_mutex.unlock();
+}
+void MapEditor::addInfoToPropertiesPanel(std::string ObjName)
+{
+    if (ObjectListBox->getSelectedItemIndex() < 0)
+    {
+        return;
+    }
+
+    std::cout << "Object: " << ObjName << std::endl;
+    SelectedEntity = findEntityByName(ObjectListBox->getSelectedItem().toAnsiString());
+    if (SelectedEntity == nullptr)
+    {
+        std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
+        return;
+    }
+    objPropChangeNameBox->setText(SelectedEntity->GetName());
+    objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
+    objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
+}
+std::shared_ptr<TileEntity> &MapEditor::findEntityByName(std::string ObjName)
+{
+    for (auto &o : ObjList)
+    {
+        if (o->GetName() == ObjName)
+        {
+            return o;
+        }
+    }
+}
+void MapEditor::UpdateObjectFromProperties()
+{
+    if (SelectedEntity == nullptr)
+    {
+        return;
+    }
+    SelectedEntity->setPosition(std::atof(objPositionX->getText().toAnsiString().c_str()),
+                                std::atof(objPositionY->getText().toAnsiString().c_str()));
+
+    SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
+    ObjectListBox->removeAllItems();
+
+    for(auto o : ObjList)
+    {
+        if(o == SelectedEntity)
+        {
+            break;
+        }
+
+        if(o->GetName() == SelectedEntity->GetName())
+        {
+            SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString() + "(1)");
+        } else
+        {
+            SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
+        }
+        objPropChangeNameBox->setText(SelectedEntity->GetName());
+
+        if(o->getPosition() == SelectedEntity->getPosition())
+        {
+            SelectedEntity->setIndex(SelectedEntity->getIndex() + 1);
+        }
+    }
+
+    for(auto o : ObjList)
+    {
+        ObjectListBox->addItem(o->GetName());
+    }
 }

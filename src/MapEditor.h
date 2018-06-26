@@ -33,6 +33,7 @@ private:
         showInfo = true;
         canScroled = true;
         CurrentMode = EditorMode::EDIT;
+        SelectedEntity = nullptr;
     }
     ~MapEditor()
     {
@@ -50,7 +51,20 @@ private:
     tgui::Label::Ptr infoObjCountLabel;
     tgui::Label::Ptr infoFPSLabel;
     tgui::Panel::Ptr infoPanel;
-    tgui::Panel::Ptr objectProperties;
+
+    //-------------------------------
+    tgui::Panel::Ptr                objectProperties;
+    tgui::Label::Ptr                objPropName;
+    tgui::EditBox::Ptr              objPropChangeNameBox;
+    tgui::Label::Ptr                objPositionLabel;
+    tgui::Label::Ptr                objPositionLabelX;
+    tgui::Label::Ptr                objPositionLabelY;
+    tgui::EditBox::Ptr              objPositionX;
+    tgui::EditBox::Ptr              objPositionY;
+    tgui::ScrollablePanel::Ptr      scrollProperties;
+    tgui::Button::Ptr               objConfirmChanges;
+    //-------------------------------
+
     tgui::ListBox::Ptr ObjectListBox;
 
     bool showInfo;
@@ -65,6 +79,8 @@ private:
 
     std::mutex b_mutex;
 
+    std::shared_ptr<TileEntity> SelectedEntity;
+
     void drawTileMap(float size_x, float size_y);
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void SelectImage(std::string imagePath);
@@ -72,20 +88,24 @@ private:
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
     void ChangeScrollablePanelStatus(bool val);
+    void addInfoToPropertiesPanel(std::string ObjName);
+    void UpdateObjectFromProperties();
 
+    std::shared_ptr<TileEntity> &findEntityByName(std::string ObjName);
 public:
     MapEditor(MapEditor const&) = delete;
     MapEditor &operator=(MapEditor const&) = delete;
+
     static MapEditor& Instance()
     {
         static MapEditor e;
         return e;
     }
-
     bool initWindow();
-    std::string ImageDirectory;
 
+    std::string ImageDirectory;
     void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
+
     void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
 };
 #endif //BIZARRETALE_MAPEDITOR_H
