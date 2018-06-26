@@ -88,7 +88,7 @@ private:
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
     void ChangeScrollablePanelStatus(bool val);
-    void addInfoToPropertiesPanel(std::string ObjName);
+    void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
 
     std::shared_ptr<TileEntity> &findEntityByName(std::string ObjName);

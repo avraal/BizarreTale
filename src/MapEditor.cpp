@@ -32,8 +32,7 @@ bool MapEditor::initWindow()
     ObjectListBox->setItemHeight(25);
     ObjectListBox->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
     ObjectListBox->getRenderer()->setTextColor(sf::Color::White);
-    ObjectListBox->connect(ObjectListBox->onItemSelect.getName(), &MapEditor::addInfoToPropertiesPanel, this,
-                           ObjectListBox->getSelectedItem().toAnsiString());
+    ObjectListBox->connect(ObjectListBox->onItemSelect.getName(), &MapEditor::addInfoToPropertiesPanel, this);
     //------------------------------------------------------------------------------------------------------------------
     scrollProperties = tgui::ScrollablePanel::create();
     scrollProperties->setPosition(window.getSize().x - 250, 0);
@@ -342,19 +341,21 @@ void MapEditor::MouseCallbacks(sf::Event event)
             !scrollProperties->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
             !ObjectListBox->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
         {
-            for (auto t : TileMap)
+
+            sf::Vector2f MouseGlobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
+            bool clickCondition;
+            switch (CurrentMode)
             {
-                sf::Vector2f MouseGlobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
-                bool clickCondition =
-                        MouseGlobalPosition.x > t->getPosition().x && MouseGlobalPosition.y > t->getPosition().y
-                        && MouseGlobalPosition.x < t->getPosition().x + t->getSize().x
-                        && MouseGlobalPosition.y < t->getPosition().y + t->getSize().y;
-                if (clickCondition)
+                case EditorMode::ADD:
                 {
-                    std::cout << "Current mode = " << CurrentMode << std::endl;
-                    switch (CurrentMode)
+                    for (auto t : TileMap)
                     {
-                        case EditorMode::ADD:
+                        clickCondition =
+                                MouseGlobalPosition.x > t->getPosition().x &&
+                                MouseGlobalPosition.y > t->getPosition().y
+                                && MouseGlobalPosition.x < t->getPosition().x + t->getTextureSize().x
+                                && MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
+                        if (clickCondition)
                         {
                             int count = 0;
                             for (auto o : ObjList)
@@ -367,30 +368,34 @@ void MapEditor::MouseCallbacks(sf::Event event)
                             ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
                                     new TileEntity(std::string("Obj" + std::to_string(ObjList.size())), CurrentPathFile,
                                                    {t->getPosition().x, t->getPosition().y}, count))));
-
-                            ObjectListBox->addItem(ObjList.back()->GetName());
-                            ObjectListBox->setSelectedItem(ObjList.back()->GetName());
-                            addInfoToPropertiesPanel(ObjList.back()->GetName());
-                            break;
-                        }
-                        case EditorMode::EDIT:
-                        {
-                            for (auto o : ObjList)
-                            {
-                                if (o != nullptr)
-                                {
-                                    if (t->getPosition() == o->getPosition())
-                                    {
-                                        std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
-                                                  << " object" << " (index: " << o->getIndex() << ") Name: " << o->GetName()
-                                                  << std::endl;
-                                        addInfoToPropertiesPanel(o->GetName());
-                                    }
-                                }
-                            }
-                            break;
+                            const std::string objName = ObjList.back()->GetName();
+                            ObjectListBox->addItem(objName);
+                            ObjectListBox->setSelectedItem(objName);
+                            addInfoToPropertiesPanel();
                         }
                     }
+                    break;
+                }
+                case EditorMode::EDIT:
+                {
+                    for (auto o : ObjList)
+                    {
+                        clickCondition =
+                                MouseGlobalPosition.x > o->getPosition().x &&
+                                MouseGlobalPosition.y > o->getPosition().y
+                                && MouseGlobalPosition.x < o->getPosition().x + o->getTextureSize().x
+                                && MouseGlobalPosition.y < o->getPosition().y + o->getTextureSize().y;
+                        if (clickCondition)
+                        {
+                            std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
+                                      << " object" << " (index: " << o->getIndex() << ") Name: " << o->GetName()
+                                      << std::endl;
+                            std::cout << "-----------" << std::endl;
+                            ObjectListBox->setSelectedItem(o->GetName());
+                            addInfoToPropertiesPanel();
+                        }
+                    }
+                    break;
                 }
             }
         }
@@ -495,14 +500,12 @@ void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<Til
     mio.SaveToFile(fileName, obj);
     b_mutex.unlock();
 }
-void MapEditor::addInfoToPropertiesPanel(std::string ObjName)
+void MapEditor::addInfoToPropertiesPanel()
 {
     if (ObjectListBox->getSelectedItemIndex() < 0)
     {
         return;
     }
-
-    std::cout << "Object: " << ObjName << std::endl;
     SelectedEntity = findEntityByName(ObjectListBox->getSelectedItem().toAnsiString());
     if (SelectedEntity == nullptr)
     {
@@ -535,14 +538,14 @@ void MapEditor::UpdateObjectFromProperties()
     SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
     ObjectListBox->removeAllItems();
 
-    for(auto o : ObjList)
+    for (auto o : ObjList)
     {
-        if(o == SelectedEntity)
+        if (o == SelectedEntity)
         {
             break;
         }
 
-        if(o->GetName() == SelectedEntity->GetName())
+        if (o->GetName() == SelectedEntity->GetName())
         {
             SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString() + "(1)");
         } else
@@ -551,13 +554,13 @@ void MapEditor::UpdateObjectFromProperties()
         }
         objPropChangeNameBox->setText(SelectedEntity->GetName());
 
-        if(o->getPosition() == SelectedEntity->getPosition())
+        if (o->getPosition() == SelectedEntity->getPosition())
         {
             SelectedEntity->setIndex(SelectedEntity->getIndex() + 1);
         }
     }
 
-    for(auto o : ObjList)
+    for (auto o : ObjList)
     {
         ObjectListBox->addItem(o->GetName());
     }
