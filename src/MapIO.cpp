@@ -16,7 +16,7 @@ void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEnt
 
     for(auto o : obj)
     {
-        j[o->Name] = {{"index", o->getIndex()}, {"position", {o->getPosition().x, o->getPosition().y}},
+        j[o->GetName()] = {{"index", o->getIndex()}, {"position", {o->getPosition().x, o->getPosition().y}},
                       {"size", {o->getSize().x*TILE_SIZE_DEFAULT, o->getSize().y*TILE_SIZE_DEFAULT}}, {"image", o->GetImagePath()}};
     }
 
@@ -30,8 +30,6 @@ void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEnt
 
     to_file << result;
     to_file.close();
-
-//    script.SaveToFile(fileName.c_str(), obj);
 }
 void MapIO::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj)
 {

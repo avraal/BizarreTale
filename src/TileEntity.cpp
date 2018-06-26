@@ -31,7 +31,7 @@ TileEntity::TileEntity(std::string Name, std::string ImagePath, sf::Vector2f pos
     this->Name = Name;
     LoadTexture(ImagePath);
     setIndex(index);
-    SetPosition(position.x, position.y);
+    setPosition(position.x, position.y);
 }
 
 TileEntity::TileEntity(const TileEntity &entity) : TileEntity(entity.Name, entity.GetImagePath(), entity.getPosition(),
@@ -55,9 +55,9 @@ TileEntity::~TileEntity()
 {
     //    std::cout << "Dcor??" << std::endl;
 }
-void TileEntity::SetPosition(float x, float y)
+void TileEntity::setPosition(float x, float y)
 {
-    setPosition(x, y);
+    Transformable::setPosition(x, y);
     sprite.setPosition(x, y);
 }
 std::string TileEntity::GetImagePath() const
@@ -71,7 +71,7 @@ TileEntity &TileEntity::operator=(TileEntity const &me)
     {
         this->ImagePath = me.GetImagePath();
         this->Name = me.Name;
-        setPosition(me.getPosition());
+        Transformable::setPosition(me.getPosition());
         LoadTexture(ImagePath);
     }
     return *this;
@@ -91,4 +91,12 @@ void TileEntity::setSize(sf::Vector2f s)
 sf::Vector2f TileEntity::getSize() const
 {
     return sprite.getScale();
+}
+void TileEntity::setName(const std::string &Name)
+{
+    this->Name = Name;
+}
+std::string TileEntity::GetName() const
+{
+    return Name;
 }
