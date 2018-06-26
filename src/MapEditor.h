@@ -94,12 +94,14 @@ private:
     std::shared_ptr<TileEntity> &findEntityByName(std::string ObjName);
 public:
     MapEditor(MapEditor const&) = delete;
+    MapEditor(MapEditor&&) = delete;
     MapEditor &operator=(MapEditor const&) = delete;
+    MapEditor &operator=(MapEditor&&) = delete;
 
     static MapEditor& Instance()
     {
-        static MapEditor e;
-        return e;
+        static MapEditor *e = new MapEditor();
+        return *e;
     }
     bool initWindow();
 

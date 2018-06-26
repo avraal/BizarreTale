@@ -30,11 +30,13 @@ private:
 
 public:
     MapIO(MapIO const &) = delete;
+    MapIO(MapIO&&) = delete;
     MapIO &operator=(MapIO const &) = delete;
+    MapIO &operator=(MapIO&&) = delete;
     static MapIO &Instance()
     {
-        static MapIO mio;
-        return mio;
+        static MapIO *mio = new MapIO();
+        return *mio;
     }
 
     void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
