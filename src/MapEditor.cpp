@@ -1,4 +1,3 @@
-
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 //
@@ -194,11 +193,6 @@ bool MapEditor::initWindow()
             window.draw(*t);
         }
 
-        for (auto o : ObjList)
-        {
-            window.draw(*o);
-        }
-
         for (auto g : LineGrid)
         {
             sf::Vertex line[] =
@@ -207,6 +201,11 @@ bool MapEditor::initWindow()
                             g.second
                     };
             window.draw(line, 2, sf::Lines);
+        }
+
+        for (auto o : ObjList)
+        {
+            window.draw(*o);
         }
 
         infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
@@ -391,10 +390,12 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                       << " object" << " (index: " << o->getIndex() << ") Name: " << o->GetName()
                                       << std::endl;
                             std::cout << "-----------" << std::endl;
+//                            o->drawBounds();
                             ObjectListBox->setSelectedItem(o->GetName());
                             addInfoToPropertiesPanel();
                         }
                     }
+
                     break;
                 }
             }
@@ -512,11 +513,16 @@ void MapEditor::addInfoToPropertiesPanel()
         std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
         return;
     }
+    for(auto o : ObjList)
+    {
+        o->hideBounds();
+    }
+    SelectedEntity->drawBounds();
     objPropChangeNameBox->setText(SelectedEntity->GetName());
     objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
     objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
 }
-std::shared_ptr<TileEntity> &MapEditor::findEntityByName(std::string ObjName)
+std::shared_ptr<TileEntity> MapEditor::findEntityByName(std::string ObjName)
 {
     for (auto &o : ObjList)
     {
@@ -525,6 +531,8 @@ std::shared_ptr<TileEntity> &MapEditor::findEntityByName(std::string ObjName)
             return o;
         }
     }
+    std::cerr << "findEntityByName returned null reference" << std::endl;
+    return nullptr;
 }
 void MapEditor::UpdateObjectFromProperties()
 {

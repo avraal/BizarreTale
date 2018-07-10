@@ -93,7 +93,7 @@ private:
     void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
 
-    std::shared_ptr<TileEntity> &findEntityByName(std::string ObjName);
+    std::shared_ptr<TileEntity> findEntityByName(std::string ObjName);
 public:
     bool initWindow();
 
