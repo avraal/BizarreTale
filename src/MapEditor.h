@@ -19,12 +19,10 @@
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
 #include "PrimitiveQuad.hpp"
-#include "Singleton.hpp"
 
-class MapEditor : public Singleton<MapEditor>
+class MapEditor
 {
 private:
-    friend class Singleton<MapEditor>;
     MapEditor()
     {
         ImageDirectory = "";
@@ -95,6 +93,17 @@ private:
 
     std::shared_ptr<TileEntity> findEntityByName(std::string ObjName);
 public:
+    MapEditor(MapEditor const&) = delete;
+    MapEditor(MapEditor&&) = delete;
+    MapEditor &operator=(MapEditor const&) = delete;
+    MapEditor &operator=(MapEditor&&) = delete;
+
+    static MapEditor &Instance()
+    {
+        static MapEditor *me = new MapEditor();
+        return *me;
+    }
+
     bool initWindow();
 
     std::string ImageDirectory;

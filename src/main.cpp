@@ -13,7 +13,7 @@
 int main(int argc, char **argv)
 {
     std::cout << argv[0] << std::endl;
-    MapEditor &Editor = Singleton<MapEditor>::Instance();
+    MapEditor &Editor = MapEditor::Instance();
     Editor.ImageDirectory.clear();
     Editor.ImageDirectory.append(argv[0]);
     Editor.ImageDirectory = Editor.ImageDirectory.substr(0, Editor.ImageDirectory.size() - 11);

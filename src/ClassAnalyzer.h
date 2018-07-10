@@ -12,10 +12,9 @@
 #include <fstream>
 #include "MapEditor.h"
 
-class ClassAnalyzer : public Singleton<ClassAnalyzer>
+class ClassAnalyzer
 {
 private:
-    friend class Singleton<ClassAnalyzer>;
     ClassAnalyzer() {}
     virtual ~ClassAnalyzer() {}
 
@@ -30,6 +29,16 @@ private:
     };
 
 public:
+    ClassAnalyzer(ClassAnalyzer const&) = delete;
+    ClassAnalyzer(ClassAnalyzer&&) = delete;
+    ClassAnalyzer &operator=(ClassAnalyzer const&) = delete;
+    ClassAnalyzer &operator=(ClassAnalyzer&&) = delete;
+
+    static ClassAnalyzer &Instance()
+    {
+        static ClassAnalyzer *ca = new ClassAnalyzer();
+        return *ca;
+    }
     void start(bool showDebug = false);
 };
 
