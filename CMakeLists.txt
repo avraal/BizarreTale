@@ -13,7 +13,11 @@ add_executable(BizarreTale  src/main.cpp
                             src/PrimitiveQuad.cpp
                             src/PrimitiveQuad.hpp
                             src/MapIO.cpp
-                            src/MapIO.h src/Singleton.hpp)
+                            src/MapIO.h
+                            src/ThicknessLine.cpp
+                            src/ThicknessLine.hpp
+                            src/ThicknessLineArray.cpp
+                            src/ThicknessLineArray.hpp)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics network audio)
 include_directories(/usr/local/include)
