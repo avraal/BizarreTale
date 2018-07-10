@@ -60,6 +60,11 @@ void TileEntity::setPosition(float x, float y)
 {
     Transformable::setPosition(x, y);
     sprite.setPosition(x, y);
+    drawBounds();
+    if(!ShowBounds)
+    {
+        hideBounds();
+    }
 }
 std::string TileEntity::GetImagePath() const
 {
@@ -103,11 +108,9 @@ std::string TileEntity::GetName() const
 }
 void TileEntity::drawBounds()
 {
-    //now we try draw bounds with shader
     shape.Hide();
     shape.append({getPosition(), getPosition() + sf::Vector2f(getTextureSize().x, 0)});
     shape.append({getPosition() + sf::Vector2f(getTextureSize().x, 0), getPosition() + sf::Vector2f(getTextureSize())});
     shape.append({getPosition() + sf::Vector2f(getTextureSize()), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
     shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
-
 }
