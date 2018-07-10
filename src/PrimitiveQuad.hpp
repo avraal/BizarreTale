@@ -29,6 +29,7 @@ public:
     virtual void changeVertexColor(sf::Color c);
     virtual void drawBounds();
     virtual void hideBounds();
+    bool ShowBounds;
 protected:
     sf::VertexArray body;
     sf::Texture texture;

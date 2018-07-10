@@ -13,7 +13,7 @@ PrimitiveQuad::PrimitiveQuad()
 {
     body.setPrimitiveType(sf::PrimitiveType::Quads);
     body.resize(4);
-
+    ShowBounds = false;
     setSize({TSD, TSD});
     shape = ThicknessLineArray();
 }
@@ -61,4 +61,5 @@ void PrimitiveQuad::drawBounds()
 void PrimitiveQuad::hideBounds()
 {
     shape.Hide();
+    ShowBounds = false;
 }
