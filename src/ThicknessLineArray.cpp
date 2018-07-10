@@ -33,7 +33,7 @@ void ThicknessLineArray::draw(sf::RenderTarget &target, sf::RenderStates states)
         target.draw(l, states);
     }
 }
-void ThicknessLineArray::ыHide()
+void ThicknessLineArray::Hide()
 {
     lines.clear();
 }
