@@ -163,6 +163,8 @@ bool MapEditor::initWindow()
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
 
+    level = std::make_shared<Level>(0, "Test");
+
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -203,12 +205,18 @@ bool MapEditor::initWindow()
             window.draw(line, 2, sf::Lines);
         }
 
-        for (auto o : ObjList)
+//        for (auto o : ObjList)
+//        {
+//            window.draw(*o);
+//        }
+
+        for(auto o : level->getAllObjects())
         {
             window.draw(*o);
         }
 
-        infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
+//        infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
+        infoObjCountLabel->setText("Object count: " + std::to_string(level->getObjCount()));
         infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
         gui.draw();
         window.display();
@@ -357,17 +365,19 @@ void MapEditor::MouseCallbacks(sf::Event event)
                         if (clickCondition)
                         {
                             int count = 0;
-                            for (auto o : ObjList)
+                            for (auto o : level->getAllObjects())
                             {
                                 if (o->getPosition() == t->getPosition())
                                 {
                                     count++;
                                 }
                             }
-                            ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
-                                    new TileEntity(std::string("Obj" + std::to_string(ObjList.size())), CurrentPathFile,
+                            level->addObject(std::move(std::shared_ptr<TileEntity>(
+                                    new TileEntity(std::string("Obj" + std::to_string(level->getObjCount())), CurrentPathFile,
                                                    {t->getPosition().x, t->getPosition().y}, count))));
-                            const std::string objName = ObjList.back()->GetName();
+
+//                            const std::string objName = ObjList.back()->GetName();
+                            const std::string objName = level->getAllObjects().back()->GetName();
                             ObjectListBox->addItem(objName);
                             ObjectListBox->setSelectedItem(objName);
                             addInfoToPropertiesPanel();
@@ -377,7 +387,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 }
                 case EditorMode::EDIT:
                 {
-                    for (auto o : ObjList)
+                    for (auto o : level->getAllObjects())
                     {
                         clickCondition =
                                 MouseGlobalPosition.x > o->getPosition().x &&
@@ -471,7 +481,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 {
                     t->setSize({128, 128});
                 }
-                for (auto o : ObjList)
+                for (auto o : level->getAllObjects())
                 {
                     o->setSize({128, 128});
                 }
@@ -513,18 +523,19 @@ void MapEditor::addInfoToPropertiesPanel()
         std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
         return;
     }
-    for(auto o : ObjList)
+    for(auto o : level->getAllObjects())
     {
         o->hideBounds();
     }
     SelectedEntity->drawBounds();
+    SelectedEntity->ShowBounds = true;
     objPropChangeNameBox->setText(SelectedEntity->GetName());
     objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
     objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
 }
 std::shared_ptr<TileEntity> MapEditor::findEntityByName(std::string ObjName)
 {
-    for (auto &o : ObjList)
+    for (auto &o : level->getAllObjects())
     {
         if (o->GetName() == ObjName)
         {
@@ -546,7 +557,7 @@ void MapEditor::UpdateObjectFromProperties()
     SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
     ObjectListBox->removeAllItems();
 
-    for (auto o : ObjList)
+    for (auto o : level->getAllObjects())
     {
         if (o == SelectedEntity)
         {
@@ -568,8 +579,9 @@ void MapEditor::UpdateObjectFromProperties()
         }
     }
 
-    for (auto o : ObjList)
+    for (auto o : level->getAllObjects())
     {
         ObjectListBox->addItem(o->GetName());
     }
+    ObjectListBox->setSelectedItem(SelectedEntity->GetName());
 }

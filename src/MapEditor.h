@@ -19,6 +19,7 @@
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
 #include "PrimitiveQuad.hpp"
+#include "Level.hpp"
 
 class MapEditor
 {
@@ -38,6 +39,7 @@ private:
     virtual ~MapEditor()
     {
     }
+    std::shared_ptr<Level> level;
     std::vector<std::shared_ptr<TileEntity>> ObjList;
     std::vector<std::shared_ptr<PrimitiveQuad>> TileMap;
     std::vector<std::string> PathToImages;
