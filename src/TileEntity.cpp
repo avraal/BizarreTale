@@ -49,6 +49,7 @@ void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 //    states.texture = &texture;
     target.draw(sprite, states);
+    target.draw(shape, states);
 }
 
 TileEntity::~TileEntity()
@@ -71,7 +72,7 @@ TileEntity &TileEntity::operator=(TileEntity const &me)
     {
         this->ImagePath = me.GetImagePath();
         this->Name = me.Name;
-        Transformable::setPosition(me.getPosition());
+        setPosition(me.getPosition().x, me.getPosition().y);
         LoadTexture(ImagePath);
     }
     return *this;
@@ -99,4 +100,14 @@ void TileEntity::setName(const std::string &Name)
 std::string TileEntity::GetName() const
 {
     return Name;
+}
+void TileEntity::drawBounds()
+{
+    //now we try draw bounds with shader
+    shape.Hide();
+    shape.append({getPosition(), getPosition() + sf::Vector2f(getTextureSize().x, 0)});
+    shape.append({getPosition() + sf::Vector2f(getTextureSize().x, 0), getPosition() + sf::Vector2f(getTextureSize())});
+    shape.append({getPosition() + sf::Vector2f(getTextureSize()), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
+    shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
+
 }

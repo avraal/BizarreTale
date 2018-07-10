@@ -44,6 +44,7 @@ public:
     void setIndex(int index);
     void setName(const std::string &Name);
     virtual void setSize(sf::Vector2f s) override;
+    virtual void drawBounds() override;
     std::string GetImagePath() const;
     std::string GetName() const;
 

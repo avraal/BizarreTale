@@ -1,4 +1,3 @@
-
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
@@ -12,25 +11,22 @@
 #include "CONST_DEFINITIONS.h"
 PrimitiveQuad::PrimitiveQuad()
 {
-    hasChanged = true;
     body.setPrimitiveType(sf::PrimitiveType::Quads);
     body.resize(4);
+
     setSize({TSD, TSD});
+    shape = ThicknessLineArray();
 }
 void PrimitiveQuad::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
     states.texture = &texture;
     target.draw(body, states);
-    hasChanged = false;
+    target.draw(shape, states);
 }
 sf::Vector2u PrimitiveQuad::getTextureSize() const
 {
     return texture.getSize();
-}
-bool PrimitiveQuad::getChanged()
-{
-    return hasChanged;
 }
 void PrimitiveQuad::setSize(sf::Vector2f s)
 {
@@ -49,5 +45,20 @@ void PrimitiveQuad::setSize(sf::Vector2f s)
 }
 PrimitiveQuad::~PrimitiveQuad()
 {
-
+}
+void PrimitiveQuad::changeVertexColor(sf::Color c)
+{
+    shape.ChangeColor(c);
+}
+void PrimitiveQuad::drawBounds()
+{
+    shape.Hide();
+    shape.append({body[0].position, body[1].position});
+    shape.append({body[1].position, body[2].position});
+    shape.append({body[2].position, body[3].position});
+    shape.append({body[3].position, body[0].position});
+}
+void PrimitiveQuad::hideBounds()
+{
+    shape.Hide();
 }

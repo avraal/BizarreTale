@@ -1,4 +1,3 @@
-
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
@@ -15,6 +14,8 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include "ThicknessLine.hpp"
+#include "ThicknessLineArray.hpp"
 
 #define TSD TILE_SIZE_DEFAULT
 
@@ -25,13 +26,14 @@ public:
     sf::Vector2u getTextureSize() const;
     virtual ~PrimitiveQuad();
     virtual void setSize(sf::Vector2f s);
-    bool getChanged();
+    virtual void changeVertexColor(sf::Color c);
+    virtual void drawBounds();
+    virtual void hideBounds();
 protected:
     sf::VertexArray body;
     sf::Texture texture;
     sf::Image image;
-    mutable bool hasChanged;
-protected:
+    ThicknessLineArray shape;
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };
 
