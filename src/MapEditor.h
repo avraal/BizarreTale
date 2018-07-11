@@ -57,10 +57,12 @@ private:
     //-------------------------------
     tgui::Panel::Ptr                objectProperties;
     tgui::Label::Ptr                objPropName;
-    tgui::EditBox::Ptr              objPropChangeNameBox;
     tgui::Label::Ptr                objPositionLabel;
     tgui::Label::Ptr                objPositionLabelX;
     tgui::Label::Ptr                objPositionLabelY;
+    tgui::Label::Ptr                objIndexLabel;
+    tgui::EditBox::Ptr              objIndexEditBox;
+    tgui::EditBox::Ptr              objPropChangeNameBox;
     tgui::EditBox::Ptr              objPositionX;
     tgui::EditBox::Ptr              objPositionY;
     tgui::ScrollablePanel::Ptr      scrollProperties;
