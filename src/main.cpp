@@ -8,7 +8,6 @@
 #include <chrono>
 #include "TileEntity.h"
 #include "MapEditor.h"
-#include "ClassAnalyzer.h"
 
 int main(int argc, char **argv)
 {
@@ -22,9 +21,6 @@ int main(int argc, char **argv)
     std::cout << Editor.ImageDirectory << std::endl;
 
     Editor.initWindow();
-
-    ClassAnalyzer &ca = ClassAnalyzer::Instance();
-    ca.start();
 
     return 0;
 }
