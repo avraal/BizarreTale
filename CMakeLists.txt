@@ -8,9 +8,7 @@ add_executable(BizarreTale  src/main.cpp
                             src/TileEntity.h
                             src/MapEditor.cpp
                             src/MapEditor.h
-                            src/ClassAnalyzer.cpp
-                            src/ClassAnalyzer.h
-                            src/PrimitiveQuad.cpp
+        src/PrimitiveQuad.cpp
                             src/PrimitiveQuad.hpp
                             src/MapIO.cpp
                             src/MapIO.h
