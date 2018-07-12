@@ -22,7 +22,6 @@ public:
     int GetId();
     void setId(int id);
     void addComponent(std::shared_ptr<IComponent> component);
-
     template <class T>
     T *getComponent()
     {

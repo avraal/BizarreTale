@@ -21,3 +21,6 @@ void IEntity::addComponent(std::shared_ptr<IComponent> component)
     //TODO: add checking on unique value
     Components.push_back(component);
 }
+IEntity::~IEntity()
+{
+}
