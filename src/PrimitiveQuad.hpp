@@ -16,13 +16,16 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include "ThicknessLine.hpp"
 #include "ThicknessLineArray.hpp"
+#include "Abstract/IComponent.hpp"
 
 #define TSD TILE_SIZE_DEFAULT
 
-class PrimitiveQuad : public sf::Drawable, public sf::Transformable
+class PrimitiveQuad : public sf::Drawable, public sf::Transformable, public IComponent
 {
+private:
+    sf::Color color;
 public:
-    PrimitiveQuad();
+    PrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
     sf::Vector2u getTextureSize() const;
     virtual ~PrimitiveQuad();
     virtual void setSize(sf::Vector2f s);

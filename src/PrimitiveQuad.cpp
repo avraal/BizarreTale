@@ -9,8 +9,9 @@
 #include <iostream>
 #include "PrimitiveQuad.hpp"
 #include "CONST_DEFINITIONS.h"
-PrimitiveQuad::PrimitiveQuad()
+PrimitiveQuad::PrimitiveQuad(sf::Color c)
 {
+    this->color = c;
     body.setPrimitiveType(sf::PrimitiveType::Quads);
     body.resize(4);
     ShowBounds = false;
@@ -40,7 +41,7 @@ void PrimitiveQuad::setSize(sf::Vector2f s)
     body[2].texCoords = sf::Vector2f(s.x, s.y);
     body[3].texCoords = sf::Vector2f(0, s.x);
 
-    image.create(s.x, s.y, sf::Color(91, 97, 91));
+    image.create(s.x, s.y, color);
     texture.loadFromImage(image);
 }
 PrimitiveQuad::~PrimitiveQuad()
