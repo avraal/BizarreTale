@@ -7,6 +7,7 @@
 #include <thread>
 #include "MapEditor.h"
 #include "PrimitiveQuad.hpp"
+#include "Entity/EObject.hpp"
 
 bool MapEditor::initWindow()
 {
@@ -172,6 +173,8 @@ bool MapEditor::initWindow()
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
 
+    std::shared_ptr<EObject> eobj = std::make_shared<EObject>();
+    eobj->getComponent<PrimitiveQuad>()->setPosition(100, 100);
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -216,6 +219,8 @@ bool MapEditor::initWindow()
         {
             window.draw(*o);
         }
+
+        window.draw(*eobj->getComponent<PrimitiveQuad>());
 
         infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
         infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
