@@ -11,7 +11,6 @@
 
 class IComponent
 {
-protected:
 public:
     virtual ~IComponent() = 0;
 };
