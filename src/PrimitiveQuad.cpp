@@ -11,12 +11,31 @@
 #include "CONST_DEFINITIONS.h"
 PrimitiveQuad::PrimitiveQuad(sf::Color c)
 {
+    std::cout << "Ctor" << std::endl;
     this->color = c;
     body.setPrimitiveType(sf::PrimitiveType::Quads);
     body.resize(4);
     ShowBounds = false;
     setSize({TSD, TSD});
     shape = ThicknessLineArray();
+}
+PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &p)
+{
+    std::cout << "Copy" << std::endl;
+    this->color = p.color;
+    this->body = p.body;
+    this->ShowBounds = p.ShowBounds;
+    setSize({TSD, TSD}); //TODO: Change TSD to real size
+    shape = p.shape;
+}
+PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &&p)
+{
+    std::cout << "Move" << std::endl;
+    this->color = p.color;
+    this->body = p.body;
+    this->ShowBounds = p.ShowBounds;
+    setSize({TSD, TSD}); //TODO: Change TSD to real size
+    shape = p.shape;
 }
 void PrimitiveQuad::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
@@ -64,3 +83,8 @@ void PrimitiveQuad::hideBounds()
     shape.Hide();
     ShowBounds = false;
 }
+sf::Color PrimitiveQuad::getColor() const
+{
+    return color;
+}
+

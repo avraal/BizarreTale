@@ -26,12 +26,16 @@ private:
     sf::Color color;
 public:
     PrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
+    PrimitiveQuad(const PrimitiveQuad &);
+    PrimitiveQuad(const PrimitiveQuad &&);
     sf::Vector2u getTextureSize() const;
+    sf::Color getColor() const;
     virtual ~PrimitiveQuad();
     virtual void setSize(sf::Vector2f s);
     virtual void changeVertexColor(sf::Color c);
     virtual void drawBounds();
     virtual void hideBounds();
+
     bool ShowBounds;
 protected:
     sf::VertexArray body;
