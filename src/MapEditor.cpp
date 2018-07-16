@@ -175,6 +175,7 @@ bool MapEditor::initWindow()
 
     std::shared_ptr<EObject> eobj = std::make_shared<EObject>();
     eobj->getComponent<PrimitiveQuad>()->setPosition(100, 100);
+    auto dr = eobj->getDrawable();
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -220,7 +221,11 @@ bool MapEditor::initWindow()
             window.draw(*o);
         }
 
-        window.draw(*eobj->getComponent<PrimitiveQuad>());
+//        window.draw(*eobj->getComponent<PrimitiveQuad>());
+        for(auto d : dr)
+        {
+            window.draw(*d);
+        }
 
         infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
         infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
@@ -329,13 +334,8 @@ void MapEditor::MouseCallbacks(sf::Event event)
     {
         if (canScroled)
         {
-            if (event.mouseWheelScroll.delta > 0)
-            {
-                ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, (1.f / 1.1f));
-            } else if (event.mouseWheelScroll.delta < 0)
-            {
-                ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, 1.1f);
-            }
+            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y},
+                       event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
         }
     }
 
@@ -365,18 +365,19 @@ void MapEditor::MouseCallbacks(sf::Event event)
                     {
                         clickCondition =
                                 MouseGlobalPosition.x > t->getPosition().x &&
-                                MouseGlobalPosition.y > t->getPosition().y
-                                && MouseGlobalPosition.x < t->getPosition().x + t->getTextureSize().x
-                                && MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
+                                MouseGlobalPosition.y > t->getPosition().y &&
+                                MouseGlobalPosition.x < t->getPosition().x + t->getTextureSize().x &&
+                                MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
                         if (clickCondition)
                         {
                             int count = 0;
                             for (auto o : ObjList)
                             {
-                                if (o->getPosition() == t->getPosition())
-                                {
-                                    count++;
-                                }
+//                                if (o->getPosition() == t->getPosition())
+//                                {
+//                                    count++;
+//                                }
+                                count += o->getPosition() == t->getPosition();
                             }
                             ObjList.push_back(std::move(std::shared_ptr<TileEntity>(
                                     new TileEntity(std::string("Obj" + std::to_string(ObjList.size())), CurrentPathFile,
@@ -397,9 +398,9 @@ void MapEditor::MouseCallbacks(sf::Event event)
                     {
                         clickCondition =
                                 MouseGlobalPosition.x > o->getPosition().x &&
-                                MouseGlobalPosition.y > o->getPosition().y
-                                && MouseGlobalPosition.x < o->getPosition().x + o->getTextureSize().x
-                                && MouseGlobalPosition.y < o->getPosition().y + o->getTextureSize().y;
+                                MouseGlobalPosition.y > o->getPosition().y &&
+                                MouseGlobalPosition.x < o->getPosition().x + o->getTextureSize().x &&
+                                MouseGlobalPosition.y < o->getPosition().y + o->getTextureSize().y;
                         if (clickCondition)
                         {
                             std::cout << "Edit x:" << o->getPosition().x << " y:" << o->getPosition().y
@@ -440,6 +441,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::Escape:
             {
                 window.close();
+                break;
             }
             case sf::Keyboard::Right:
             {
@@ -528,7 +530,7 @@ void MapEditor::addInfoToPropertiesPanel()
         std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
         return;
     }
-    for(auto o : ObjList)
+    for (auto o : ObjList)
     {
         o->hideBounds();
     }
@@ -583,7 +585,7 @@ void MapEditor::UpdateObjectFromProperties()
 
         if (o->getPosition() == SelectedEntity->getPosition())
         {
-            if(o->getIndex() == SelectedEntity->getIndex())
+            if (o->getIndex() == SelectedEntity->getIndex())
             {
                 SelectedEntity->setIndex(SelectedEntity->getIndex() + 1);
             }
