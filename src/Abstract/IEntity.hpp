@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <memory>
+#include "../PrimitiveQuad.hpp"
 
 class IComponent;
 class IEntity
@@ -34,6 +35,22 @@ public:
             }
         }
         return nullptr;
+    }
+
+    std::vector<std::shared_ptr<PrimitiveQuad>> getDrawable()
+    {
+        std::vector<std::shared_ptr<PrimitiveQuad>> result;
+        for(auto &c : Components)
+        {
+//            PrimitiveQuad *p = dynamic_cast<PrimitiveQuad*>(c.get());
+            std::shared_ptr<PrimitiveQuad> p1 = std::dynamic_pointer_cast<PrimitiveQuad>(c);
+            if(p1)
+            {
+                result.push_back(p1);
+            }
+        }
+        std::cout << "Add p1" << std::endl;
+        return result;
     }
 
     virtual ~IEntity() = 0;
