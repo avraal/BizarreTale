@@ -11,7 +11,8 @@
 #include "CONST_DEFINITIONS.h"
 PrimitiveQuad::PrimitiveQuad(sf::Color c)
 {
-    std::cout << "Ctor" << std::endl;
+    std::cout << "PQCtor" << std::endl;
+    index = 0;
     this->color = c;
     body.setPrimitiveType(sf::PrimitiveType::Quads);
     body.resize(4);
@@ -23,6 +24,7 @@ PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &p)
 {
     std::cout << "Copy" << std::endl;
     this->color = p.color;
+    this->index = p.index;
     this->body = p.body;
     this->ShowBounds = p.ShowBounds;
     setSize({TSD, TSD}); //TODO: Change TSD to real size
@@ -32,6 +34,7 @@ PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &&p)
 {
     std::cout << "Move" << std::endl;
     this->color = p.color;
+    this->index = index;
     this->body = p.body;
     this->ShowBounds = p.ShowBounds;
     setSize({TSD, TSD}); //TODO: Change TSD to real size
@@ -86,5 +89,21 @@ void PrimitiveQuad::hideBounds()
 sf::Color PrimitiveQuad::getColor() const
 {
     return color;
+}
+int PrimitiveQuad::getIndex() const
+{
+    return index;
+}
+void PrimitiveQuad::setIndex(int index)
+{
+    this->index = index;
+}
+void PrimitiveQuad::setPosition(float x, float y)
+{
+    Transformable::setPosition(x, y);
+}
+void PrimitiveQuad::setPosition(const sf::Vector2f &Position)
+{
+    Transformable::setPosition(Position);
 }
 

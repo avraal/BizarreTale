@@ -35,9 +35,13 @@ public:
     virtual void changeVertexColor(sf::Color c);
     virtual void drawBounds();
     virtual void hideBounds();
-
+    virtual void setPosition(float x, float y);
+    virtual void setPosition(const sf::Vector2f &Position);
+    int getIndex() const;
+    void setIndex(int index);
     bool ShowBounds;
 protected:
+    int index;
     sf::VertexArray body;
     sf::Texture texture;
     sf::Image image;
