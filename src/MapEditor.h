@@ -21,6 +21,7 @@
 #include "PrimitiveQuad.hpp"
 #include "Level.hpp"
 
+class EObject;
 class MapEditor
 {
 private:
@@ -39,20 +40,21 @@ private:
     virtual ~MapEditor()
     {
     }
-    std::shared_ptr<Level> level;
-    std::vector<std::shared_ptr<TileEntity>> ObjList;
-    std::vector<std::shared_ptr<PrimitiveQuad>> TileMap;
-    std::vector<std::string> PathToImages;
-    std::vector<std::string> ImagesFormats;
-    std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;
-    std::string CurrentPathFile;
-    sf::RenderWindow window;
-    sf::View MainCamera;
+    std::vector<std::shared_ptr<sf::Drawable>> dr1;                 //all rendered objects
+    std::shared_ptr<Level> level;                                   //container for all object on level
+    //std::vector<std::shared_ptr<TileEntity>> ObjList;               //TODO: deprecated
+    std::vector<std::shared_ptr<PrimitiveQuad>> TileMap;            //draw grid for add new objects
+    std::vector<std::string> PathToImages;                          //all images
+    std::vector<std::string> ImagesFormats;                         //all supported image formats
+    std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;        //grid of lines
+    std::string CurrentPathFile;                                    //path to image, which added to map
+    sf::RenderWindow window;                                        //main window
+    sf::View MainCamera;                                            //main camera
     sf::Clock clock;
-    tgui::ScrollablePanel::Ptr scrollPanel;
-    tgui::Label::Ptr infoObjCountLabel;
-    tgui::Label::Ptr infoFPSLabel;
-    tgui::Panel::Ptr infoPanel;
+    tgui::ScrollablePanel::Ptr scrollPanel;                         //panel with images
+    tgui::Label::Ptr infoObjCountLabel;                             //show count of objects
+    tgui::Label::Ptr infoFPSLabel;                                  //show current Framerate-Per-Second
+    tgui::Panel::Ptr infoPanel;                                     //TODO: ?
 
     //-------------------------------
     tgui::Panel::Ptr                objectProperties;
@@ -83,7 +85,7 @@ private:
 
     std::mutex b_mutex;
 
-    std::shared_ptr<TileEntity> SelectedEntity;
+    std::shared_ptr<EObject> SelectedEntity;
 
     void drawTileMap(float size_x, float size_y);
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
@@ -95,7 +97,7 @@ private:
     void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
 
-    std::shared_ptr<TileEntity> findEntityByName(std::string ObjName);
+    std::shared_ptr<EObject> findEntityByName(std::string ObjName);
 public:
     MapEditor(MapEditor const&) = delete;
     MapEditor(MapEditor&&) = delete;
