@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <chrono>
-#include "TileEntity.h"
+#include "CTile.h"
 #include "MapEditor.h"
 
 int main(int argc, char **argv)

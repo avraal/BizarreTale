@@ -17,9 +17,9 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <cstring>
 #include "CONST_DEFINITIONS.h"
-#include "PrimitiveQuad.hpp"
+#include "CPrimitiveQuad.hpp"
 
-class TileEntity : public PrimitiveQuad
+class CTile : public CPrimitiveQuad
 {
 private:
     sf::Sprite sprite;
@@ -28,14 +28,14 @@ private:
 protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 public:
-    TileEntity();
-    TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position, int index = 0);
-    TileEntity(const TileEntity &entity);
-    TileEntity(const TileEntity &&entity);
-    TileEntity &operator=(sf::Drawable const &) = delete;
+    CTile();
+    CTile(std::string Name, std::string ImagePath, sf::Vector2f position, int index = 0);
+    CTile(const CTile &entity);
+    CTile(const CTile &&entity);
+    CTile &operator=(sf::Drawable const &) = delete;
 
-    TileEntity &operator=(TileEntity const &me);
-    virtual ~TileEntity();
+    CTile &operator=(CTile const &me);
+    virtual ~CTile();
     void LoadTexture(std::string ImagePath);
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);

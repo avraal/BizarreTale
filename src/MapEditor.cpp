@@ -6,7 +6,7 @@
 
 #include <thread>
 #include "MapEditor.h"
-#include "PrimitiveQuad.hpp"
+#include "CPrimitiveQuad.hpp"
 #include "Entity/EObject.hpp"
 
 bool MapEditor::initWindow()
@@ -277,7 +277,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     //added tiles
     for (uint i = 1; i <= height * width; i++)
     {
-        TileMap.push_back(std::move(std::shared_ptr<PrimitiveQuad>(new PrimitiveQuad)));
+        TileMap.push_back(std::move(std::shared_ptr<CPrimitiveQuad>(new CPrimitiveQuad)));
     }
 
     //set position
@@ -512,7 +512,7 @@ void MapEditor::ChangeScrollablePanelStatus(bool val)
 {
     canScroled = val;
 }
-void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj)
+void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj)
 {
     b_mutex.lock();
     mio.LoadFromFile(fileName, obj);
@@ -523,7 +523,7 @@ void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<T
         //        ObjectListBox->addItem(o->GetName());
     }
 }
-void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj)
+void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj)
 {
     b_mutex.lock();
     mio.SaveToFile(fileName, obj);

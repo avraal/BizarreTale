@@ -20,17 +20,17 @@
 
 #define TSD TILE_SIZE_DEFAULT
 
-class PrimitiveQuad : public sf::Drawable, public sf::Transformable, public IComponent
+class CPrimitiveQuad : public sf::Drawable, public sf::Transformable, public IComponent
 {
 private:
     sf::Color color;
 public:
-    PrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
-    PrimitiveQuad(const PrimitiveQuad &);
-    PrimitiveQuad(const PrimitiveQuad &&);
+    CPrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
+    CPrimitiveQuad(const CPrimitiveQuad &);
+    CPrimitiveQuad(const CPrimitiveQuad &&);
     sf::Vector2u getTextureSize() const;
     sf::Color getColor() const;
-    virtual ~PrimitiveQuad();
+    virtual ~CPrimitiveQuad();
     virtual void setSize(sf::Vector2f s);
     virtual void changeVertexColor(sf::Color c);
     virtual void drawBounds();

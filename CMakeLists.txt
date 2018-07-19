@@ -4,12 +4,12 @@ project(BizarreTale)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(BizarreTale  src/main.cpp
-                            src/TileEntity.cpp
-                            src/TileEntity.h
+        src/CTile.cpp
+        src/CTile.h
                             src/MapEditor.cpp
                             src/MapEditor.h
-        src/PrimitiveQuad.cpp
-                            src/PrimitiveQuad.hpp
+        src/CPrimitiveQuad.cpp
+        src/CPrimitiveQuad.hpp
                             src/MapIO.cpp
                             src/MapIO.h
                             src/ThicknessLine.cpp

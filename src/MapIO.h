@@ -12,7 +12,7 @@
 #include <memory>
 #include <cstring>
 #include <list>
-#include "TileEntity.h"
+#include "CTile.h"
 #include "json.hpp"
 
 
@@ -41,8 +41,8 @@ public:
         return *mio;
     }
 
-    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
-    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj);
+    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj);
 };
 
 #endif //BIZARRETALE_MAPIO_H

@@ -8,7 +8,7 @@
 #include <thread>
 #include <deque>
 #include "MapIO.h"
-void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj)
+void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj)
 {
     std::cout << "Preparing to write..." << std::endl;
 
@@ -31,7 +31,7 @@ void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEnt
     to_file << result;
     to_file.close();
 }
-void MapIO::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj)
+void MapIO::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj)
 {
     std::cout << "Preparing to read..." << std::endl;
     obj.clear();
@@ -62,7 +62,7 @@ void MapIO::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileE
         float sizeX = j_size[0];
         float sizeY = j_size[1];
 
-//        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(name, imagePath, {posX, posY}, index))));
+//        obj.push_back(std::move(std::shared_ptr<CTile>(new CTile(name, imagePath, {posX, posY}, index))));
         obj.back()->setSize({sizeX, sizeY});
     }
 }

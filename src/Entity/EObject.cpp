@@ -7,9 +7,9 @@
 //
 
 #include "EObject.hpp"
-#include "../PrimitiveQuad.hpp"
+#include "../CPrimitiveQuad.hpp"
 #include "../Level.hpp"
-#include "../TileEntity.h"
+#include "../CTile.h"
 
 EObject::~EObject()
 {
@@ -19,7 +19,7 @@ EObject::EObject(const std::string &ImagePath)
 {
     if(!ImagePath.empty())
     {
-        body = std::make_shared<TileEntity>("body", ImagePath, getPosition());
+        body = std::make_shared<CTile>("body", ImagePath, getPosition());
         Components.push_back(std::dynamic_pointer_cast<IComponent>(body));
     }
 }

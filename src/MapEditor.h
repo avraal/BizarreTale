@@ -15,10 +15,10 @@
 #include <dirent.h>
 #include <string>
 #include <mutex>
-#include "TileEntity.h"
+#include "CTile.h"
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
-#include "PrimitiveQuad.hpp"
+#include "CPrimitiveQuad.hpp"
 #include "Level.hpp"
 
 class EObject;
@@ -42,8 +42,8 @@ private:
     }
     std::vector<std::shared_ptr<sf::Drawable>> dr1;                 //all rendered objects
     std::shared_ptr<Level> level;                                   //container for all object on level
-    //std::vector<std::shared_ptr<TileEntity>> ObjList;               //TODO: deprecated
-    std::vector<std::shared_ptr<PrimitiveQuad>> TileMap;            //draw grid for add new objects
+    //std::vector<std::shared_ptr<CTile>> ObjList;               //TODO: deprecated
+    std::vector<std::shared_ptr<CPrimitiveQuad>> TileMap;            //draw grid for add new objects
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats
     std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;        //grid of lines
@@ -113,7 +113,7 @@ public:
     bool initWindow();
 
     std::string ImageDirectory;
-    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> obj);
-    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileEntity>> &obj);
+    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj);
+    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj);
 };
 #endif //BIZARRETALE_MAPEDITOR_H

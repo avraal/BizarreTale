@@ -25,7 +25,7 @@ obj.LoadFromFile("filename.format", objectContainer);
 ```
 <br>
 
-# TileEntity
+# CTile
 ### Pattern: none
 ### Parent: PrimiriveQuad
 
@@ -33,7 +33,7 @@ Basic unit for render.
 
 <br>
 
-# PrimitiveQuad
+# CPrimitiveQuad
 ### Pattern: none
 ### Parents: sf::Drawable, sf::Transformable
 

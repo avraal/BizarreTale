@@ -7,9 +7,9 @@
 
 #include <SFML/Graphics/VertexArray.hpp>
 #include <iostream>
-#include "PrimitiveQuad.hpp"
+#include "CPrimitiveQuad.hpp"
 #include "CONST_DEFINITIONS.h"
-PrimitiveQuad::PrimitiveQuad(sf::Color c)
+CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
 {
     std::cout << "PQCtor" << std::endl;
     index = 0;
@@ -20,7 +20,7 @@ PrimitiveQuad::PrimitiveQuad(sf::Color c)
     setSize({TSD, TSD});
     shape = ThicknessLineArray();
 }
-PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &p)
+CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p)
 {
     std::cout << "Copy" << std::endl;
     this->color = p.color;
@@ -30,7 +30,7 @@ PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &p)
     setSize({TSD, TSD}); //TODO: Change TSD to real size
     shape = p.shape;
 }
-PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &&p)
+CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &&p)
 {
     std::cout << "Move" << std::endl;
     this->color = p.color;
@@ -40,18 +40,18 @@ PrimitiveQuad::PrimitiveQuad(const PrimitiveQuad &&p)
     setSize({TSD, TSD}); //TODO: Change TSD to real size
     shape = p.shape;
 }
-void PrimitiveQuad::draw(sf::RenderTarget &target, sf::RenderStates states) const
+void CPrimitiveQuad::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
     states.texture = &texture;
     target.draw(body, states);
     target.draw(shape, states);
 }
-sf::Vector2u PrimitiveQuad::getTextureSize() const
+sf::Vector2u CPrimitiveQuad::getTextureSize() const
 {
     return texture.getSize();
 }
-void PrimitiveQuad::setSize(sf::Vector2f s)
+void CPrimitiveQuad::setSize(sf::Vector2f s)
 {
     body[0].position = sf::Vector2f(0, 0);
     body[1].position = sf::Vector2f(s.x, 0);
@@ -66,14 +66,14 @@ void PrimitiveQuad::setSize(sf::Vector2f s)
     image.create(s.x, s.y, color);
     texture.loadFromImage(image);
 }
-PrimitiveQuad::~PrimitiveQuad()
+CPrimitiveQuad::~CPrimitiveQuad()
 {
 }
-void PrimitiveQuad::changeVertexColor(sf::Color c)
+void CPrimitiveQuad::changeVertexColor(sf::Color c)
 {
     shape.ChangeColor(c);
 }
-void PrimitiveQuad::drawBounds()
+void CPrimitiveQuad::drawBounds()
 {
     shape.Hide();
     shape.append({body[0].position, body[1].position});
@@ -81,28 +81,28 @@ void PrimitiveQuad::drawBounds()
     shape.append({body[2].position, body[3].position});
     shape.append({body[3].position, body[0].position});
 }
-void PrimitiveQuad::hideBounds()
+void CPrimitiveQuad::hideBounds()
 {
     shape.Hide();
     ShowBounds = false;
 }
-sf::Color PrimitiveQuad::getColor() const
+sf::Color CPrimitiveQuad::getColor() const
 {
     return color;
 }
-int PrimitiveQuad::getIndex() const
+int CPrimitiveQuad::getIndex() const
 {
     return index;
 }
-void PrimitiveQuad::setIndex(int index)
+void CPrimitiveQuad::setIndex(int index)
 {
     this->index = index;
 }
-void PrimitiveQuad::setPosition(float x, float y)
+void CPrimitiveQuad::setPosition(float x, float y)
 {
     Transformable::setPosition(x, y);
 }
-void PrimitiveQuad::setPosition(const sf::Vector2f &Position)
+void CPrimitiveQuad::setPosition(const sf::Vector2f &Position)
 {
     Transformable::setPosition(Position);
 }

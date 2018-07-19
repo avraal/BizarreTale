@@ -4,9 +4,9 @@
 //
 // Created by andrew on 02.04.18.
 //
-#include "TileEntity.h"
+#include "CTile.h"
 
-TileEntity::TileEntity() : PrimitiveQuad()
+CTile::CTile() : CPrimitiveQuad()
 {
     std::cout << "Default ctor" << std::endl;
     ImagePath = "";
@@ -15,7 +15,7 @@ TileEntity::TileEntity() : PrimitiveQuad()
     sprite.setPosition(getPosition());
 }
 
-void TileEntity::LoadTexture(std::string ImagePath)
+void CTile::LoadTexture(std::string ImagePath)
 {
     if (!ImagePath.empty())
     {
@@ -24,7 +24,7 @@ void TileEntity::LoadTexture(std::string ImagePath)
     sprite.setTexture(texture);
 }
 
-TileEntity::TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position, int index) : PrimitiveQuad()
+CTile::CTile(std::string Name, std::string ImagePath, sf::Vector2f position, int index) : CPrimitiveQuad()
 {
     std::cout << "TECtor" << std::endl;
     this->ImagePath = ImagePath;
@@ -34,29 +34,29 @@ TileEntity::TileEntity(std::string Name, std::string ImagePath, sf::Vector2f pos
     setPosition(position.x, position.y);
 }
 
-TileEntity::TileEntity(const TileEntity &entity) : TileEntity(entity.Name, entity.GetImagePath(), entity.getPosition(),
+CTile::CTile(const CTile &entity) : CTile(entity.Name, entity.GetImagePath(), entity.getPosition(),
                                                               entity.getIndex())
 {
     std::cout << "Copy ctor" << std::endl;
 }
 
-TileEntity::TileEntity(const TileEntity &&entity) : TileEntity(entity)
+CTile::CTile(const CTile &&entity) : CTile(entity)
 {
     std::cout << "Move ctor" << std::endl;
 }
 
-void TileEntity::draw(sf::RenderTarget &target, sf::RenderStates states) const
+void CTile::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 //    states.texture = &texture;
     target.draw(sprite, states);
     target.draw(shape, states);
 }
 
-TileEntity::~TileEntity()
+CTile::~CTile()
 {
     //    std::cout << "Dcor??" << std::endl;
 }
-void TileEntity::setPosition(float x, float y)
+void CTile::setPosition(float x, float y)
 {
     Transformable::setPosition(x, y);
     sprite.setPosition(x, y);
@@ -66,16 +66,16 @@ void TileEntity::setPosition(float x, float y)
         hideBounds();
     }
 }
-void TileEntity::setPosition(const sf::Vector2f &Position)
+void CTile::setPosition(const sf::Vector2f &Position)
 {
     this->setPosition(Position.x, Position.y);
 }
-std::string TileEntity::GetImagePath() const
+std::string CTile::GetImagePath() const
 {
     return ImagePath;
 }
 
-TileEntity &TileEntity::operator=(TileEntity const &me)
+CTile &CTile::operator=(CTile const &me)
 {
     if (this != &me)
     {
@@ -86,23 +86,23 @@ TileEntity &TileEntity::operator=(TileEntity const &me)
     }
     return *this;
 }
-void TileEntity::setSize(sf::Vector2f s)
+void CTile::setSize(sf::Vector2f s)
 {
     sprite.setScale(s.x / sprite.getLocalBounds().width, s.y / sprite.getLocalBounds().height);
 }
-sf::Vector2f TileEntity::getSpriteScale() const
+sf::Vector2f CTile::getSpriteScale() const
 {
     return sprite.getScale();
 }
-void TileEntity::setName(const std::string &Name)
+void CTile::setName(const std::string &Name)
 {
     this->Name = Name;
 }
-std::string TileEntity::GetName() const
+std::string CTile::GetName() const
 {
     return Name;
 }
-void TileEntity::drawBounds()
+void CTile::drawBounds()
 {
     shape.Hide();
     shape.append({getPosition(), getPosition() + sf::Vector2f(getTextureSize().x, 0)});

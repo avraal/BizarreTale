@@ -11,7 +11,7 @@
 
 #include "../Abstract/IEntity.hpp"
 
-class TileEntity;
+class CTile;
 class EObject : public IEntity
 {
 public:

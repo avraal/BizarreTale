@@ -40,7 +40,7 @@ void IEntity::setId(int id)
 {
     this->Id = id;
 }
-std::shared_ptr<PrimitiveQuad> IEntity::getBody()
+std::shared_ptr<CPrimitiveQuad> IEntity::getBody()
 {
     return body;
 }
