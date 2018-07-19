@@ -9,10 +9,17 @@
 #ifndef BIZARRETALE_ICOMPONENT_HPP
 #define BIZARRETALE_ICOMPONENT_HPP
 
+#include <string>
+
 class IComponent
 {
+protected:
+    std::string Name;
 public:
     virtual ~IComponent() = 0;
+
+    void setName(const std::string &name);
+    std::string getName() const;
 };
 
 #endif //BIZARRETALE_ICOMPONENT_HPP

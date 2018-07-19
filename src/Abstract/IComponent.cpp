@@ -10,3 +10,11 @@
 IComponent::~IComponent()
 {
 }
+void IComponent::setName(const std::string &name)
+{
+    this->Name = name;
+}
+std::string IComponent::getName() const
+{
+    return Name;
+}
