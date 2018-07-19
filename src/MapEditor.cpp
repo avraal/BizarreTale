@@ -20,155 +20,12 @@ bool MapEditor::initWindow()
     tgui::Gui gui{window};
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
-    ObjectListBox = ::tgui::ListBox::create();
-    scrollPanel = tgui::ScrollablePanel::create({"100%", "25%"});
-    objectProperties = tgui::Panel::create();
-
-    scrollPanel->setPosition(0, window.getSize().y - 200);
-    scrollPanel->setSize(window.getSize().x, 200);
-
-    ObjectListBox->setPosition(0, 0);
-    ObjectListBox->setSize(250, window.getSize().y - scrollPanel->getSize().y);
-    ObjectListBox->setItemHeight(25);
-    ObjectListBox->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
-    ObjectListBox->getRenderer()->setTextColor(sf::Color::White);
-    ObjectListBox->connect(ObjectListBox->onItemSelect.getName(), &MapEditor::addInfoToPropertiesPanel, this);
-    //------------------------------------------------------------------------------------------------------------------
-    scrollProperties = tgui::ScrollablePanel::create();
-    scrollProperties->setPosition(window.getSize().x - 250, 0);
-    scrollProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
-    scrollProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
-
-    scrollProperties->add(objectProperties);
-
-    objectProperties->setPosition(0, 0);
-    //    objectProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
-    //    objectProperties->setSize(scrollProperties->getSize());
-    objectProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
-    objectProperties->getRenderer()->setPadding({5, 5});
-
-    objPropName = tgui::Label::create();
-    objPropName->getRenderer()->setTextColor(sf::Color::White);
-    objPropName->setTextSize(INFO_PANEL_TEXT_SIZE);
-    objPropName->setText("Object:");
-    objPropName->setPosition(0, 4);
-
-    objPropChangeNameBox = tgui::EditBox::create();
-    objPropChangeNameBox->setPosition(objPropName->getSize().x + 4, 0);
-    objPropChangeNameBox->setSize(objectProperties->getSize().x / 2, INFO_PANEL_TEXT_SIZE + 10);
-    objPropChangeNameBox->setTextSize(objPropName->getTextSize());
-    objPropChangeNameBox->getRenderer()->setTextColor(sf::Color(210, 210, 210));
-    objPropChangeNameBox->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 200));
-    objPropChangeNameBox->getRenderer()->setBackgroundColorDisabled(sf::Color(0, 0, 0, 225));
-    objPropChangeNameBox->getRenderer()->setBackgroundColorFocused(sf::Color(0, 0, 0, 200));
-    objPropChangeNameBox->getRenderer()->setBackgroundColorHover(sf::Color(0, 0, 0, 200));
-    objPropChangeNameBox->getRenderer()->setBorderColor(sf::Color(0, 0, 0, 0));
-    objPropChangeNameBox->getRenderer()->setBorderColorDisabled(sf::Color(0, 0, 0, 0));
-    objPropChangeNameBox->getRenderer()->setBorderColorFocused(sf::Color(0, 0, 0, 0));
-    objPropChangeNameBox->getRenderer()->setBorderColorHover(sf::Color(0, 0, 0, 0));
-    objPropChangeNameBox->connect(objPropChangeNameBox->onReturnKeyPress.getName(),
-                                  &MapEditor::UpdateObjectFromProperties, this);
-
-    objPositionLabel = tgui::Label::create();
-    objPositionLabel->getRenderer()->setTextColor(sf::Color::White);
-    objPositionLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
-    objPositionLabel->setText("Position");
-    objPositionLabel->setPosition(0, objPropName->getPosition().y + objPropName->getSize().y + 4);
-
-    objPositionLabelX = tgui::Label::copy(objPositionLabel);
-    objPositionLabelX->setText("x:");
-    objPositionLabelX->setPosition(0, objPositionLabel->getPosition().y + objPositionLabel->getSize().y + 4);
-
-    objPositionX = tgui::EditBox::copy(objPropChangeNameBox);
-    objPositionX->setPosition(objPositionLabelX->getSize().x + 4, objPositionLabelX->getPosition().y);
-
-    objPositionLabelY = tgui::Label::copy(objPositionLabel);
-    objPositionLabelY->setText("y:");
-    objPositionLabelY->setPosition(0, objPositionLabelX->getPosition().y + objPositionLabelX->getSize().y + 4);
-
-    objPositionY = tgui::EditBox::copy(objPropChangeNameBox);
-    objPositionY->setPosition(objPositionLabelY->getSize().x + 4, objPositionLabelY->getPosition().y);
-
-    objIndexLabel = tgui::Label::copy(objPositionLabel);
-    objIndexLabel->setText("Index:");
-    objIndexLabel->setPosition(0, objPositionLabelY->getPosition().y + objPositionLabelY->getSize().y + 4);
-
-    objIndexEditBox = tgui::EditBox::copy(objPositionY);
-    objIndexEditBox->setPosition(objIndexLabel->getSize().x + 4, objIndexLabel->getPosition().y);
-
-    objectProperties->add(objPropName);
-    objectProperties->add(objPropChangeNameBox);
-    objectProperties->add(objPositionLabel);
-    objectProperties->add(objPositionLabelX);
-    objectProperties->add(objPositionLabelY);
-    objectProperties->add(objPositionX);
-    objectProperties->add(objPositionY);
-    objectProperties->add(objIndexLabel);
-    objectProperties->add(objIndexEditBox);
-
-    objConfirmChanges = tgui::Button::create();
-    scrollProperties->add(objConfirmChanges);
-    objConfirmChanges->setPosition(4, scrollProperties->getSize().y - objConfirmChanges->getSize().y - 4);
-    objConfirmChanges->setText("Confirm");
-    objConfirmChanges->connect(objConfirmChanges->onClick.getName(), &MapEditor::UpdateObjectFromProperties, this);
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    auto grid = tgui::Grid::create();
-
-    grid->setPosition(20, 20);
-
-    scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 225));
-    auto imgInRow = scrollPanel->getSize().x / 64 - (PathToImages.size() * 0.25);
-    std::cout << imgInRow << std::endl;
-    uint x = 0, y = 0;
-    for (auto i : PathToImages)
-    {
-        auto pic = tgui::Picture::create(i);
-        pic->connect(pic->onClick.getName(), &MapEditor::SelectImage, this, i);
-        if (y == ceil(imgInRow))
-        {
-            x++;
-            y = 0;
-        }
-        y++;
-        grid->addWidget(pic, x, y, {5, 5, 5, 5});
-    }
-
-    scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
-    scrollPanel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
-    scrollPanel->add(grid);
-
-    infoPanel = tgui::Panel::create({200, "10%"});
-    infoPanel->setPosition(objectProperties->getPosition().x - infoPanel->getSize().x, 0);
-    infoPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
-
-    infoObjCountLabel = tgui::Label::create();
-    infoObjCountLabel->getRenderer()->setTextColor(sf::Color::White);
-    infoObjCountLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
-
-    infoFPSLabel = tgui::Label::create();
-    infoFPSLabel->getRenderer()->setTextColor(sf::Color::White);
-    infoFPSLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
-    infoFPSLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
-    infoPanel->add(infoObjCountLabel);
-    infoPanel->add(infoFPSLabel);
+    LoadUI();
 
     gui.add(infoPanel);
     gui.add(scrollPanel);
     gui.add(ObjectListBox);
     gui.add(scrollProperties);
-
-    scrollPanel->connect(scrollPanel->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
-    scrollPanel->connect(scrollPanel->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
-
-    scrollProperties->connect(scrollProperties->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this,
-                              true);
-    scrollProperties->connect(scrollProperties->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this,
-                              false);
-
-    ObjectListBox->connect(ObjectListBox->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
-    ObjectListBox->connect(ObjectListBox->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
@@ -322,31 +179,13 @@ void MapEditor::drawTileMap(float size_x, float size_y)
 }
 void MapEditor::MouseCallbacks(sf::Event event)
 {
-    if (event.type == sf::Event::MouseWheelScrolled)
-    {
-        if (canScroled)
-        {
-            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y},
-                       event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
-        }
-    }
-
     if (event.type == sf::Event::MouseButtonPressed)
     {
-        if (event.mouseButton.button == sf::Mouse::Right)
-        {
-            sf::Vector2i Mouse = sf::Mouse::getPosition(window);
-            float w = window.mapPixelToCoords(Mouse).x;
-            float h = window.mapPixelToCoords(Mouse).y;
-            MainCamera.setCenter(w, h);
-        }
-
         if (event.mouseButton.button == sf::Mouse::Left &&
             !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
             !scrollProperties->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
             !ObjectListBox->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
         {
-
             sf::Vector2f MouseGlobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
             bool clickCondition;
 
@@ -418,6 +257,23 @@ void MapEditor::MouseCallbacks(sf::Event event)
                     break;
                 }
             }
+        }
+        if (event.mouseButton.button == sf::Mouse::Right)
+        {
+            sf::Vector2i Mouse = sf::Mouse::getPosition(window);
+            float w = window.mapPixelToCoords(Mouse).x;
+            float h = window.mapPixelToCoords(Mouse).y;
+            MainCamera.setCenter(w, h);
+        }
+    }
+
+
+    if (event.type == sf::Event::MouseWheelScrolled)
+    {
+        if (canScroled)
+        {
+            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y},
+                       event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
         }
     }
 }
@@ -639,4 +495,151 @@ void MapEditor::UpdateObjectFromProperties()
             dr1.push_back(d);
         }
     }
+}
+
+void MapEditor::LoadUI()
+{
+    ObjectListBox = ::tgui::ListBox::create();
+    scrollPanel = tgui::ScrollablePanel::create({"100%", "25%"});
+    objectProperties = tgui::Panel::create();
+
+    scrollPanel->setPosition(0, window.getSize().y - 200);
+    scrollPanel->setSize(window.getSize().x, 200);
+
+    ObjectListBox->setPosition(0, 0);
+    ObjectListBox->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    ObjectListBox->setItemHeight(25);
+    ObjectListBox->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
+    ObjectListBox->getRenderer()->setTextColor(sf::Color::White);
+    ObjectListBox->connect(ObjectListBox->onItemSelect.getName(), &MapEditor::addInfoToPropertiesPanel, this);
+
+    //------------------------------------------------------------------------------------------------------------------
+    scrollProperties = tgui::ScrollablePanel::create();
+    scrollProperties->setPosition(window.getSize().x - 250, 0);
+    scrollProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    scrollProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
+
+    scrollProperties->add(objectProperties);
+
+    objectProperties->setPosition(0, 0);
+    //    objectProperties->setSize(250, window.getSize().y - scrollPanel->getSize().y);
+    //    objectProperties->setSize(scrollProperties->getSize());
+    objectProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
+    objectProperties->getRenderer()->setPadding({5, 5});
+
+    objPropName = tgui::Label::create();
+    objPropName->getRenderer()->setTextColor(sf::Color::White);
+    objPropName->setTextSize(INFO_PANEL_TEXT_SIZE);
+    objPropName->setText("Object:");
+    objPropName->setPosition(0, 4);
+
+    objPropChangeNameBox = tgui::EditBox::create();
+    objPropChangeNameBox->setPosition(objPropName->getSize().x + 4, 0);
+    objPropChangeNameBox->setSize(objectProperties->getSize().x / 2, INFO_PANEL_TEXT_SIZE + 10);
+    objPropChangeNameBox->setTextSize(objPropName->getTextSize());
+    objPropChangeNameBox->getRenderer()->setTextColor(sf::Color(210, 210, 210));
+    objPropChangeNameBox->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 200));
+    objPropChangeNameBox->getRenderer()->setBackgroundColorDisabled(sf::Color(0, 0, 0, 225));
+    objPropChangeNameBox->getRenderer()->setBackgroundColorFocused(sf::Color(0, 0, 0, 200));
+    objPropChangeNameBox->getRenderer()->setBackgroundColorHover(sf::Color(0, 0, 0, 200));
+    objPropChangeNameBox->getRenderer()->setBorderColor(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->getRenderer()->setBorderColorDisabled(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->getRenderer()->setBorderColorFocused(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->getRenderer()->setBorderColorHover(sf::Color(0, 0, 0, 0));
+    objPropChangeNameBox->connect(objPropChangeNameBox->onReturnKeyPress.getName(),
+                                  &MapEditor::UpdateObjectFromProperties, this);
+
+    objPositionLabel = tgui::Label::create();
+    objPositionLabel->getRenderer()->setTextColor(sf::Color::White);
+    objPositionLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
+    objPositionLabel->setText("Position");
+    objPositionLabel->setPosition(0, objPropName->getPosition().y + objPropName->getSize().y + 4);
+
+    objPositionLabelX = tgui::Label::copy(objPositionLabel);
+    objPositionLabelX->setText("x:");
+    objPositionLabelX->setPosition(0, objPositionLabel->getPosition().y + objPositionLabel->getSize().y + 4);
+
+    objPositionX = tgui::EditBox::copy(objPropChangeNameBox);
+    objPositionX->setPosition(objPositionLabelX->getSize().x + 4, objPositionLabelX->getPosition().y);
+
+    objPositionLabelY = tgui::Label::copy(objPositionLabel);
+    objPositionLabelY->setText("y:");
+    objPositionLabelY->setPosition(0, objPositionLabelX->getPosition().y + objPositionLabelX->getSize().y + 4);
+
+    objPositionY = tgui::EditBox::copy(objPropChangeNameBox);
+    objPositionY->setPosition(objPositionLabelY->getSize().x + 4, objPositionLabelY->getPosition().y);
+
+    objIndexLabel = tgui::Label::copy(objPositionLabel);
+    objIndexLabel->setText("Index:");
+    objIndexLabel->setPosition(0, objPositionLabelY->getPosition().y + objPositionLabelY->getSize().y + 4);
+
+    objIndexEditBox = tgui::EditBox::copy(objPositionY);
+    objIndexEditBox->setPosition(objIndexLabel->getSize().x + 4, objIndexLabel->getPosition().y);
+
+    objectProperties->add(objPropName);
+    objectProperties->add(objPropChangeNameBox);
+    objectProperties->add(objPositionLabel);
+    objectProperties->add(objPositionLabelX);
+    objectProperties->add(objPositionLabelY);
+    objectProperties->add(objPositionX);
+    objectProperties->add(objPositionY);
+    objectProperties->add(objIndexLabel);
+    objectProperties->add(objIndexEditBox);
+
+    objConfirmChanges = tgui::Button::create();
+    scrollProperties->add(objConfirmChanges);
+    objConfirmChanges->setPosition(4, scrollProperties->getSize().y - objConfirmChanges->getSize().y - 4);
+    objConfirmChanges->setText("Confirm");
+    objConfirmChanges->connect(objConfirmChanges->onClick.getName(), &MapEditor::UpdateObjectFromProperties, this);
+    //------------------------------------------------------------------------------------------------------------------
+    auto grid = tgui::Grid::create();
+
+    grid->setPosition(20, 20);
+
+    scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 225));
+    auto imgInRow = scrollPanel->getSize().x / 64 - (PathToImages.size() * 0.25);
+    std::cout << imgInRow << std::endl;
+    uint x = 0, y = 0;
+    for (auto i : PathToImages)
+    {
+        auto pic = tgui::Picture::create(i);
+        pic->connect(pic->onClick.getName(), &MapEditor::SelectImage, this, i);
+        if (y == ceil(imgInRow))
+        {
+            x++;
+            y = 0;
+        }
+        y++;
+        grid->addWidget(pic, x, y, {5, 5, 5, 5});
+    }
+
+    scrollPanel->setHorizontalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Never);
+    scrollPanel->setVerticalScrollbarPolicy(tgui::ScrollablePanel::ScrollbarPolicy::Always);
+    scrollPanel->add(grid);
+
+    infoPanel = tgui::Panel::create({200, 100});
+    infoPanel->setPosition(scrollProperties->getPosition().x - infoPanel->getSize().x, 0);
+    infoPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
+
+    infoObjCountLabel = tgui::Label::create();
+    infoObjCountLabel->getRenderer()->setTextColor(sf::Color::White);
+    infoObjCountLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
+
+    infoFPSLabel = tgui::Label::create();
+    infoFPSLabel->getRenderer()->setTextColor(sf::Color::White);
+    infoFPSLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
+    infoFPSLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
+    infoPanel->add(infoObjCountLabel);
+    infoPanel->add(infoFPSLabel);
+
+    scrollPanel->connect(scrollPanel->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
+    scrollPanel->connect(scrollPanel->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
+
+    scrollProperties->connect(scrollProperties->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this,
+                              true);
+    scrollProperties->connect(scrollProperties->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this,
+                              false);
+
+    ObjectListBox->connect(ObjectListBox->onMouseLeave.getName(), &MapEditor::ChangeScrollablePanelStatus, this, true);
+    ObjectListBox->connect(ObjectListBox->onMouseEnter.getName(), &MapEditor::ChangeScrollablePanelStatus, this, false);
 }

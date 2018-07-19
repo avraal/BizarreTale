@@ -42,8 +42,7 @@ private:
     }
     std::vector<std::shared_ptr<sf::Drawable>> dr1;                 //all rendered objects
     std::shared_ptr<Level> level;                                   //container for all object on level
-    //std::vector<std::shared_ptr<CTile>> ObjList;               //TODO: deprecated
-    std::vector<std::shared_ptr<CPrimitiveQuad>> TileMap;            //draw grid for add new objects
+    std::vector<std::shared_ptr<CPrimitiveQuad>> TileMap;           //draw grid for add new objects
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats
     std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;        //grid of lines
@@ -96,7 +95,7 @@ private:
     void ChangeScrollablePanelStatus(bool val);
     void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
-
+    void LoadUI();
     std::shared_ptr<EObject> findEntityByName(std::string ObjName);
 public:
     MapEditor(MapEditor const&) = delete;
