@@ -13,15 +13,28 @@
 #include <memory>
 #include "../PrimitiveQuad.hpp"
 
+class Level;
 class IComponent;
+class TileEntity;
 class IEntity
 {
 protected:
     int Id;
+    sf::Vector2f Position;
+    std::string Name;
     std::vector<std::shared_ptr<IComponent>> Components;
+    std::shared_ptr<PrimitiveQuad> body;
 public:
-    int GetId();
+    IEntity(int id = -1);
+
+    int GetId() const;
     void setId(int id);
+    void setName(const std::string &name);
+    void setPosition(float x, float y);
+    void setPosition(const sf::Vector2f &position);
+    sf::Vector2f getPosition() const;
+    std::shared_ptr<PrimitiveQuad> getBody();
+    std::string getName() const;
     void addComponent(std::shared_ptr<IComponent> component);
     template <class T>
     T *getComponent()
@@ -36,20 +49,35 @@ public:
         }
         return nullptr;
     }
+    template <class T>
+    T *getComponentByName(const std::string &name)
+    {
+        for(auto c : Components)
+        {
+            if(c->getName() == name)
+            {
+                T *t = dynamic_cast<T*>(c.get());
+                if(t != nullptr)
+                {
+                    return t;
+                }
+            }
+        }
+        return nullptr;
+    }
 
     std::vector<std::shared_ptr<PrimitiveQuad>> getDrawable()
     {
         std::vector<std::shared_ptr<PrimitiveQuad>> result;
         for(auto &c : Components)
         {
-//            PrimitiveQuad *p = dynamic_cast<PrimitiveQuad*>(c.get());
             std::shared_ptr<PrimitiveQuad> p1 = std::dynamic_pointer_cast<PrimitiveQuad>(c);
             if(p1)
             {
                 result.push_back(p1);
+                std::cout << "Add component to " << getName() << std::endl;
             }
         }
-        std::cout << "Add p1" << std::endl;
         return result;
     }
 
