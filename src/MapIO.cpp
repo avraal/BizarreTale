@@ -14,11 +14,11 @@ void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<TileEnt
 
     json j;
 
-    for(auto o : obj)
-    {
-        j[o->GetName()] = {{"index", o->getIndex()}, {"position", {o->getPosition().x, o->getPosition().y}},
-                      {"size", {o->getSpriteScale().x*TILE_SIZE_DEFAULT, o->getSpriteScale().y*TILE_SIZE_DEFAULT}}, {"image", o->GetImagePath()}};
-    }
+//    for(auto o : obj)
+//    {
+//        j[o->GetName()] = {{"index", o->getIndex()}, {"position", {o->getPosition().x, o->getPosition().y}},
+//                      {"size", {o->getSpriteScale().x*TILE_SIZE_DEFAULT, o->getSpriteScale().y*TILE_SIZE_DEFAULT}}, {"image", o->GetImagePath()}};
+//    }
 
     std::string result = j.dump();
     std::ofstream to_file(fileName, std::ios_base::trunc);
@@ -62,7 +62,7 @@ void MapIO::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<TileE
         float sizeX = j_size[0];
         float sizeY = j_size[1];
 
-        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(name, imagePath, {posX, posY}, index))));
+//        obj.push_back(std::move(std::shared_ptr<TileEntity>(new TileEntity(name, imagePath, {posX, posY}, index))));
         obj.back()->setSize({sizeX, sizeY});
     }
 }
