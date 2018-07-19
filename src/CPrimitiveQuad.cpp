@@ -34,7 +34,7 @@ CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &&p)
 {
     std::cout << "Move" << std::endl;
     this->color = p.color;
-    this->index = index;
+    this->index = p.index;
     this->body = p.body;
     this->ShowBounds = p.ShowBounds;
     setSize({TSD, TSD}); //TODO: Change TSD to real size
