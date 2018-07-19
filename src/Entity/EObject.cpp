@@ -8,13 +8,18 @@
 
 #include "EObject.hpp"
 #include "../PrimitiveQuad.hpp"
-EObject::EObject()
-{
-    setId(0);
-    std::shared_ptr<IComponent> tile = std::make_shared<PrimitiveQuad>(sf::Color::Red);
-    addComponent(tile);
-}
+#include "../Level.hpp"
+#include "../TileEntity.h"
+
 EObject::~EObject()
 {
 
+}
+EObject::EObject(const std::string &ImagePath)
+{
+    if(!ImagePath.empty())
+    {
+        body = std::make_shared<TileEntity>("body", ImagePath, getPosition());
+        Components.push_back(std::dynamic_pointer_cast<IComponent>(body));
+    }
 }

@@ -11,11 +11,13 @@
 
 #include "../Abstract/IEntity.hpp"
 
+class TileEntity;
 class EObject : public IEntity
 {
+private:
+    EObject(EObject *e);
 public:
-    //TODO: Add Level as parameter
-    EObject();
+    EObject(const std::string &ImagePath);
     virtual ~EObject();
 };
 
