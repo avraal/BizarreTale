@@ -7,6 +7,7 @@
 //
 
 #include "Level.hpp"
+#include "Abstract/IEntity.hpp"
 Level::Level(int id, const std::string &Name)
 {
     this->Id = id;
@@ -18,11 +19,13 @@ Level::Level(const Level &l) : Level(l.Id, l.Name)
 Level::Level(const Level &&l) : Level(l.Id, l.Name)
 {
 }
-void Level::addObject(std::shared_ptr<TileEntity> te)
+void Level::addObject(std::shared_ptr<IEntity> ie)
 {
-    ObjList.push_back(te);
+    ObjList.push_back(ie);
+    ie->setId(ObjList.size());
+    ie->setName("def" + std::to_string(ObjList.size()));
 }
-std::shared_ptr<TileEntity> Level::getObject(int index)
+std::shared_ptr<IEntity> Level::getObject(int index)
 {
     if(!ObjList.empty())
     {
@@ -30,7 +33,7 @@ std::shared_ptr<TileEntity> Level::getObject(int index)
     }
     return nullptr;
 }
-std::vector<std::shared_ptr<TileEntity>> &Level::getAllObjects()
+std::vector<std::shared_ptr<IEntity>> &Level::getAllObjects()
 {
     return ObjList;
 }

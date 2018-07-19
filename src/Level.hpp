@@ -13,14 +13,14 @@
 #include <vector>
 #include <memory>
 
-class TileEntity;
+class IEntity;
 
 class Level final
 {
 private:
     int Id;
     std::string Name;
-    std::vector<std::shared_ptr<TileEntity>> ObjList;
+    std::vector<std::shared_ptr<IEntity>> ObjList;
 public:
     Level() = delete;
     Level(int id, const std::string &Name);
@@ -28,10 +28,10 @@ public:
     Level(const Level&&);
     ~Level();
 
-    void addObject(std::shared_ptr<TileEntity> te);
+    void addObject(std::shared_ptr<IEntity> ie);
     size_t getObjCount();
-    std::shared_ptr<TileEntity> getObject(int index);
-    std::vector<std::shared_ptr<TileEntity>> &getAllObjects();
+    std::shared_ptr<IEntity> getObject(int index);
+    std::vector<std::shared_ptr<IEntity>> &getAllObjects();
 };
 
 #endif //BIZARRETALE_LEVEL_HPP
