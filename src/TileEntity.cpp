@@ -26,11 +26,11 @@ void TileEntity::LoadTexture(std::string ImagePath)
 
 TileEntity::TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position, int index) : PrimitiveQuad()
 {
-    std::cout << "Ctor" << std::endl;
+    std::cout << "TECtor" << std::endl;
     this->ImagePath = ImagePath;
     this->Name = Name;
     LoadTexture(ImagePath);
-    setIndex(index);
+    this->index = index;
     setPosition(position.x, position.y);
 }
 
@@ -66,6 +66,10 @@ void TileEntity::setPosition(float x, float y)
         hideBounds();
     }
 }
+void TileEntity::setPosition(const sf::Vector2f &Position)
+{
+    this->setPosition(Position.x, Position.y);
+}
 std::string TileEntity::GetImagePath() const
 {
     return ImagePath;
@@ -81,14 +85,6 @@ TileEntity &TileEntity::operator=(TileEntity const &me)
         LoadTexture(ImagePath);
     }
     return *this;
-}
-void TileEntity::setIndex(int index)
-{
-    this->index = index;
-}
-int TileEntity::getIndex() const
-{
-    return index;
 }
 void TileEntity::setSize(sf::Vector2f s)
 {
@@ -114,3 +110,4 @@ void TileEntity::drawBounds()
     shape.append({getPosition() + sf::Vector2f(getTextureSize()), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
     shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
 }
+

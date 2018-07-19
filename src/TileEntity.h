@@ -24,15 +24,12 @@ class TileEntity : public PrimitiveQuad
 private:
     sf::Sprite sprite;
     std::string ImagePath;
-    std::string Name;
 
-    int index = 0;
 protected:
-
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 public:
     TileEntity();
-    TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position = {.0f, .0f}, int index = 0);
+    TileEntity(std::string Name, std::string ImagePath, sf::Vector2f position, int index = 0);
     TileEntity(const TileEntity &entity);
     TileEntity(const TileEntity &&entity);
     TileEntity &operator=(sf::Drawable const &) = delete;
@@ -40,15 +37,13 @@ public:
     TileEntity &operator=(TileEntity const &me);
     virtual ~TileEntity();
     void LoadTexture(std::string ImagePath);
-    void setPosition(float x, float y);
-    void setIndex(int index);
+    virtual void setPosition(float x, float y);
+    virtual void setPosition(const sf::Vector2f &Position);
     void setName(const std::string &Name);
     virtual void setSize(sf::Vector2f s) override;
     virtual void drawBounds() override;
     std::string GetImagePath() const;
     std::string GetName() const;
-
-    int getIndex() const;
 
     sf::Vector2f getSpriteScale() const;
 };
