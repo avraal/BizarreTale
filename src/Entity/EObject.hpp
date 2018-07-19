@@ -14,8 +14,6 @@
 class TileEntity;
 class EObject : public IEntity
 {
-private:
-    EObject(EObject *e);
 public:
     EObject(const std::string &ImagePath);
     virtual ~EObject();
