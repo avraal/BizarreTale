@@ -1,6 +1,6 @@
 # BizarreTale
 Simple constructor for gamedev
-Guide for using BizarreTale Editor v. 0.2
+Guide for using BizarreTale Editor v. 0.2 (deprecated)
 
 ## How to create a Singleton object:
 ```c++
