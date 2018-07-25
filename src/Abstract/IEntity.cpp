@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "IEntity.hpp"
 #include "../Level.hpp"
-int IEntity::GetId() const
+int IEntity::GetId() const noexcept
 {
     return Id;
 }
@@ -28,15 +28,15 @@ IEntity::IEntity(int id)
     Position = {0.f, 0.f};
     Name = "def";
 }
-std::string IEntity::getName() const
+std::string IEntity::getName() const noexcept
 {
     return Name;
 }
-void IEntity::setName(const std::string &name)
+void IEntity::setName(const std::string &name) noexcept
 {
     this->Name = name;
 }
-void IEntity::setId(int id)
+void IEntity::setId(int id) noexcept
 {
     this->Id = id;
 }

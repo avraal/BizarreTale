@@ -27,14 +27,14 @@ protected:
 public:
     IEntity(int id = -1);
 
-    int GetId() const;
-    void setId(int id);
-    void setName(const std::string &name);
+    virtual int GetId()                               const noexcept final;
+    virtual void setId(int id)                              noexcept final;
+    virtual void setName(const std::string &name)           noexcept final;
     void setPosition(float x, float y);
     void setPosition(const sf::Vector2f &position);
-    sf::Vector2f getPosition() const;
+    sf::Vector2f getPosition()                        const;
     std::shared_ptr<CPrimitiveQuad> getBody();
-    std::string getName() const;
+    virtual std::string getName()                     const noexcept final;
     void addComponent(std::shared_ptr<IComponent> component);
     template <class T>
     T *getComponent()
