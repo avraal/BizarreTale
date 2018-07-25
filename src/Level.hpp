@@ -12,21 +12,29 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include "CPrimitiveQuad.hpp"
 
 class IEntity;
-
+class EObject;
 class Level final
 {
 private:
     int Id;
     std::string Name;
     std::vector<std::shared_ptr<IEntity>> ObjList;
+    std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
+    sf::Clock clock;
+    void sortObjects();
 public:
     Level() = delete;
     Level(int id, const std::string &Name);
     Level(const Level&);
     Level(const Level&&);
     ~Level();
+
+    void draw(sf::RenderWindow &window);
+    void CreateObject(EObject *ie);
 
     void addObject(std::shared_ptr<IEntity> ie);
     size_t getObjCount();

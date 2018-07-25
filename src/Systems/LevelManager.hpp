@@ -9,9 +9,17 @@
 #ifndef BIZARRETALE_LEVELMANAGER_HPP
 #define BIZARRETALE_LEVELMANAGER_HPP
 
-class LevelManager
-{
+#include <vector>
+#include <memory>
+#include "../Abstract/ISystem.hpp"
+#include "../Level.hpp"
 
+class LevelManager : public ISystem
+{
+private:
+    std::vector<std::unique_ptr<Level>> Levels;
+public:
+    virtual void Execute ();
 };
 
 #endif //BIZARRETALE_LEVELMANAGER_HPP

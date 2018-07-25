@@ -6,6 +6,7 @@
 // Created by Andrew Volski on 10.07.18.
 //
 
+#include <SFML/Window/Event.hpp>
 #include "Level.hpp"
 #include "Abstract/IEntity.hpp"
 Level::Level(int id, const std::string &Name)
@@ -27,7 +28,7 @@ void Level::addObject(std::shared_ptr<IEntity> ie)
 }
 std::shared_ptr<IEntity> Level::getObject(int index)
 {
-    if(!ObjList.empty())
+    if (!ObjList.empty())
     {
         return ObjList[index];
     }
@@ -42,6 +43,20 @@ size_t Level::getObjCount()
     return ObjList.size();
 }
 Level::~Level()
+{
+
+}
+void Level::draw(sf::RenderWindow &window)
+{
+    for (auto o : ObjList)
+    {
+        for (auto d : o->getDrawable())
+        {
+            window.draw(*d);
+        }
+    }
+}
+void Level::CreateObject(EObject *ie)
 {
 
 }
