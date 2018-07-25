@@ -95,7 +95,7 @@ private:
 
     void drawTileMap(float size_x, float size_y);
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
-    void SelectImage(std::string imagePath);
+    void SelectImage(const std::string &imagePath);
     void MouseCallbacks(sf::Event event);
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
