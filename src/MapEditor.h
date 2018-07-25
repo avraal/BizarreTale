@@ -15,6 +15,7 @@
 #include <dirent.h>
 #include <string>
 #include <mutex>
+#include <set>
 #include "CTile.h"
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
@@ -22,10 +23,10 @@
 #include "Level.hpp"
 
 class EObject;
-class MapEditor
+class MapEditor final
 {
 private:
-    MapEditor()
+    MapEditor() noexcept
     {
         ImageDirectory = "";
         CurrentPathFile  = "";
@@ -34,7 +35,7 @@ private:
         CameraSpeed = 4.0f;
         showInfo = true;
         canScroled = true;
-        CurrentMode = EditorMode::EDIT;
+        CurrentMode = EditorMode::SELECT;
         SelectedEntity = nullptr;
     }
     virtual ~MapEditor()
@@ -78,13 +79,14 @@ private:
 
     MapIO &mio = MapIO::Instance();
 
-    enum EditorMode {ADD, EDIT};
+    enum EditorMode {ADD, SELECT, MULTISELECT};
 
     EditorMode CurrentMode;
 
     std::mutex b_mutex;
 
     std::shared_ptr<EObject> SelectedEntity;
+    std::set<std::shared_ptr<EObject>> SelectedEntities;
 
     void drawTileMap(float size_x, float size_y);
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
@@ -96,6 +98,8 @@ private:
     void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
     void LoadUI();
+    void updateNames();
+    void sortObjects();
     std::shared_ptr<EObject> findEntityByName(std::string ObjName);
 public:
     MapEditor(MapEditor const&) = delete;
