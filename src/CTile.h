@@ -39,7 +39,6 @@ public:
     void LoadTexture(std::string ImagePath);
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);
-    void setName(const std::string &Name);
     virtual void setSize(sf::Vector2f s) override;
     virtual void drawBounds() override;
     std::string GetImagePath() const;
