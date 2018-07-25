@@ -17,6 +17,7 @@
 #include "ThicknessLine.hpp"
 #include "ThicknessLineArray.hpp"
 #include "Abstract/IComponent.hpp"
+#include "CONST_DEFINITIONS.h"
 
 #define TSD TILE_SIZE_DEFAULT
 
