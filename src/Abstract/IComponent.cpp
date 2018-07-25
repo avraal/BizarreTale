@@ -10,11 +10,11 @@
 IComponent::~IComponent()
 {
 }
-void IComponent::setName(const std::string &name)
+void IComponent::setName(const std::string &name) noexcept
 {
     this->Name = name;
 }
-std::string IComponent::getName() const
+std::string IComponent::getName() const noexcept
 {
     return Name;
 }

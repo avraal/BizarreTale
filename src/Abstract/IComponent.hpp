@@ -18,8 +18,8 @@ protected:
 public:
     virtual ~IComponent() = 0;
 
-    void setName(const std::string &name);
-    std::string getName() const;
+    virtual void setName(const std::string &name) noexcept final;
+    virtual std::string getName() const noexcept final;
 };
 
 #endif //BIZARRETALE_ICOMPONENT_HPP
