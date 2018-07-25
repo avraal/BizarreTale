@@ -13,14 +13,20 @@ int IEntity::GetId() const noexcept
     return Id;
 }
 
-void IEntity::addComponent(std::shared_ptr<IComponent> component)
+void IEntity::addComponent(IComponent* component)
 {
     //TODO: add checking on unique value
     Components.push_back(component);
 }
 IEntity::~IEntity()
 {
+    for(auto c : Components)
+    {
+        delete c;
+    }
+    Components.clear();
 }
+
 IEntity::IEntity(int id)
 {
     this->Id = id;
@@ -40,7 +46,7 @@ void IEntity::setId(int id) noexcept
 {
     this->Id = id;
 }
-std::shared_ptr<CPrimitiveQuad> IEntity::getBody()
+CPrimitiveQuad *IEntity::getBody()
 {
     return body;
 }

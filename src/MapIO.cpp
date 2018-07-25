@@ -8,6 +8,7 @@
 #include <thread>
 #include <deque>
 #include "MapIO.h"
+
 void MapIO::SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj)
 {
     std::cout << "Preparing to write..." << std::endl;

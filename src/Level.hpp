@@ -22,8 +22,8 @@ class Level final
 private:
     int Id;
     std::string Name;
-    std::vector<std::shared_ptr<IEntity>> ObjList;
-    std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
+    std::vector<IEntity*> ObjList;
+    std::vector<CPrimitiveQuad*> DrawableComponents;
     sf::Clock clock;
     void sortObjects();
 public:
@@ -36,10 +36,10 @@ public:
     void draw(sf::RenderWindow &window);
     void CreateObject(EObject *ie);
 
-    void addObject(std::shared_ptr<IEntity> ie);
+    void addObject(IEntity *ie);
     size_t getObjCount();
-    std::shared_ptr<IEntity> getObject(int index);
-    std::vector<std::shared_ptr<IEntity>> &getAllObjects();
+    IEntity *getObject(int index);
+    std::vector<IEntity*> &getAllObjects();
 };
 
 #endif //BIZARRETALE_LEVEL_HPP

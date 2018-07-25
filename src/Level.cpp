@@ -20,13 +20,13 @@ Level::Level(const Level &l) : Level(l.Id, l.Name)
 Level::Level(const Level &&l) : Level(l.Id, l.Name)
 {
 }
-void Level::addObject(std::shared_ptr<IEntity> ie)
+void Level::addObject(IEntity *ie)
 {
     ObjList.push_back(ie);
     ie->setId(ObjList.size());
     ie->setName("def" + std::to_string(ObjList.size()));
 }
-std::shared_ptr<IEntity> Level::getObject(int index)
+IEntity *Level::getObject(int index)
 {
     if (!ObjList.empty())
     {
@@ -34,7 +34,7 @@ std::shared_ptr<IEntity> Level::getObject(int index)
     }
     return nullptr;
 }
-std::vector<std::shared_ptr<IEntity>> &Level::getAllObjects()
+std::vector<IEntity*> &Level::getAllObjects()
 {
     return ObjList;
 }
@@ -42,9 +42,19 @@ size_t Level::getObjCount()
 {
     return ObjList.size();
 }
+
 Level::~Level()
 {
-
+    for(auto d : DrawableComponents)
+    {
+        delete d;
+    }
+    DrawableComponents.clear();
+    for(auto o : ObjList)
+    {
+        delete o;
+    }
+    ObjList.clear();
 }
 void Level::draw(sf::RenderWindow &window)
 {

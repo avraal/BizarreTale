@@ -30,8 +30,7 @@ bool MapEditor::initWindow()
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
 
-    level = std::make_shared<Level>(0, "Test");
-
+    level = new Level(0, "Test");
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -90,16 +89,16 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
     dirent *directory;
     if (FileFormats.empty())
     {
-        FileFormats.push_back(".*");
+        FileFormats.emplace_back(".*");
     }
-    if ((dir = opendir(MapEditor::ImageDirectory.c_str())) != NULL)
+    if ((dir = opendir(MapEditor::ImageDirectory.c_str())) != nullptr)
     {
-        while ((directory = readdir(dir)) != NULL)
+        while ((directory = readdir(dir)) != nullptr)
         {
             char *last = strrchr(directory->d_name, '.');
-            if (last != NULL)
+            if (last != nullptr)
             {
-                for (auto f : FileFormats)
+                for (const auto &f : FileFormats)
                 {
                     if (strcmp(last, f.c_str()) == 0)
                     {
@@ -115,7 +114,7 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
         std::cerr << "Cant open a dir" << std::endl;
     }
 }
-void MapEditor::SelectImage(std::string imagePath)
+void MapEditor::SelectImage(const std::string &imagePath)
 {
     CurrentPathFile = imagePath;
     CurrentMode = EditorMode::ADD;
@@ -129,12 +128,12 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     int width = 15;
     std::vector<std::string> Tiles;
     std::vector<std::string> Formats;
-    Formats.push_back(".png");
+    Formats.emplace_back(".png");
     findAllFiles(Tiles, Formats);
     //added tiles
     for (uint i = 1; i <= height * width; i++)
     {
-        TileMap.push_back(std::move(std::shared_ptr<CPrimitiveQuad>(new CPrimitiveQuad)));
+        TileMap.push_back(new CPrimitiveQuad());
     }
 
     //set position
@@ -161,7 +160,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
                         sf::Vertex({TileMap[width - 1]->getPosition().x + TILE_SIZE_DEFAULT,
                                     TileMap[i * width]->getPosition().y}, sf::Color(42, 76, 61))
                 };
-        LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
+        LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
     //draw vertical lines
     for (uint i = 1; i < width; i++)
@@ -173,7 +172,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
                                     TileMap[width * height - 1]->getPosition().y + TILE_SIZE_DEFAULT},
                                    sf::Color(42, 76, 61))
                 };
-        LineGrid.push_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
+        LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
 
 }
@@ -193,7 +192,6 @@ void MapEditor::MouseCallbacks(sf::Event event)
             {
                 case EditorMode::ADD:
                 {
-                    SelectedEntities.clear();
                     for (auto t : TileMap)
                     {
                         clickCondition =
@@ -203,7 +201,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                 MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
                         if (clickCondition)
                         {
-                            std::shared_ptr<EObject> eobj = std::make_shared<EObject>(CurrentPathFile);
+                            auto eobj = new EObject(CurrentPathFile);
                             level->addObject(eobj);
                             eobj->setPosition(t->getPosition());
                             if (level->getObjCount() > 1)
@@ -271,11 +269,11 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                 o->getBody()->getPosition().y + o->getBody()->getTextureSize().y;
                         if (clickCondition)
                         {
-                            if (SelectedEntities.empty())
-                            {
-                                SelectedEntities.insert({SelectedEntity});
-                            }
-                            SelectedEntities.insert({std::dynamic_pointer_cast<EObject>(o)});
+//                            if (SelectedEntities.empty())
+//                            {
+//                                SelectedEntities.insert({SelectedEntity});
+//                            }
+                            SelectedEntities.insert({dynamic_cast<EObject*>(o)});
                             ObjectListBox->setSelectedItem(o->getName());
                             for (auto s : SelectedEntities)
                             {
@@ -305,6 +303,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
         }
     }
 }
+
 void MapEditor::ZoomViewAt(sf::Vector2i pixel, float zoom)
 {
     const sf::Vector2f beforeCoord{window.mapPixelToCoords(pixel)};
@@ -340,9 +339,12 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::A:
             {
                 CurrentMode = EditorMode::ADD;
-                if(SelectedEntity->getBody() != nullptr)
+                if(SelectedEntity != nullptr)
                 {
-                    SelectedEntity->getBody()->hideBounds();
+                    if (SelectedEntity->getBody() != nullptr)
+                    {
+                        SelectedEntity->getBody()->hideBounds();
+                    }
                 }
                 SelectedEntity = nullptr;
                 for(auto o : level->getAllObjects())
@@ -494,13 +496,14 @@ void MapEditor::addInfoToPropertiesPanel()
         objIndexEditBox->setText(std::to_string(body->getIndex()));
     }
 }
-std::shared_ptr<EObject> MapEditor::findEntityByName(std::string ObjName)
+EObject *MapEditor::findEntityByName(const std::string &ObjName)
 {
     for (auto &o : level->getAllObjects())
     {
         if (o->getName() == ObjName)
         {
-            return std::dynamic_pointer_cast<EObject>(o);
+            //TODO: remove cast
+            return dynamic_cast<EObject*>(o);
         }
     }
     std::cerr << "findEntityByName returned null reference" << std::endl;
@@ -571,7 +574,7 @@ void MapEditor::sortObjects()
     }
 
     std::sort(level->getAllObjects().begin(), level->getAllObjects().end(),
-              [](std::shared_ptr<IEntity> t1, std::shared_ptr<IEntity> t2)
+              [](IEntity *t1, IEntity *t2)
               {
                   if (t1->getBody() != nullptr && t2->getBody() != nullptr)
                   {

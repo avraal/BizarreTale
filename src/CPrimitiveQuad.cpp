@@ -9,6 +9,7 @@
 #include <iostream>
 #include "CPrimitiveQuad.hpp"
 #include "CONST_DEFINITIONS.h"
+
 CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
 {
     std::cout << "PQCtor" << std::endl;

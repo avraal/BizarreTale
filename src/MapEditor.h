@@ -40,10 +40,16 @@ private:
     }
     virtual ~MapEditor()
     {
+        delete level;
+        for(auto t : TileMap)
+        {
+            delete t;
+        }
+        TileMap.clear();
     }
-    std::vector<std::shared_ptr<sf::Drawable>> dr1;                 //all rendered objects
-    std::shared_ptr<Level> level;                                   //container for all object on level
-    std::vector<std::shared_ptr<CPrimitiveQuad>> TileMap;           //draw grid for add new objects
+    std::vector<sf::Drawable*> dr1;                 //all rendered objects
+    Level *level;                                   //container for all object on level
+    std::vector<CPrimitiveQuad*> TileMap;           //draw grid for add new objects
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats
     std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;        //grid of lines
@@ -84,13 +90,12 @@ private:
     EditorMode CurrentMode;
 
     std::mutex b_mutex;
-
-    std::shared_ptr<EObject> SelectedEntity;
-    std::set<std::shared_ptr<EObject>> SelectedEntities;
+    EObject *SelectedEntity;
+    std::set<EObject*> SelectedEntities;
 
     void drawTileMap(float size_x, float size_y);
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
-    void SelectImage(std::string imagePath);
+    void SelectImage(const std::string &imagePath);
     void MouseCallbacks(sf::Event event);
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
@@ -100,7 +105,8 @@ private:
     void LoadUI();
     void updateNames();
     void sortObjects();
-    std::shared_ptr<EObject> findEntityByName(std::string ObjName);
+    EObject *findEntityByName(const std::string &ObjName);
+
 public:
     MapEditor(MapEditor const&) = delete;
     MapEditor(MapEditor&&) = delete;

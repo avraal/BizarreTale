@@ -13,14 +13,19 @@
 
 EObject::~EObject()
 {
-
+    delete body;
+//    for(auto c : Components)
+//    {
+//        delete c;
+//    }
+//    Components.clear();
 }
 EObject::EObject(const std::string &ImagePath)
 {
     if(!ImagePath.empty())
     {
-        body = std::make_shared<CTile>("body", ImagePath, getPosition());
-        Components.push_back(std::dynamic_pointer_cast<IComponent>(body));
+        body = new CTile("body", ImagePath, getPosition());
+        Components.push_back(body);
     }
 }
 EObject::EObject(EObject &&eo)
