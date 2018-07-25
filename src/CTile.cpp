@@ -35,7 +35,7 @@ CTile::CTile(std::string Name, std::string ImagePath, sf::Vector2f position, int
 }
 
 CTile::CTile(const CTile &entity) : CTile(entity.Name, entity.GetImagePath(), entity.getPosition(),
-                                                              entity.getIndex())
+                                          entity.getIndex())
 {
     std::cout << "Copy ctor" << std::endl;
 }
@@ -47,7 +47,7 @@ CTile::CTile(const CTile &&entity) : CTile(entity)
 
 void CTile::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-//    states.texture = &texture;
+    //    states.texture = &texture;
     target.draw(sprite, states);
     target.draw(shape, states);
 }
@@ -61,7 +61,7 @@ void CTile::setPosition(float x, float y)
     Transformable::setPosition(x, y);
     sprite.setPosition(x, y);
     drawBounds();
-    if(!ShowBounds)
+    if (!ShowBounds)
     {
         hideBounds();
     }
@@ -89,14 +89,12 @@ CTile &CTile::operator=(CTile const &me)
 void CTile::setSize(sf::Vector2f s)
 {
     sprite.setScale(s.x / sprite.getLocalBounds().width, s.y / sprite.getLocalBounds().height);
+    std::cout << sprite.getGlobalBounds().width << " " << sprite.getGlobalBounds().height << std::endl;
+    ShowBounds ? drawBounds() : hideBounds();
 }
 sf::Vector2f CTile::getSpriteScale() const
 {
     return sprite.getScale();
-}
-void CTile::setName(const std::string &Name)
-{
-    this->Name = Name;
 }
 std::string CTile::GetName() const
 {
@@ -105,9 +103,13 @@ std::string CTile::GetName() const
 void CTile::drawBounds()
 {
     shape.Hide();
-    shape.append({getPosition(), getPosition() + sf::Vector2f(getTextureSize().x, 0)});
-    shape.append({getPosition() + sf::Vector2f(getTextureSize().x, 0), getPosition() + sf::Vector2f(getTextureSize())});
-    shape.append({getPosition() + sf::Vector2f(getTextureSize()), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
-    shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + getTextureSize().y)});
+
+    shape.append({getPosition(), getPosition() + sf::Vector2f(sprite.getGlobalBounds().width, 0)});
+    shape.append({getPosition() + sf::Vector2f(sprite.getGlobalBounds().width, 0),
+                  getPosition() + sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height)});
+    shape.append({getPosition() + sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height),
+                  sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
+    shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
+
 }
 
