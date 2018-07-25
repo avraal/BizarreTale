@@ -10,6 +10,7 @@
 IComponent::~IComponent()
 {
 }
+
 void IComponent::setName(const std::string &name) noexcept
 {
     this->Name = name;

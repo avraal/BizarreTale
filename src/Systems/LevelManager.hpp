@@ -17,7 +17,7 @@
 class LevelManager : public ISystem
 {
 private:
-    std::vector<std::unique_ptr<Level>> Levels;
+    std::vector<Level> Levels;
 public:
     virtual void Execute ();
 };

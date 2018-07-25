@@ -22,8 +22,8 @@ protected:
     int Id;
     sf::Vector2f Position;
     std::string Name;
-    std::vector<std::shared_ptr<IComponent>> Components;
-    std::shared_ptr<CPrimitiveQuad> body;
+    std::vector<IComponent*> Components;
+    CPrimitiveQuad *body;
 public:
     IEntity(int id = -1);
 
@@ -33,15 +33,15 @@ public:
     void setPosition(float x, float y);
     void setPosition(const sf::Vector2f &position);
     sf::Vector2f getPosition()                        const;
-    std::shared_ptr<CPrimitiveQuad> getBody();
+    CPrimitiveQuad *getBody();
     virtual std::string getName()                     const noexcept final;
-    void addComponent(std::shared_ptr<IComponent> component);
+    void addComponent(IComponent *component);
     template <class T>
     T *getComponent()
     {
         for(auto c : Components)
         {
-            T *t = dynamic_cast<T*>(c.get());
+            T *t = dynamic_cast<T*>(c);
             if(t != nullptr)
             {
                 return t;
@@ -56,7 +56,7 @@ public:
         {
             if(c->getName() == name)
             {
-                T *t = dynamic_cast<T*>(c.get());
+                T *t = dynamic_cast<T*>(c);
                 if(t != nullptr)
                 {
                     return t;
@@ -66,13 +66,13 @@ public:
         return nullptr;
     }
 
-    std::vector<std::shared_ptr<CPrimitiveQuad>> getDrawable()
+    std::vector<CPrimitiveQuad*> getDrawable()
     {
-        std::vector<std::shared_ptr<CPrimitiveQuad>> result;
+        std::vector<CPrimitiveQuad*> result;
         for(auto &c : Components)
         {
-            std::shared_ptr<CPrimitiveQuad> p1 = std::dynamic_pointer_cast<CPrimitiveQuad>(c);
-            if(p1)
+            CPrimitiveQuad *p1 = dynamic_cast<CPrimitiveQuad*>(c);
+            if(p1 != nullptr)
             {
                 result.push_back(p1);
                 std::cout << "Add component to " << getName() << std::endl;

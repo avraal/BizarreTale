@@ -22,6 +22,7 @@ ThicknessLine &ThicknessLineArray::operator[](size_t index)
 {
     return lines[index];
 }
+
 const ThicknessLine &ThicknessLineArray::operator[](size_t index) const
 {
     return lines[index];

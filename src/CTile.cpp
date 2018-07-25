@@ -92,6 +92,7 @@ void CTile::setSize(sf::Vector2f s)
     std::cout << sprite.getGlobalBounds().width << " " << sprite.getGlobalBounds().height << std::endl;
     ShowBounds ? drawBounds() : hideBounds();
 }
+
 sf::Vector2f CTile::getSpriteScale() const
 {
     return sprite.getScale();
