@@ -23,3 +23,12 @@ EObject::EObject(const std::string &ImagePath)
         Components.push_back(std::dynamic_pointer_cast<IComponent>(body));
     }
 }
+EObject::EObject(EObject &&eo)
+{
+    body = eo.body;
+    Position = eo.Position;
+    Components.clear();
+    std::copy(eo.Components.begin(), eo.Components.end(), std::back_inserter(Components));
+    Name = eo.Name;
+    Id = eo.Id;
+}

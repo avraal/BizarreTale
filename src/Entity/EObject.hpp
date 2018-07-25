@@ -16,6 +16,7 @@ class EObject : public IEntity
 {
 public:
     EObject(const std::string &ImagePath);
+    EObject(EObject &&eo);
     virtual ~EObject();
 };
 
