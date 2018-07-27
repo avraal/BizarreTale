@@ -6,17 +6,17 @@
 // Created by Andrew Volski on 10.07.18.
 //
 
-#include "LevelManager.hpp"
-void LevelManager::registerLevel(const std::string &name)
+#include "SLevelManager.hpp"
+void SLevelManager::registerLevel(const std::string &name)
 {
     Level *l = new Level(Levels.size() + 1, name);
     registerLevel(l);
 }
-void LevelManager::registerLevel(Level *l)
+void SLevelManager::registerLevel(Level *l)
 {
     Levels.insert(std::pair<std::string, Level*>(l->getName(), l));
 }
-LevelManager::~LevelManager()
+SLevelManager::~SLevelManager()
 {
     for(auto l : Levels)
     {
@@ -24,15 +24,15 @@ LevelManager::~LevelManager()
     }
     Levels.clear();
 }
-void LevelManager::Execute()
+void SLevelManager::Execute()
 {
 
 }
-LevelManager::LevelManager()
+SLevelManager::SLevelManager()
 {
 
 }
-Level *LevelManager::changeLevelByName(const std::string &name)
+Level *SLevelManager::changeLevelByName(const std::string &name)
 {
     if(Levels.find(name) != Levels.end())
     {

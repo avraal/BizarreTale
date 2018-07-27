@@ -15,17 +15,17 @@
 #include "../Abstract/ISystem.hpp"
 #include "../Level.hpp"
 
-class LevelManager : public ISystem
+class SLevelManager : public ISystem
 {
 private:
     std::map<std::string, Level*> Levels;
 public:
-    LevelManager();
+    SLevelManager();
     virtual void Execute ();
     void registerLevel(const std::string &name);
     void registerLevel(Level *l);
     Level *changeLevelByName(const std::string &name);
-    virtual ~LevelManager();
+    virtual ~SLevelManager();
 };
 
 #endif //BIZARRETALE_LEVELMANAGER_HPP
