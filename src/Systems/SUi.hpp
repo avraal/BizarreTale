@@ -3,7 +3,15 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 //
-// Created by Andrew Volski on 10.07.18.
+// Created by Andrew Volski on 25.07.18.
 //
 
-#include "LevelManager.hpp"
+#ifndef BIZARRETALE_SUI_HPP
+#define BIZARRETALE_SUI_HPP
+
+class SUi
+{
+
+};
+
+#endif //BIZARRETALE_SUI_HPP

@@ -11,15 +11,21 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 #include "../Abstract/ISystem.hpp"
 #include "../Level.hpp"
 
 class LevelManager : public ISystem
 {
 private:
-    std::vector<Level> Levels;
+    std::map<std::string, Level*> Levels;
 public:
+    LevelManager();
     virtual void Execute ();
+    void registerLevel(const std::string &name);
+    void registerLevel(Level *l);
+    Level *changeLevelByName(const std::string &name);
+    virtual ~LevelManager();
 };
 
 #endif //BIZARRETALE_LEVELMANAGER_HPP
