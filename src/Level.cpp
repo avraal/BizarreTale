@@ -13,6 +13,7 @@ Level::Level(int id, const std::string &Name)
 {
     this->Id = id;
     this->Name = Name;
+    UserInterface = new SUi();
 }
 Level::Level(const Level &l) : Level(l.Id, l.Name)
 {
@@ -25,6 +26,31 @@ void Level::addObject(IEntity *ie)
     ObjList.push_back(ie);
     ie->setId(ObjList.size());
     ie->setName("def" + std::to_string(ObjList.size()));
+    for(auto &d : ie->getDrawable())
+    {
+        DrawableComponents.push_back(d);
+    }
+    if(ObjList.size() > 1)
+    {
+        int count = 0;
+        for(auto o : ObjList)
+        {
+            if(o == ie)
+                continue;
+            if(o->getBody() != nullptr && ie->getBody() != nullptr)
+            {
+                if(o->getPosition() == ie->getPosition())
+                {
+                    count++;
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+        ie->getBody()->setIndex(count);
+    }
 }
 IEntity *Level::getObject(int index)
 {
@@ -55,18 +81,45 @@ Level::~Level()
         delete o;
     }
     ObjList.clear();
+    delete UserInterface->gui;
+    delete UserInterface;
 }
 void Level::draw(sf::RenderWindow &window)
 {
-    for (auto o : ObjList)
+    for(auto d : DrawableComponents)
     {
-        for (auto d : o->getDrawable())
+        window.draw(*d);
+    }
+    UserInterface->gui->draw();
+}
+std::string Level::getName() const
+{
+    return Name;
+}
+void Level::initGui(sf::RenderWindow &window)
+{
+    UserInterface->gui = new tgui::Gui(window);
+
+
+}
+void Level::sortedObjectsByIndex()
+{
+    std::sort(ObjList.begin(), ObjList.end(),
+            [](IEntity *t1, IEntity *t2)
+            {
+                if(t1->getBody() != nullptr && t2->getBody() != nullptr)
+                {
+                    return t1->getBody()->getIndex() < t2->getBody()->getIndex();
+                }
+                return false;
+            });
+    DrawableComponents.clear();
+    for(auto o : ObjList)
+    {
+        for(auto &d : o->getDrawable())
         {
-            window.draw(*d);
+            DrawableComponents.push_back(d);
         }
     }
-}
-void Level::CreateObject(EObject *ie)
-{
 
 }

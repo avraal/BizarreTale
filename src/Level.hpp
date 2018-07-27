@@ -14,6 +14,7 @@
 #include <memory>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "CPrimitiveQuad.hpp"
+#include "Systems/SUi.hpp"
 
 class IEntity;
 class EObject;
@@ -26,6 +27,7 @@ private:
     std::vector<CPrimitiveQuad*> DrawableComponents;
     sf::Clock clock;
     void sortObjects();
+    SUi *UserInterface;
 public:
     Level() = delete;
     Level(int id, const std::string &Name);
@@ -34,12 +36,13 @@ public:
     ~Level();
 
     void draw(sf::RenderWindow &window);
-    void CreateObject(EObject *ie);
-
     void addObject(IEntity *ie);
+    void initGui(sf::RenderWindow &window);
+    void sortedObjectsByIndex();
     size_t getObjCount();
     IEntity *getObject(int index);
     std::vector<IEntity*> &getAllObjects();
+    std::string getName() const;
 };
 
 #endif //BIZARRETALE_LEVEL_HPP
