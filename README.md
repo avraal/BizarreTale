@@ -1,6 +1,6 @@
 # BizarreTale
 Simple constructor for gamedev
-Guide for using BizarreTale Editor v. 0.2 (deprecated)
+Guide for using BizarreTale Editor v. 0.3
 
 ## How to create a Singleton object:
 ```c++
@@ -12,30 +12,37 @@ SingletonClass &obj = SingletonClass::Instance();
 
 <br>
 
-# MapIO
-### Pattern: Singleton
-### Parent: none
-
-It's a class, who is writing and reading files.
-
-Use LoadFromFile and SaveToFile to using his scope.
-```c++
-obj.SaveToFile("filename.format", objectContainer);
-obj.LoadFromFile("filename.format", objectContainer);
-```
+# IComponent
+### Pattern: Entity-Component-System
+Base abstract class for all Components  
+Every Component has Name  
+Has only one field with setters and getters for him
+ 
 <br>
 
-# CTile
-### Pattern: none
-### Parent: PrimiriveQuad
+<br>
 
-Basic unit for render.
+# IEntity
+### Pattern: Entity-Component-System
+Base abstract class for all Entity in game.  
+Every Entity has a:
+* Array of Components;
+* World Position - position entity on level;
+* Unique ID - on level;
+* Unique Name - on level;
+* Body - empty CPrimitiveQuad.
+
+# CTile
+### Pattern: Component
+### Parent: CPrimitiveQuad
+
+Basic Component for render.
 
 <br>
 
 # CPrimitiveQuad
-### Pattern: none
-### Parents: sf::Drawable, sf::Transformable
+### Pattern: Component
+### Parents: sf::Drawable, sf::Transformable, IComponent
 
 Represents array of vertex `(sf::VertexArray)`.
 
@@ -47,11 +54,13 @@ Represents array of vertex `(sf::VertexArray)`.
 
 Simple editor for game maps
 
-Has a public fields:
+Public fields:
 - [ImageDirectory]
+
+Public methods:
 - [initWindow]
-- [LoadFromFile]
-- [SaveToFile]
+- [LoadFromFile] (unused)
+- [SaveToFile] (unused)
 
 #### ImageDirectory
 Identify of directory, where find images
@@ -72,40 +81,31 @@ After directories identified, editor might be started
 ```c++
 Editor.initWindow();
 ```
-#### LoadFromFile:
+#### [Unused]LoadFromFile:
 Has a two parameters:
 * `fileName` - where objects are load
 * `obj` - container in which objects are loaded
 
 This method start a new thread, which blocked other threads and call `LoadFromFile` from MapIO.
 
-#### SaveToFile:
+#### [Unused]SaveToFile:
 Just like a `LoadFromFile` has a two parameters.
 
 This method start a new thread, which blocked other threads and call `SaveToFile` from MapIO.
 
 <br>
 
-# ClassAnalyzer
+# MapIO (unused)
 ### Pattern: Singleton
 ### Parent: none
 
-Checks size of classes and write it in file
+It's a class, who is writing and reading files.
 
-Might be started before or after MapEditor
+Use LoadFromFile and SaveToFile to using his scope.
 ```c++
-ca.start();
+obj.SaveToFile("filename.format", objectContainer);
+obj.LoadFromFile("filename.format", objectContainer);
 ```
-or
-
-```c++
-ca.start(true);
-```
-
-Method `start` has a default argument, which determine: print info in console or not. By default it's - **false**.
-
-> But this class have a defect: if i add a new class to project, ClassAnalyzer will be read file as file which already has information about new class. In this case, ClassAnalyzer write garbage.
-
 <br>
 
 [ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
