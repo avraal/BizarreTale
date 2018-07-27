@@ -1,3 +1,5 @@
+#include <utility>
+
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 //
@@ -17,20 +19,23 @@ bool MapEditor::initWindow()
     MainCamera.setCenter(300, 320);
     findAllFiles(PathToImages, ImagesFormats);
     drawTileMap(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT);
-    tgui::Gui gui{window};
+    auto gui = new tgui::Gui(window);
     tgui::Theme theme{"tgui_themes/Black.txt"};
 
     LoadUI();
 
-    gui.add(infoPanel);
-    gui.add(scrollPanel);
-    gui.add(ObjectListBox);
-    gui.add(scrollProperties);
+    gui->add(infoPanel);
+    gui->add(scrollPanel);
+    gui->add(ObjectListBox);
+    gui->add(scrollProperties);
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
+    levelManager = new SLevelManager();
+    CurrentLevel = new Level(0, "Test");
+    CurrentLevel->initGui(window);
 
-    level = new Level(0, "Test");
+    levelManager->registerLevel(CurrentLevel);
     while (window.isOpen())
     {
         float currentTime = clock.restart().asSeconds();
@@ -51,7 +56,7 @@ bool MapEditor::initWindow()
             //            }
             MouseCallbacks(event);
             KeyBoardCallbacks(event);
-            gui.handleEvent(event);
+            gui->handleEvent(event);
         }
 
         window.setView(MainCamera);
@@ -70,16 +75,14 @@ bool MapEditor::initWindow()
                     };
             window.draw(line, 2, sf::Lines);
         }
-//        level->draw(window);
-        for (auto d : dr1)
-        {
-            window.draw(*d);
-        }
-        infoObjCountLabel->setText("Object count: " + std::to_string(level->getObjCount()));
+        CurrentLevel->draw(window);
+
+        infoObjCountLabel->setText("Object count: " + std::to_string(CurrentLevel->getObjCount()));
         infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
-        gui.draw();
+        gui->draw();
         window.display();
     }
+    delete gui;
     return true;
 }
 
@@ -202,30 +205,9 @@ void MapEditor::MouseCallbacks(sf::Event event)
                         if (clickCondition)
                         {
                             auto eobj = new EObject(CurrentPathFile);
-                            level->addObject(eobj);
                             eobj->setPosition(t->getPosition());
-                            if (level->getObjCount() > 1)
-                            {
-                                int count = 0;
-                                for (auto o : level->getAllObjects())
-                                {
-                                    if (o == eobj)
-                                        continue;
-                                    if (o->getBody() != nullptr && eobj->getBody() != nullptr)
-                                    {
-                                        if (o->getPosition() == eobj->getPosition())
-                                        {
-                                            count++;
-                                        }
-                                    }
-                                }
-                                eobj->getBody()->setIndex(count);
-                            }
-                            for (auto o : eobj->getDrawable())
-                            {
-                                dr1.push_back(o);
-                            }
-                            const std::string objName = level->getObject(level->getObjCount() - 1)->getName();
+                            CurrentLevel->addObject(eobj);
+                            const std::string objName = CurrentLevel->getAllObjects().back()->getName();
                             ObjectListBox->addItem(objName);
                             ObjectListBox->setSelectedItem(objName);
                         }
@@ -234,7 +216,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 }
                 case EditorMode::SELECT:
                 {
-                    for (auto o : level->getAllObjects())
+                    for (auto o : CurrentLevel->getAllObjects())
                     {
                         clickCondition =
                                 MouseGlobalPosition.x > o->getBody()->getPosition().x &&
@@ -258,7 +240,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 }
                 case EditorMode::MULTISELECT:
                 {
-                    for (auto o : level->getAllObjects())
+                    for (auto o : CurrentLevel->getAllObjects())
                     {
                         clickCondition =
                                 MouseGlobalPosition.x > o->getBody()->getPosition().x &&
@@ -269,10 +251,10 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                 o->getBody()->getPosition().y + o->getBody()->getTextureSize().y;
                         if (clickCondition)
                         {
-//                            if (SelectedEntities.empty())
-//                            {
-//                                SelectedEntities.insert({SelectedEntity});
-//                            }
+                            if (SelectedEntities.empty())
+                            {
+                                SelectedEntities.insert({SelectedEntity});
+                            }
                             SelectedEntities.insert({dynamic_cast<EObject*>(o)});
                             ObjectListBox->setSelectedItem(o->getName());
                             for (auto s : SelectedEntities)
@@ -296,7 +278,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
 
     if (event.type == sf::Event::MouseWheelScrolled)
     {
-        if (canScroled)
+        if (canScroll)
         {
             ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y},
                        event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
@@ -347,7 +329,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                     }
                 }
                 SelectedEntity = nullptr;
-                for(auto o : level->getAllObjects())
+                for(auto o : CurrentLevel->getAllObjects())
                 {
                     if(o->getBody() != nullptr)
                     {
@@ -415,7 +397,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 {
                     t->setSize({128, 128});
                 }
-                for (auto o : level->getAllObjects())
+                for (auto o : CurrentLevel->getAllObjects())
                 {
                     //                    o->setSize({128, 128});
                     o->getBody()->setSize({128, 128});
@@ -427,25 +409,25 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
 }
 void MapEditor::ChangeScrollablePanelStatus(bool val)
 {
-    canScroled = val;
+    canScroll = val;
 }
-void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj)
-{
-    b_mutex.lock();
-    mio.LoadFromFile(fileName, obj);
-    b_mutex.unlock();
-    ObjectListBox->removeAllItems();
-    for (auto o : obj)
-    {
-        //        ObjectListBox->addItem(o->GetName());
-    }
-}
-void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj)
-{
-    b_mutex.lock();
-    mio.SaveToFile(fileName, obj);
-    b_mutex.unlock();
-}
+//void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj)
+//{
+//    b_mutex.lock();
+//    mio.LoadFromFile(std::move(fileName), obj);
+//    b_mutex.unlock();
+//    ObjectListBox->removeAllItems();
+//    for (auto o : obj)
+//    {
+//        //        ObjectListBox->addItem(o->GetName());
+//    }
+//}
+//void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj)
+//{
+//    b_mutex.lock();
+//    mio.SaveToFile(std::move(fileName), obj);
+//    b_mutex.unlock();
+//}
 void MapEditor::addInfoToPropertiesPanel()
 {
     if (ObjectListBox->getSelectedItemIndex() < 0)
@@ -461,7 +443,7 @@ void MapEditor::addInfoToPropertiesPanel()
     objPropChangeNameBox->setText(SelectedEntity->getName());
     objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
     objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
-    for (auto o : level->getAllObjects())
+    for (auto o : CurrentLevel->getAllObjects())
     {
         if (o != SelectedEntity)
         {
@@ -498,7 +480,7 @@ void MapEditor::addInfoToPropertiesPanel()
 }
 EObject *MapEditor::findEntityByName(const std::string &ObjName)
 {
-    for (auto &o : level->getAllObjects())
+    for (auto &o : CurrentLevel->getAllObjects())
     {
         if (o->getName() == ObjName)
         {
@@ -535,14 +517,14 @@ void MapEditor::UpdateObjectFromProperties()
             std::cerr << "getBody: body returned nullptr" << std::endl;
             return;
         }
-        SelectedEntity->setPosition(std::atof(objPositionX->getText().toAnsiString().c_str()),
-                                    std::atof(objPositionY->getText().toAnsiString().c_str()));
+        SelectedEntity->setPosition(static_cast<float>(std::atof(objPositionX->getText().toAnsiString().c_str())),
+                                    static_cast<float>(std::atof(objPositionY->getText().toAnsiString().c_str())));
         body->setIndex(std::stoi(objIndexEditBox->getText().toAnsiString()));
         SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
     }
 
     int count = 0;
-    for (auto o : level->getAllObjects())
+    for (auto o : CurrentLevel->getAllObjects())
     {
         if (o == SelectedEntity)
         {
@@ -568,30 +550,11 @@ void MapEditor::sortObjects()
 {
     ObjectListBox->removeAllItems();
 
-    for(auto o : level->getAllObjects())
+    for(auto o : CurrentLevel->getAllObjects())
     {
         ObjectListBox->addItem(o->getName());
     }
-
-    std::sort(level->getAllObjects().begin(), level->getAllObjects().end(),
-              [](IEntity *t1, IEntity *t2)
-              {
-                  if (t1->getBody() != nullptr && t2->getBody() != nullptr)
-                  {
-                      return t1->getBody()->getIndex() < t2->getBody()->getIndex();
-                  }
-                  return false;
-              });
-
-    dr1.clear();
-
-    for (auto o : level->getAllObjects())
-    {
-        for (auto &d : o->getDrawable())
-        {
-            dr1.push_back(d);
-        }
-    }
+    CurrentLevel->sortedObjectsByIndex();
 }
 
 void MapEditor::LoadUI()
@@ -697,7 +660,7 @@ void MapEditor::LoadUI()
     auto imgInRow = scrollPanel->getSize().x / 64 - (PathToImages.size() * 0.25);
     std::cout << imgInRow << std::endl;
     uint x = 0, y = 0;
-    for (auto i : PathToImages)
+    for (const auto &i : PathToImages)
     {
         auto pic = tgui::Picture::create(i);
         pic->connect(pic->onClick.getName(), &MapEditor::SelectImage, this, i);

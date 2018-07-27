@@ -21,6 +21,7 @@
 #include "CONST_DEFINITIONS.h"
 #include "CPrimitiveQuad.hpp"
 #include "Level.hpp"
+#include "Systems/SLevelManager.hpp"
 
 class EObject;
 class MapEditor final
@@ -34,21 +35,22 @@ private:
         ImagesFormats.push_back(".jpg");
         CameraSpeed = 4.0f;
         showInfo = true;
-        canScroled = true;
+        canScroll = true;
         CurrentMode = EditorMode::SELECT;
         SelectedEntity = nullptr;
     }
     virtual ~MapEditor()
     {
-        delete level;
+        delete CurrentLevel;
+        delete levelManager;
         for(auto t : TileMap)
         {
             delete t;
         }
         TileMap.clear();
     }
-    std::vector<sf::Drawable*> dr1;                 //all rendered objects
-    Level *level;                                   //container for all object on level
+    Level *CurrentLevel;                                   //container for all object on CurrentLevel
+    SLevelManager *levelManager;
     std::vector<CPrimitiveQuad*> TileMap;           //draw grid for add new objects
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats
@@ -80,12 +82,12 @@ private:
     tgui::ListBox::Ptr ObjectListBox;
 
     bool showInfo;
-    bool canScroled;
+    bool canScroll;
     float CameraSpeed;
 
     MapIO &mio = MapIO::Instance();
 
-    enum EditorMode {ADD, SELECT, MULTISELECT};
+    enum class EditorMode {ADD, SELECT, MULTISELECT};
 
     EditorMode CurrentMode;
 
@@ -122,7 +124,7 @@ public:
     bool initWindow();
 
     std::string ImageDirectory;
-    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj);
-    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj);
+//    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj);
+//    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj);
 };
 #endif //BIZARRETALE_MAPEDITOR_H
