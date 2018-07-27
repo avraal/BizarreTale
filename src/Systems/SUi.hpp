@@ -9,9 +9,17 @@
 #ifndef BIZARRETALE_SUI_HPP
 #define BIZARRETALE_SUI_HPP
 
-class SUi
-{
+#include <TGUI/Gui.hpp>
+#include "../Abstract/ISystem.hpp"
 
+class SUi : public ISystem
+{
+private:
+public:
+    tgui::Gui *gui;
+    SUi();
+    virtual void Execute();
+    virtual ~SUi();
 };
 
 #endif //BIZARRETALE_SUI_HPP
