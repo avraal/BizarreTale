@@ -32,6 +32,64 @@ Every Entity has a:
 * Unique Name - on level;
 * Body - empty CPrimitiveQuad.
 
+<br>
+
+# ISystem
+### Pattern: Entity-Component-System
+Base behaviour for all System. 
+
+<br>
+
+# SLevelManager
+### Parent: ISystem
+Manage you levels, saved their by name in map.
+If you're going to use some level, you must register him.
+```cpp
+levelManager->registerLevel(CurrentLevel);
+``` 
+
+<br>
+
+# Level
+**Now, he haven't Parent**  
+This something, what have a game objects. Level can manipulate objects.  
+Every level have a unique name, collection with game objects and draw-method.  
+You can added new level like this:
+```cpp
+Level *CurrentLevel = new Level(0, "Test");
+CurrentLevel->initGui(window);
+...
+while(window.isOpen())
+{
+    ...
+    CurrentLevel->draw(window);
+    ...
+}
+```
+**ToDo:** in future, maybe remove id system for level, because every level have unique name.
+If you want to create a new object:
+```cpp
+auto obj = new EObject(ImagePath);
+CurrentLevel->addObject(obj);
+```
+
+After this, you can see you new object on display.
+<br>
+
+# EObject
+### Parent: IEntity
+Simple class for represent game objects.  
+You can create a body for him. Just add path to image in ctor.  
+```cpp
+EObject *obj = new EObject(""); //this object haven't image
+```
+or
+```cpp
+EObject *obj = new EObject("image.png");
+```
+
+<br>
+
 # CTile
 ### Pattern: Component
 ### Parent: CPrimitiveQuad
