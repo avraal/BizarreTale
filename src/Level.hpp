@@ -13,6 +13,9 @@
 #include <vector>
 #include <memory>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/ScrollablePanel.hpp>
 #include "CPrimitiveQuad.hpp"
 #include "Systems/SUi.hpp"
 
@@ -25,9 +28,12 @@ private:
     std::string Name;
     std::vector<IEntity*> ObjList;
     std::vector<CPrimitiveQuad*> DrawableComponents;
+    std::vector<tgui::Widget::Ptr> guiContainer;
     sf::Clock clock;
     void sortObjects();
+    void loadGui(sf::RenderWindow &window);
     SUi *UserInterface;
+
 public:
     Level() = delete;
     Level(int id, const std::string &Name);

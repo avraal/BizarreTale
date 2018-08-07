@@ -86,11 +86,15 @@ Level::~Level()
 }
 void Level::draw(sf::RenderWindow &window)
 {
+    float currentTime = clock.restart().asSeconds();
+    float fps = 1.f / currentTime;
+
     for(auto d : DrawableComponents)
     {
         window.draw(*d);
     }
-    UserInterface->gui->draw();
+
+    UserInterface->Execute();
 }
 std::string Level::getName() const
 {
@@ -99,8 +103,7 @@ std::string Level::getName() const
 void Level::initGui(sf::RenderWindow &window)
 {
     UserInterface->gui = new tgui::Gui(window);
-
-
+    loadGui(window);
 }
 void Level::sortedObjectsByIndex()
 {
@@ -121,5 +124,9 @@ void Level::sortedObjectsByIndex()
             DrawableComponents.push_back(d);
         }
     }
+
+}
+void Level::loadGui(sf::RenderWindow &window)
+{
 
 }
