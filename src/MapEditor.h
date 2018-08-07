@@ -22,6 +22,7 @@
 #include "CPrimitiveQuad.hpp"
 #include "Level.hpp"
 #include "Systems/SLevelManager.hpp"
+#include "CustomGUI/EditboxAndLabel.hpp"
 
 class EObject;
 class MapEditor final
@@ -58,15 +59,11 @@ private:
     //-------------------------------
     tgui::Panel::Ptr                objectProperties;
 
-    tgui::Label::Ptr                objPropName;
     tgui::Label::Ptr                objPositionLabel;
-    tgui::Label::Ptr                objPositionLabelX;
-    tgui::Label::Ptr                objPositionLabelY;
-    tgui::Label::Ptr                objIndexLabel;
-    tgui::EditBox::Ptr              objIndexEditBox;
-    tgui::EditBox::Ptr              objPropChangeNameBox;
-    tgui::EditBox::Ptr              objPositionX;
-    tgui::EditBox::Ptr              objPositionY;
+    tgui::EditboxAndLabel::Ptr     objIndexEdit;
+    tgui::EditboxAndLabel::Ptr     objPropChangeNameBox;
+    tgui::EditboxAndLabel::Ptr     objPositionX;
+    tgui::EditboxAndLabel::Ptr     objPositionY;
     tgui::ScrollablePanel::Ptr      scrollProperties;
     tgui::Button::Ptr               objConfirmChanges;
 

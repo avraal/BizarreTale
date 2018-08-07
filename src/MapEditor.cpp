@@ -80,11 +80,11 @@ bool MapEditor::initWindow()
         CurrentLevel->draw(window);
 
         infoObjCountLabel->setText("Object count: " + std::to_string(CurrentLevel->getObjCount()));
-        infoFPSLabel->setText("FPS: " + std::to_string((int)fps));
+        infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
         gui->draw();
         window.display();
     }
-    for(auto t : TileMap)
+    for (auto t : TileMap)
     {
         delete t;
     }
@@ -241,7 +241,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                       << std::endl;
                             std::cout << "-----------" << std::endl;
                             ObjectListBox->setSelectedItem(o->getName());
-                            //ToDo: this handler exec in addInfoToPropertiesPanel
+                            ///this handler exec in addInfoToPropertiesPanel
                         }
                     }
                     break;
@@ -263,7 +263,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                             {
                                 SelectedEntities.insert({SelectedEntity});
                             }
-                            SelectedEntities.insert({dynamic_cast<EObject*>(o)});
+                            SelectedEntities.insert({dynamic_cast<EObject *>(o)});
                             ObjectListBox->setSelectedItem(o->getName());
                             for (auto s : SelectedEntities)
                             {
@@ -329,7 +329,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             case sf::Keyboard::A:
             {
                 CurrentMode = EditorMode::ADD;
-                if(SelectedEntity != nullptr)
+                if (SelectedEntity != nullptr)
                 {
                     if (SelectedEntity->getBody() != nullptr)
                     {
@@ -337,9 +337,9 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                     }
                 }
                 SelectedEntity = nullptr;
-                for(auto o : *LevelObjects)
+                for (auto o : *LevelObjects)
                 {
-                    if(o->getBody() != nullptr)
+                    if (o->getBody() != nullptr)
                     {
                         o->getBody()->hideBounds();
                     }
@@ -474,26 +474,26 @@ void MapEditor::addInfoToPropertiesPanel()
         if (!body)
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
-            objIndexEditBox->setText("0");
+            objIndexEdit->label->setText("0");
             return;
         }
 
         body->drawBounds();
         body->ShowBounds = true;
-        objIndexEditBox->setText(std::to_string(body->getIndex()));
+        objIndexEdit->setText(std::to_string(body->getIndex()));
         tgui::Picture::Ptr compPic;
         tgui::Button::Ptr addComp;
         tgui::ScrollablePanel::Ptr compList;
 
         compPic = tgui::Picture::create(body->getTexturePath());
-        compPic->setPosition(objIndexLabel->getPosition().x, objIndexLabel->getPosition().y + objIndexLabel->getSize().y + 4);
-
+        compPic->setPosition(objIndexEdit->getPosition().x,
+                             objIndexEdit->getPosition().y + objIndexEdit->getSize().y + 4);
         addComp = tgui::Button::create("Add component");
         addComp->setPosition(compPic->getPosition().x, compPic->getPosition().y + compPic->getSize().y + 4);
         addComp->setSize(objectProperties->getSize().x - 4, addComp->getSize().y);
 
         compList = tgui::ScrollablePanel::create({objectProperties->getSize().x, 250});
-        compList->setPosition(objIndexLabel->getPosition().x, addComp->getPosition().y + addComp->getSize().y + 4);
+        compList->setPosition(objIndexEdit->getPosition().x, addComp->getPosition().y + addComp->getSize().y + 4);
         compList->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 140));
 
         objectProperties->add(compPic);
@@ -519,7 +519,7 @@ EObject *MapEditor::findEntityByName(const std::string &ObjName)
         if (o->getName() == ObjName)
         {
             //TODO: remove cast
-            return dynamic_cast<EObject*>(o);
+            return dynamic_cast<EObject *>(o);
         }
     }
     std::cerr << "findEntityByName returned null reference" << std::endl;
@@ -539,7 +539,7 @@ void MapEditor::UpdateObjectFromProperties()
                            std::atof(objPositionY->getText().toAnsiString().c_str()));
             if (s->getBody() != nullptr)
             {
-                s->getBody()->setIndex(std::stoi(objIndexEditBox->getText().toAnsiString()));
+                s->getBody()->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
             }
             s->setName(objPropChangeNameBox->getText().toAnsiString());
         }
@@ -553,7 +553,7 @@ void MapEditor::UpdateObjectFromProperties()
         }
         SelectedEntity->setPosition(static_cast<float>(std::atof(objPositionX->getText().toAnsiString().c_str())),
                                     static_cast<float>(std::atof(objPositionY->getText().toAnsiString().c_str())));
-        body->setIndex(std::stoi(objIndexEditBox->getText().toAnsiString()));
+        body->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
         SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
     }
 
@@ -584,7 +584,7 @@ void MapEditor::sortObjects()
 {
     ObjectListBox->removeAllItems();
 
-    for(auto o : *LevelObjects)
+    for (auto o : *LevelObjects)
     {
         ObjectListBox->addItem(o->getName());
     }
@@ -621,16 +621,12 @@ void MapEditor::LoadUI()
     objectProperties->getRenderer()->setBackgroundColor(sf::Color(16, 16, 16, 200));
     objectProperties->getRenderer()->setPadding({5, 5});
 
-    objPropName = tgui::Label::create();
-    objPropName->getRenderer()->setTextColor(sf::Color::White);
-    objPropName->setTextSize(INFO_PANEL_TEXT_SIZE);
-    objPropName->setText("Object:");
-    objPropName->setPosition(0, 4);
-
-    objPropChangeNameBox = tgui::EditBox::create();
-    objPropChangeNameBox->setPosition(objPropName->getSize().x + 4, 0);
+    objPropChangeNameBox = tgui::EditboxAndLabel::create("Object:");
+    objPropChangeNameBox->label->getRenderer()->setTextColor(sf::Color::White);
+    objPropChangeNameBox->label->setTextSize(INFO_PANEL_TEXT_SIZE);
+    objPropChangeNameBox->setPosition({0, 4});
     objPropChangeNameBox->setSize(objectProperties->getSize().x / 2, INFO_PANEL_TEXT_SIZE + 10);
-    objPropChangeNameBox->setTextSize(objPropName->getTextSize());
+    objPropChangeNameBox->setTextSize(INFO_PANEL_TEXT_SIZE);
     objPropChangeNameBox->getRenderer()->setTextColor(sf::Color(210, 210, 210));
     objPropChangeNameBox->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 200));
     objPropChangeNameBox->getRenderer()->setBackgroundColorDisabled(sf::Color(0, 0, 0, 225));
@@ -641,44 +637,37 @@ void MapEditor::LoadUI()
     objPropChangeNameBox->getRenderer()->setBorderColorFocused(sf::Color(0, 0, 0, 0));
     objPropChangeNameBox->getRenderer()->setBorderColorHover(sf::Color(0, 0, 0, 0));
     objPropChangeNameBox->connect(objPropChangeNameBox->onReturnKeyPress.getName(),
-                                  &MapEditor::UpdateObjectFromProperties, this);
+                                   &MapEditor::UpdateObjectFromProperties, this);
 
     objPositionLabel = tgui::Label::create();
     objPositionLabel->getRenderer()->setTextColor(sf::Color::White);
     objPositionLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
     objPositionLabel->setText("Position");
-    objPositionLabel->setPosition(0, objPropName->getPosition().y + objPropName->getSize().y + 4);
+    objPositionLabel->setPosition(0, objPropChangeNameBox->getPosition().y + objPropChangeNameBox->getSize().y + 4);
 
-    objPositionLabelX = tgui::Label::copy(objPositionLabel);
-    objPositionLabelX->setText("x:");
-    objPositionLabelX->setPosition(0, objPositionLabel->getPosition().y + objPositionLabel->getSize().y + 4);
+    objPositionX = tgui::EditboxAndLabel::create("");
+    objPositionX->label = tgui::Label::copy(objPositionLabel);
+    objPositionX->label->setText("x:");
+    objPositionX->setPosition({0, objPositionLabel->getPosition().y + objPositionLabel->getSize().y + 4});
+    objPositionX->setRenderer(objPropChangeNameBox->getRenderer()->clone());
 
-    objPositionX = tgui::EditBox::copy(objPropChangeNameBox);
-    objPositionX->setPosition(objPositionLabelX->getSize().x + 4, objPositionLabelX->getPosition().y);
+    objPositionY = tgui::EditboxAndLabel::create("");
+    objPositionY->label = tgui::Label::copy(objPositionLabel);
+    objPositionY->label->setText("y:");
+    objPositionY->setPosition({0, objPositionX->getPosition().y + objPositionX->getSize().y + 4});
+    objPositionY->setRenderer(objPropChangeNameBox->getRenderer()->clone());
 
-    objPositionLabelY = tgui::Label::copy(objPositionLabel);
-    objPositionLabelY->setText("y:");
-    objPositionLabelY->setPosition(0, objPositionLabelX->getPosition().y + objPositionLabelX->getSize().y + 4);
+    objIndexEdit = tgui::EditboxAndLabel::create("Index:");
+    objIndexEdit->label = tgui::Label::copy(objPositionLabel);
+    objIndexEdit->label->setText("Index:");
+    objIndexEdit->setRenderer(objPositionY->getRenderer()->clone());
+    objIndexEdit->setPosition({0, objPositionY->getPosition().y + objPositionY->getSize().y + 4});
 
-    objPositionY = tgui::EditBox::copy(objPropChangeNameBox);
-    objPositionY->setPosition(objPositionLabelY->getSize().x + 4, objPositionLabelY->getPosition().y);
-
-    objIndexLabel = tgui::Label::copy(objPositionLabel);
-    objIndexLabel->setText("Index:");
-    objIndexLabel->setPosition(0, objPositionLabelY->getPosition().y + objPositionLabelY->getSize().y + 4);
-
-    objIndexEditBox = tgui::EditBox::copy(objPositionY);
-    objIndexEditBox->setPosition(objIndexLabel->getSize().x + 4, objIndexLabel->getPosition().y);
-
-    objectProperties->add(objPropName);
     objectProperties->add(objPropChangeNameBox);
     objectProperties->add(objPositionLabel);
-    objectProperties->add(objPositionLabelX);
-    objectProperties->add(objPositionLabelY);
     objectProperties->add(objPositionX);
     objectProperties->add(objPositionY);
-    objectProperties->add(objIndexLabel);
-    objectProperties->add(objIndexEditBox);
+    objectProperties->add(objIndexEdit);
 
     objConfirmChanges = tgui::Button::create();
     scrollProperties->add(objConfirmChanges);
@@ -726,13 +715,31 @@ void MapEditor::LoadUI()
     infoPanel->add(infoObjCountLabel);
     infoPanel->add(infoFPSLabel);
 
-    scrollPanel->connect(scrollPanel->onMouseLeave.getName(),            [this]() {canScroll = true;});
-    scrollPanel->connect(scrollPanel->onMouseEnter.getName(),            [this]() {canScroll = false;});
+    scrollPanel->connect(scrollPanel->onMouseLeave.getName(), [this]()
+    {
+        canScroll = true;
+    });
+    scrollPanel->connect(scrollPanel->onMouseEnter.getName(), [this]()
+    {
+        canScroll = false;
+    });
 
-    scrollProperties->connect(scrollProperties->onMouseLeave.getName(),  [this]() {canScroll = true;});
-    scrollProperties->connect(scrollProperties->onMouseEnter.getName(),  [this]() {canScroll = false;});
+    scrollProperties->connect(scrollProperties->onMouseLeave.getName(), [this]()
+    {
+        canScroll = true;
+    });
+    scrollProperties->connect(scrollProperties->onMouseEnter.getName(), [this]()
+    {
+        canScroll = false;
+    });
 
-    ObjectListBox->connect(ObjectListBox->onMouseLeave.getName(),        [this]() {canScroll = true;});
-    ObjectListBox->connect(ObjectListBox->onMouseEnter.getName(),        [this]() {canScroll = false;});
+    ObjectListBox->connect(ObjectListBox->onMouseLeave.getName(), [this]()
+    {
+        canScroll = true;
+    });
+    ObjectListBox->connect(ObjectListBox->onMouseEnter.getName(), [this]()
+    {
+        canScroll = false;
+    });
 }
 
