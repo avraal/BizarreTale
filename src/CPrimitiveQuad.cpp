@@ -107,4 +107,12 @@ void CPrimitiveQuad::setPosition(const sf::Vector2f &Position)
 {
     Transformable::setPosition(Position);
 }
+const sf::Texture *CPrimitiveQuad::getTexture() const
+{
+    return &texture;
+}
+std::string &CPrimitiveQuad::getTexturePath()
+{
+    return ImagePath;
+}
 

@@ -25,6 +25,7 @@ class CPrimitiveQuad : public sf::Drawable, public sf::Transformable, public ICo
 {
 private:
     sf::Color color;
+
 public:
     CPrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
     CPrimitiveQuad(const CPrimitiveQuad &);
@@ -38,10 +39,13 @@ public:
     virtual void hideBounds();
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);
+    virtual std::string &getTexturePath();
+    const sf::Texture *getTexture() const;
     int getIndex() const;
     void setIndex(int index);
     bool ShowBounds;
 protected:
+    std::string ImagePath = "";
     int index;
     sf::VertexArray body;
     sf::Texture texture;
