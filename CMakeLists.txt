@@ -19,7 +19,7 @@ add_executable(BizarreTale  src/main.cpp
                             src/Systems/SLevelManager.cpp
                             src/Entity/EObject.cpp
                             src/Systems/SUi.cpp
-                            )
+        src/CustomGUI/EditboxAndLabel.cpp src/CustomGUI/EditboxAndLabel.hpp)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics network audio)
 include_directories(/usr/local/include)
