@@ -13,9 +13,8 @@ SUi::SUi()
 }
 void SUi::Execute()
 {
-
+    gui->draw();
 }
 SUi::~SUi()
 {
-
 }
