@@ -43,12 +43,8 @@ private:
     {
         delete CurrentLevel;
         delete levelManager;
-        for(auto t : TileMap)
-        {
-            delete t;
-        }
-        TileMap.clear();
     }
+    std::vector<IEntity*> *LevelObjects;
     Level *CurrentLevel;                                   //container for all object on CurrentLevel
     SLevelManager *levelManager;
     std::vector<CPrimitiveQuad*> TileMap;           //draw grid for add new objects
@@ -59,13 +55,9 @@ private:
     sf::RenderWindow window;                                        //main window
     sf::View MainCamera;                                            //main camera
     sf::Clock clock;
-    tgui::ScrollablePanel::Ptr scrollPanel;                         //panel with images
-    tgui::Label::Ptr infoObjCountLabel;                             //show count of objects
-    tgui::Label::Ptr infoFPSLabel;                                  //show current Framerate-Per-Second
-    tgui::Panel::Ptr infoPanel;                                     //TODO: ?
-
     //-------------------------------
     tgui::Panel::Ptr                objectProperties;
+
     tgui::Label::Ptr                objPropName;
     tgui::Label::Ptr                objPositionLabel;
     tgui::Label::Ptr                objPositionLabelX;
@@ -77,6 +69,12 @@ private:
     tgui::EditBox::Ptr              objPositionY;
     tgui::ScrollablePanel::Ptr      scrollProperties;
     tgui::Button::Ptr               objConfirmChanges;
+
+    tgui::ScrollablePanel::Ptr scrollPanel;                         //panel with images
+
+    tgui::Label::Ptr infoObjCountLabel;                             //show count of objects
+    tgui::Label::Ptr infoFPSLabel;                                  //show current Framerate-Per-Second
+    tgui::Panel::Ptr infoPanel;                                     //TODO: ?
     //-------------------------------
 
     tgui::ListBox::Ptr ObjectListBox;
@@ -101,11 +99,9 @@ private:
     void MouseCallbacks(sf::Event event);
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
-    void ChangeScrollablePanelStatus(bool val);
     void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
     void LoadUI();
-    void updateNames();
     void sortObjects();
     EObject *findEntityByName(const std::string &ObjName);
 
