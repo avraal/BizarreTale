@@ -9,9 +9,21 @@
 #ifndef BIZARRETALE_IDGENERATOR_HPP
 #define BIZARRETALE_IDGENERATOR_HPP
 
-class IDGenerator
-{
+#include <iostream>
 
+class IDGenerator final
+{
+private:
+    static int currentId;
+
+public:
+    IDGenerator() = delete;
+    IDGenerator(const IDGenerator &) = delete;
+    IDGenerator(const IDGenerator &&) = delete;
+    IDGenerator &operator=(const IDGenerator &) = delete;
+    IDGenerator &operator=(const IDGenerator &&) = delete;
+
+    static int getId();
 };
 
 #endif //BIZARRETALE_IDGENERATOR_HPP
