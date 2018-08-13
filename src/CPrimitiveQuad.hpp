@@ -27,7 +27,7 @@ private:
     sf::Color color;
 
 public:
-    CPrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
+    CPrimitiveQuad(IEntity *entity, int id, const std::string &name, sf::Color c = sf::Color(91, 97, 91));
     CPrimitiveQuad(const CPrimitiveQuad &);
     CPrimitiveQuad(const CPrimitiveQuad &&);
     sf::Vector2u getTextureSize() const;

@@ -10,16 +10,21 @@
 #define BIZARRETALE_ICOMPONENT_HPP
 
 #include <string>
-
+class IEntity;
 class IComponent
 {
 protected:
     std::string Name;
+    int id;
+    IEntity *entity;
 public:
+
+    IComponent(IEntity *entity, int id, const std::string &name);
     virtual ~IComponent() = 0;
 
-    virtual void setName(const std::string &name) noexcept final;
     virtual std::string getName() const noexcept final;
+    virtual int getId() const noexcept final;
+    virtual IEntity *getEntity();
 };
 
 #endif //BIZARRETALE_ICOMPONENT_HPP

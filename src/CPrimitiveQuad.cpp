@@ -10,7 +10,7 @@
 #include "CPrimitiveQuad.hpp"
 #include "CONST_DEFINITIONS.h"
 
-CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
+CPrimitiveQuad::CPrimitiveQuad(IEntity* entity, int id, const std::string &name, sf::Color c) : IComponent(entity, id, name)
 {
     std::cout << "PQCtor" << std::endl;
     index = 0;
@@ -21,7 +21,7 @@ CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
     setSize({TSD, TSD});
     shape = ThicknessLineArray();
 }
-CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p)
+CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p) : IComponent(p.entity, p.id, p.Name)
 {
     std::cout << "Copy" << std::endl;
     this->color = p.color;
@@ -31,7 +31,7 @@ CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p)
     setSize({TSD, TSD}); //TODO: Change TSD to real size
     shape = p.shape;
 }
-CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &&p)
+CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &&p) : IComponent(p.entity, p.id, p.Name)
 {
     std::cout << "Move" << std::endl;
     this->color = p.color;

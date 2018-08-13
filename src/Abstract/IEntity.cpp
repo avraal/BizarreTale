@@ -8,32 +8,35 @@
 #include <algorithm>
 #include "IEntity.hpp"
 #include "../Level.hpp"
+
+int IEntity::currentId = 0;
+
+IEntity::IEntity()
+{
+    Id = IEntity::getNexId();
+    body = nullptr;
+    Position = {.0f, .0f};
+    Name = "def";
+}
+
 int IEntity::GetId() const noexcept
 {
     return Id;
 }
 
-void IEntity::addComponent(IComponent* component)
+void IEntity::addComponent(IComponent *component)
 {
-    //TODO: add checking on unique value
     Components.push_back(component);
 }
 IEntity::~IEntity()
 {
-    for(auto c : Components)
+    for (auto c : Components)
     {
         delete c;
     }
     Components.clear();
 }
 
-IEntity::IEntity(int id)
-{
-    this->Id = id;
-    this->body = nullptr;
-    Position = {0.f, 0.f};
-    Name = "def";
-}
 std::string IEntity::getName() const noexcept
 {
     return Name;
@@ -42,17 +45,14 @@ void IEntity::setName(const std::string &name) noexcept
 {
     this->Name = name;
 }
-void IEntity::setId(int id) noexcept
-{
-    this->Id = id;
-}
+
 CPrimitiveQuad *IEntity::getBody()
 {
     return body;
 }
 void IEntity::setPosition(float x, float y)
 {
-    if(body != nullptr)
+    if (body != nullptr)
     {
         body->setPosition(x, y);
         Position.x = x;
@@ -61,7 +61,7 @@ void IEntity::setPosition(float x, float y)
 }
 void IEntity::setPosition(const sf::Vector2f &position)
 {
-    if(body != nullptr)
+    if (body != nullptr)
     {
         body->setPosition(position);
         this->Position = position;
@@ -71,3 +71,34 @@ sf::Vector2f IEntity::getPosition() const
 {
     return Position;
 }
+int IEntity::getNexId()
+{
+    return IEntity::currentId++;
+}
+
+IComponent *IEntity::getComponent(int id)
+{
+    for (auto c : Components)
+    {
+        if (c->getId() == id)
+        {
+            return c;
+        }
+    }
+    return nullptr;
+}
+std::vector<CPrimitiveQuad *> IEntity::getDrawable()
+{
+    std::vector<CPrimitiveQuad *> result;
+    for (auto &c : Components)
+    {
+        CPrimitiveQuad *p1 = dynamic_cast<CPrimitiveQuad *>(c);
+        if (p1 != nullptr)
+        {
+            result.push_back(p1);
+            std::cout << "Add component to " << getName() << std::endl;
+        }
+    }
+    return result;
+}
+

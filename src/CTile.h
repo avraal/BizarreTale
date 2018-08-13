@@ -23,13 +23,12 @@ class CTile : public CPrimitiveQuad
 {
 private:
     sf::Sprite sprite;
-    std::string ImagePath;
 
 protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 public:
-    CTile();
-    CTile(std::string Name, std::string ImagePath, sf::Vector2f position, int index = 0);
+    CTile() = delete;
+    CTile(IEntity *entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index = 0);
     CTile(const CTile &entity);
     CTile(const CTile &&entity);
     CTile &operator=(sf::Drawable const &) = delete;
@@ -43,7 +42,6 @@ public:
     virtual void drawBounds() override;
     std::string GetImagePath() const;
     std::string GetName() const;
-
     sf::Vector2f getSpriteScale() const;
 };
 

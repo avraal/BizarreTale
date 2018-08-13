@@ -24,7 +24,6 @@ Level::Level(const Level &&l) : Level(l.Id, l.Name)
 void Level::addObject(IEntity *ie)
 {
     ObjList.push_back(ie);
-    ie->setId(ObjList.size());
     ie->setName("def" + std::to_string(ObjList.size()));
     for(auto &d : ie->getDrawable())
     {
@@ -86,9 +85,6 @@ Level::~Level()
 }
 void Level::draw(sf::RenderWindow &window)
 {
-    float currentTime = clock.restart().asSeconds();
-    float fps = 1.f / currentTime;
-
     for(auto d : DrawableComponents)
     {
         window.draw(*d);
@@ -129,4 +125,21 @@ void Level::sortedObjectsByIndex()
 void Level::loadGui(sf::RenderWindow &window)
 {
 
+}
+void Level::DestroyEntity(int entityId)
+{
+    std::cout << "Destroyed id: " << entityId << std::endl;
+    //ToDo: replace raw-pointer to smart pointers. Again
+    ObjList.erase(std::remove(ObjList.begin(), ObjList.end(), getObjectById(entityId)), ObjList.end());
+}
+IEntity *Level::getObjectById(int id)
+{
+    for(auto o : ObjList)
+    {
+        if (o->GetId() == id)
+        {
+            return o;
+        }
+    }
+    return nullptr;
 }

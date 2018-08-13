@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Panel.hpp>
@@ -33,20 +34,22 @@ private:
     void sortObjects();
     void loadGui(sf::RenderWindow &window);
     SUi *UserInterface;
-
 public:
+
     Level() = delete;
     Level(int id, const std::string &Name);
     Level(const Level&);
     Level(const Level&&);
     ~Level();
-
     void draw(sf::RenderWindow &window);
+
+    void DestroyEntity(int entityId);
     void addObject(IEntity *ie);
     void initGui(sf::RenderWindow &window);
     void sortedObjectsByIndex();
     size_t getObjCount();
     IEntity *getObject(int index);
+    IEntity *getObjectById(int id);
     std::vector<IEntity*> &getAllObjects();
     std::string getName() const;
 };

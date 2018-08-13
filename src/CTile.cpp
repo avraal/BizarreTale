@@ -6,15 +6,6 @@
 //
 #include "CTile.h"
 
-CTile::CTile() : CPrimitiveQuad()
-{
-    std::cout << "Default ctor" << std::endl;
-    ImagePath = "";
-    Name = "Empty";
-    LoadTexture(ImagePath);
-    sprite.setPosition(getPosition());
-}
-
 void CTile::LoadTexture(std::string ImagePath)
 {
     if (!ImagePath.empty())
@@ -24,7 +15,8 @@ void CTile::LoadTexture(std::string ImagePath)
     sprite.setTexture(texture);
 }
 
-CTile::CTile(std::string Name, std::string ImagePath, sf::Vector2f position, int index) : CPrimitiveQuad()
+CTile::CTile(IEntity *entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index)
+        : CPrimitiveQuad(entity, id, Name)
 {
     std::cout << "TECtor" << std::endl;
     this->ImagePath = ImagePath;
@@ -34,8 +26,8 @@ CTile::CTile(std::string Name, std::string ImagePath, sf::Vector2f position, int
     setPosition(position.x, position.y);
 }
 
-CTile::CTile(const CTile &entity) : CTile(entity.Name, entity.GetImagePath(), entity.getPosition(),
-                                          entity.getIndex())
+CTile::CTile(const CTile &entity) : CTile(entity.entity, entity.id, entity.Name, entity.ImagePath, entity.getPosition(),
+                                          entity.index)
 {
     std::cout << "Copy ctor" << std::endl;
 }
@@ -111,6 +103,4 @@ void CTile::drawBounds()
     shape.append({getPosition() + sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height),
                   sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
     shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
-
 }
-

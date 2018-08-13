@@ -10,22 +10,17 @@
 #include "../CPrimitiveQuad.hpp"
 #include "../Level.hpp"
 #include "../CTile.h"
+#include "../Util/IDGenerator.hpp"
 
 EObject::~EObject()
 {
-    delete body;
-//    for(auto c : Components)
-//    {
-//        delete c;
-//    }
-//    Components.clear();
+//    delete body;
 }
 EObject::EObject(const std::string &ImagePath)
 {
-    if(!ImagePath.empty())
+    if (!ImagePath.empty())
     {
-        body = new CTile("body", ImagePath, getPosition());
-        Components.push_back(body);
+        body = new CTile(this, IDGenerator::getId(), "body", ImagePath, getPosition());
     }
 }
 EObject::EObject(EObject &&eo)
@@ -35,5 +30,5 @@ EObject::EObject(EObject &&eo)
     Components.clear();
     std::copy(eo.Components.begin(), eo.Components.end(), std::back_inserter(Components));
     Name = eo.Name;
-    Id = eo.Id;
+    Id = eo.Id + 1;
 }

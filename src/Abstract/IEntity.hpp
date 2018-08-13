@@ -24,61 +24,42 @@ protected:
     std::string Name;
     std::vector<IComponent*> Components;
     CPrimitiveQuad *body;
+
+    static int currentId;
+
+    static int getNexId();
 public:
-    IEntity(int id = -1);
+    IEntity();
 
     virtual int GetId()                               const noexcept final;
-    virtual void setId(int id)                              noexcept final;
     virtual void setName(const std::string &name)           noexcept final;
+    virtual std::string getName()                     const noexcept final;
     void setPosition(float x, float y);
     void setPosition(const sf::Vector2f &position);
+    void addComponent(IComponent *component);
     sf::Vector2f getPosition()                        const;
     CPrimitiveQuad *getBody();
-    virtual std::string getName()                     const noexcept final;
-    void addComponent(IComponent *component);
-    template <class T>
-    T *getComponent()
+    IComponent *getComponent(int id);
+    std::vector<CPrimitiveQuad*> getDrawable();
+
+    inline bool operator==(const IEntity &rhs) const
     {
-        for(auto c : Components)
-        {
-            T *t = dynamic_cast<T*>(c);
-            if(t != nullptr)
-            {
-                return t;
-            }
-        }
-        return nullptr;
-    }
-    template <class T>
-    T *getComponentByName(const std::string &name)
-    {
-        for(auto c : Components)
-        {
-            if(c->getName() == name)
-            {
-                T *t = dynamic_cast<T*>(c);
-                if(t != nullptr)
-                {
-                    return t;
-                }
-            }
-        }
-        return nullptr;
+        return this->Id == rhs.Id;
     }
 
-    std::vector<CPrimitiveQuad*> getDrawable()
+    inline bool operator!=(const IEntity &rhs) const
     {
-        std::vector<CPrimitiveQuad*> result;
-        for(auto &c : Components)
-        {
-            CPrimitiveQuad *p1 = dynamic_cast<CPrimitiveQuad*>(c);
-            if(p1 != nullptr)
-            {
-                result.push_back(p1);
-                std::cout << "Add component to " << getName() << std::endl;
-            }
-        }
-        return result;
+        return this->Id != rhs.Id;
+    }
+
+    inline bool operator==(const IEntity *rhs) const
+    {
+        return this->Id == rhs->Id;
+    }
+
+    inline bool operator!=(const IEntity *rhs) const
+    {
+        return this->Id != rhs->Id;
     }
 
     virtual ~IEntity() = 0;
