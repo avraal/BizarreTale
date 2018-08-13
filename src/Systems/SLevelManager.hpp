@@ -18,12 +18,12 @@
 class SLevelManager : public ISystem
 {
 private:
-    std::map<std::string, Level*> Levels;
+    std::map<std::string, std::shared_ptr<Level>> Levels;
 public:
     SLevelManager();
     virtual void Execute ();
-    void registerLevel(Level *l);
-    Level *changeLevelByName(const std::string &name);
+    void registerLevel(std::shared_ptr<Level> l);
+    std::shared_ptr<Level> changeLevelByName(const std::string &name);
     virtual ~SLevelManager();
 };
 

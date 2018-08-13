@@ -27,13 +27,13 @@ class Level final
 private:
     int Id;
     std::string Name;
-    std::vector<IEntity*> ObjList;
-    std::vector<CPrimitiveQuad*> DrawableComponents;
+    std::vector<std::shared_ptr<IEntity>> ObjList;
+    std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
     std::vector<tgui::Widget::Ptr> guiContainer;
     sf::Clock clock;
     void sortObjects();
     void loadGui(sf::RenderWindow &window);
-    SUi *UserInterface;
+    std::unique_ptr<SUi> UserInterface;
 public:
 
     Level() = delete;
@@ -44,13 +44,14 @@ public:
     void draw(sf::RenderWindow &window);
 
     void DestroyEntity(int entityId);
-    void addObject(IEntity *ie);
+    void addObject(std::shared_ptr<IEntity> ie);
     void initGui(sf::RenderWindow &window);
     void sortedObjectsByIndex();
     size_t getObjCount();
-    IEntity *getObject(int index);
-    IEntity *getObjectById(int id);
-    std::vector<IEntity*> &getAllObjects();
+    std::shared_ptr<IEntity> getObject(int index);
+    std::shared_ptr<IEntity> getObjectById(int id);
+    std::shared_ptr<IEntity> getObjectByName(const std::string &Name);
+    std::vector<std::shared_ptr<IEntity>> &getAllObjects();
     std::string getName() const;
 };
 

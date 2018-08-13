@@ -10,21 +10,24 @@
 #define BIZARRETALE_ICOMPONENT_HPP
 
 #include <string>
+#include <memory>
+
 class IEntity;
-class IComponent
+class IComponent : public std::enable_shared_from_this<IComponent>
 {
 protected:
     std::string Name;
     int id;
-    IEntity *entity;
+    std::shared_ptr<IEntity> entity;
 public:
 
-    IComponent(IEntity *entity, int id, const std::string &name);
+    IComponent();
+    IComponent(std::shared_ptr<IEntity>, int id, const std::string &name);
     virtual ~IComponent() = 0;
 
     virtual std::string getName() const noexcept final;
     virtual int getId() const noexcept final;
-    virtual IEntity *getEntity();
+    virtual std::weak_ptr<IEntity> getEntity();
 };
 
 #endif //BIZARRETALE_ICOMPONENT_HPP

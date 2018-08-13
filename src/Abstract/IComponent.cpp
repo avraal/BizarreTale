@@ -8,15 +8,31 @@
 
 #include "IComponent.hpp"
 #include "IEntity.hpp"
-
-IComponent::IComponent(IEntity *entity, int id, const std::string &name)
+#include "../Util/IDGenerator.hpp"
+IComponent::IComponent()
 {
+    this->id = IDGenerator::getId();
+}
+
+IComponent::IComponent(std::shared_ptr<IEntity> entity, int id, const std::string &name)
+{
+    std::cout << "ICCtor" << std::endl;
     this->entity = entity;
     this->Name = name;
     this->id = id;
-    if (entity != nullptr)
+    std::cout << "IC name = " << shared_from_this()->Name << std::endl;
+    try
     {
-        entity->addComponent(this);
+        if (this->entity)
+        {
+            this->entity->addComponent(shared_from_this());
+        } else
+        {
+            std::cout << "IC bad add component" << std::endl;
+        }
+    }catch (std::bad_weak_ptr &ex)
+    {
+        std::cout << ex.what() << std::endl;
     }
 }
 std::string IComponent::getName() const noexcept
@@ -30,7 +46,7 @@ int IComponent::getId() const noexcept
 {
     return id;
 }
-IEntity *IComponent::getEntity()
+std::weak_ptr<IEntity> IComponent::getEntity()
 {
     return entity;
 }

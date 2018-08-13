@@ -42,12 +42,11 @@ private:
     }
     virtual ~MapEditor()
     {
-        delete CurrentLevel;
-        delete levelManager;
     }
-    std::vector<IEntity*> *LevelObjects;
-    Level *CurrentLevel;                                            //container for all object on CurrentLevel
-    SLevelManager *levelManager;
+
+    std::vector<std::shared_ptr<IEntity>> *LevelObjects;
+    std::shared_ptr<Level> CurrentLevel;                                            //container for all object on CurrentLevel
+    std::unique_ptr<SLevelManager> levelManager;
     std::vector<CPrimitiveQuad*> TileMap;                           //draw grid for add new objects
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats
@@ -90,8 +89,9 @@ private:
     EditorMode CurrentMode;
 
     std::mutex b_mutex;
-    EObject *SelectedEntity;
-    std::set<EObject*> SelectedEntities;
+    std::shared_ptr<IEntity> SelectedEntity;
+//    std::set<std::shared_ptr<EObject>> SelectedEntities;
+    std::map<int, std::shared_ptr<IEntity>> SelectedEntities;
 
     void drawTileMap(float size_x, float size_y);
     void findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
@@ -103,7 +103,6 @@ private:
     void UpdateObjectFromProperties();
     void LoadUI();
     void sortObjects();
-    EObject *findEntityByName(const std::string &ObjName);
 
 public:
     MapEditor(MapEditor const&) = delete;

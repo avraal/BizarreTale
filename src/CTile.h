@@ -26,9 +26,10 @@ private:
 
 protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+
 public:
     CTile() = delete;
-    CTile(IEntity *entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index = 0);
+    CTile(std::shared_ptr<IEntity> entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index = 0);
     CTile(const CTile &entity);
     CTile(const CTile &&entity);
     CTile &operator=(sf::Drawable const &) = delete;

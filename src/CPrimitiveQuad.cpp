@@ -10,9 +10,20 @@
 #include "CPrimitiveQuad.hpp"
 #include "CONST_DEFINITIONS.h"
 
-CPrimitiveQuad::CPrimitiveQuad(IEntity* entity, int id, const std::string &name, sf::Color c) : IComponent(entity, id, name)
+CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
 {
-    std::cout << "PQCtor" << std::endl;
+    index = 0;
+    this->color = c;
+    body.setPrimitiveType(sf::PrimitiveType::Quads);
+    body.resize(4);
+    ShowBounds = false;
+    setSize({TSD, TSD});
+    shape = ThicknessLineArray();
+}
+
+CPrimitiveQuad::CPrimitiveQuad(std::shared_ptr<IEntity> entity, int id, const std::string &name, sf::Color c) : IComponent(entity, id, name)
+{
+    std::cout << "CPCtor" << std::endl;
     index = 0;
     this->color = c;
     body.setPrimitiveType(sf::PrimitiveType::Quads);
@@ -115,4 +126,5 @@ std::string &CPrimitiveQuad::getTexturePath()
 {
     return ImagePath;
 }
+
 

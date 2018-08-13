@@ -15,10 +15,10 @@ void CTile::LoadTexture(std::string ImagePath)
     sprite.setTexture(texture);
 }
 
-CTile::CTile(IEntity *entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index)
+CTile::CTile(std::shared_ptr<IEntity> entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index)
         : CPrimitiveQuad(entity, id, Name)
 {
-    std::cout << "TECtor" << std::endl;
+    std::cout << "CTCtor" << std::endl;
     this->ImagePath = ImagePath;
     this->Name = Name;
     LoadTexture(ImagePath);
@@ -104,3 +104,4 @@ void CTile::drawBounds()
                   sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
     shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
 }
+

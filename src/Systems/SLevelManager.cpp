@@ -8,16 +8,12 @@
 
 #include "SLevelManager.hpp"
 
-void SLevelManager::registerLevel(Level *l)
+void SLevelManager::registerLevel(std::shared_ptr<Level> l)
 {
-    Levels.insert(std::pair<std::string, Level*>(l->getName(), l));
+    Levels.insert(std::pair<std::string, std::shared_ptr<Level>>(l->getName(), l));
 }
 SLevelManager::~SLevelManager()
 {
-    for(auto l : Levels)
-    {
-        delete l.second;
-    }
     Levels.clear();
 }
 void SLevelManager::Execute()
@@ -28,7 +24,7 @@ SLevelManager::SLevelManager()
 {
 
 }
-Level *SLevelManager::changeLevelByName(const std::string &name)
+std::shared_ptr<Level> SLevelManager::changeLevelByName(const std::string &name)
 {
     if(Levels.find(name) != Levels.end())
     {

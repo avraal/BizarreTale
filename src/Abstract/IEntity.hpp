@@ -22,25 +22,42 @@ protected:
     int Id;
     sf::Vector2f Position;
     std::string Name;
-    std::vector<IComponent*> Components;
-    CPrimitiveQuad *body;
+    std::vector<std::weak_ptr<IComponent>> Components;
 
     static int currentId;
+    static int getNextId();
 
-    static int getNexId();
+    template <class T, class U>
+    std::weak_ptr<T> static_pointer_cast(std::weak_ptr<U> const &rhs)
+    {
+        return std::static_pointer_cast<T>(std::shared_ptr<U>(rhs));
+    }
 public:
     IEntity();
-
+    IEntity(const IEntity&);
+    IEntity&operator=(const IEntity&);
     virtual int GetId()                               const noexcept final;
     virtual void setName(const std::string &name)           noexcept final;
     virtual std::string getName()                     const noexcept final;
-    void setPosition(float x, float y);
-    void setPosition(const sf::Vector2f &position);
-    void addComponent(IComponent *component);
+    virtual void setPosition(float x, float y) = 0;
+    virtual void setPosition(const sf::Vector2f &position) = 0;
+    void addComponent(std::shared_ptr<IComponent> component);
     sf::Vector2f getPosition()                        const;
-    CPrimitiveQuad *getBody();
-    IComponent *getComponent(int id);
-    std::vector<CPrimitiveQuad*> getDrawable();
+    std::weak_ptr<IComponent> getComponent(int id);
+    std::weak_ptr<IComponent> getComponent(const std::string &Name);
+    std::vector<std::weak_ptr<CPrimitiveQuad>> getDrawable();
+
+    template <class T>
+    std::weak_ptr<T> getComponent(const std::string &Name)
+    {
+        for (auto c : Components)
+        {
+            if (c.lock()->getName() == Name)
+            {
+                return static_pointer_cast<CPrimitiveQuad>(c);
+            }
+        }
+    }
 
     inline bool operator==(const IEntity &rhs) const
     {

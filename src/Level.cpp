@@ -13,7 +13,7 @@ Level::Level(int id, const std::string &Name)
 {
     this->Id = id;
     this->Name = Name;
-    UserInterface = new SUi();
+    UserInterface = std::make_unique<SUi>();
 }
 Level::Level(const Level &l) : Level(l.Id, l.Name)
 {
@@ -21,22 +21,23 @@ Level::Level(const Level &l) : Level(l.Id, l.Name)
 Level::Level(const Level &&l) : Level(l.Id, l.Name)
 {
 }
-void Level::addObject(IEntity *ie)
+void Level::addObject(std::shared_ptr<IEntity> ie)
 {
     ObjList.push_back(ie);
     ie->setName("def" + std::to_string(ObjList.size()));
     for(auto &d : ie->getDrawable())
     {
-        DrawableComponents.push_back(d);
+        DrawableComponents.push_back(d.lock());
     }
     if(ObjList.size() > 1)
     {
         int count = 0;
         for(auto o : ObjList)
         {
+            auto body = o->getComponent<CPrimitiveQuad>("body").lock();
             if(o == ie)
                 continue;
-            if(o->getBody() != nullptr && ie->getBody() != nullptr)
+            if(body && ie->getComponent<CPrimitiveQuad>("body").lock())
             {
                 if(o->getPosition() == ie->getPosition())
                 {
@@ -48,10 +49,11 @@ void Level::addObject(IEntity *ie)
                 return;
             }
         }
-        ie->getBody()->setIndex(count);
+//        ie->getBody()->setIndex(count);
+        ie->getComponent<CPrimitiveQuad>("body").lock()->setIndex(count);
     }
 }
-IEntity *Level::getObject(int index)
+std::shared_ptr<IEntity> Level::getObject(int index)
 {
     if (!ObjList.empty())
     {
@@ -59,7 +61,7 @@ IEntity *Level::getObject(int index)
     }
     return nullptr;
 }
-std::vector<IEntity*> &Level::getAllObjects()
+std::vector<std::shared_ptr<IEntity>> &Level::getAllObjects()
 {
     return ObjList;
 }
@@ -70,18 +72,9 @@ size_t Level::getObjCount()
 
 Level::~Level()
 {
-    for(auto d : DrawableComponents)
-    {
-        delete d;
-    }
     DrawableComponents.clear();
-    for(auto o : ObjList)
-    {
-        delete o;
-    }
     ObjList.clear();
     delete UserInterface->gui;
-    delete UserInterface;
 }
 void Level::draw(sf::RenderWindow &window)
 {
@@ -104,11 +97,13 @@ void Level::initGui(sf::RenderWindow &window)
 void Level::sortedObjectsByIndex()
 {
     std::sort(ObjList.begin(), ObjList.end(),
-            [](IEntity *t1, IEntity *t2)
+            [](std::shared_ptr<IEntity> t1, std::shared_ptr<IEntity> t2)
             {
-                if(t1->getBody() != nullptr && t2->getBody() != nullptr)
+                auto b1 = t1->getComponent<CPrimitiveQuad>("body").lock();
+                auto b2 = t2->getComponent<CPrimitiveQuad>("body").lock();
+                if(b1 && b2)
                 {
-                    return t1->getBody()->getIndex() < t2->getBody()->getIndex();
+                    return b1->getIndex() < b2->getIndex();
                 }
                 return false;
             });
@@ -117,7 +112,7 @@ void Level::sortedObjectsByIndex()
     {
         for(auto &d : o->getDrawable())
         {
-            DrawableComponents.push_back(d);
+            DrawableComponents.push_back(d.lock());
         }
     }
 
@@ -132,11 +127,22 @@ void Level::DestroyEntity(int entityId)
     //ToDo: replace raw-pointer to smart pointers. Again
     ObjList.erase(std::remove(ObjList.begin(), ObjList.end(), getObjectById(entityId)), ObjList.end());
 }
-IEntity *Level::getObjectById(int id)
+std::shared_ptr<IEntity> Level::getObjectById(int id)
 {
     for(auto o : ObjList)
     {
         if (o->GetId() == id)
+        {
+            return o;
+        }
+    }
+    return nullptr;
+}
+std::shared_ptr<IEntity> Level::getObjectByName(const std::string &N)
+{
+    for (auto o : ObjList)
+    {
+        if (o->getName() == N)
         {
             return o;
         }

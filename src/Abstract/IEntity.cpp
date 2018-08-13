@@ -13,8 +13,7 @@ int IEntity::currentId = 0;
 
 IEntity::IEntity()
 {
-    Id = IEntity::getNexId();
-    body = nullptr;
+    Id = IEntity::getNextId();
     Position = {.0f, .0f};
     Name = "def";
 }
@@ -24,16 +23,12 @@ int IEntity::GetId() const noexcept
     return Id;
 }
 
-void IEntity::addComponent(IComponent *component)
+void IEntity::addComponent(std::shared_ptr<IComponent> component)
 {
     Components.push_back(component);
 }
 IEntity::~IEntity()
 {
-    for (auto c : Components)
-    {
-        delete c;
-    }
     Components.clear();
 }
 
@@ -46,59 +41,69 @@ void IEntity::setName(const std::string &name) noexcept
     this->Name = name;
 }
 
-CPrimitiveQuad *IEntity::getBody()
-{
-    return body;
-}
-void IEntity::setPosition(float x, float y)
-{
-    if (body != nullptr)
-    {
-        body->setPosition(x, y);
-        Position.x = x;
-        Position.y = y;
-    }
-}
-void IEntity::setPosition(const sf::Vector2f &position)
-{
-    if (body != nullptr)
-    {
-        body->setPosition(position);
-        this->Position = position;
-    }
-}
 sf::Vector2f IEntity::getPosition() const
 {
     return Position;
 }
-int IEntity::getNexId()
+int IEntity::getNextId()
 {
     return IEntity::currentId++;
 }
 
-IComponent *IEntity::getComponent(int id)
+std::weak_ptr<IComponent> IEntity::getComponent(int id)
 {
     for (auto c : Components)
     {
-        if (c->getId() == id)
+        if (c.lock()->getId() == id)
         {
             return c;
         }
     }
-    return nullptr;
+//    return nullptr;
 }
-std::vector<CPrimitiveQuad *> IEntity::getDrawable()
+
+std::weak_ptr<IComponent> IEntity::getComponent(const std::string &Name)
 {
-    std::vector<CPrimitiveQuad *> result;
-    for (auto &c : Components)
+    for (auto c : Components)
     {
-        CPrimitiveQuad *p1 = dynamic_cast<CPrimitiveQuad *>(c);
-        if (p1 != nullptr)
+        if (c.lock()->getName() == Name)
         {
-            result.push_back(p1);
+            return c;
+        }
+    }
+}
+std::vector<std::weak_ptr<CPrimitiveQuad>> IEntity::getDrawable()
+{
+    std::vector<std::weak_ptr<CPrimitiveQuad>> result;
+    for (auto c : Components)
+    {
+//        CPrimitiveQuad *p1 = dynamic_cast<CPrimitiveQuad *>(c);
+        std::weak_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c.lock());
+        if (p.lock())
+        {
+            result.push_back(p);
             std::cout << "Add component to " << getName() << std::endl;
         }
     }
     return result;
 }
-
+IEntity::IEntity(const IEntity &rhs)
+{
+    this->Id = IEntity::getNextId();
+    this->Components.clear();
+    std::copy(rhs.Components.begin(), rhs.Components.end(), std::back_inserter(Components));
+    this->Name = rhs.Name;
+    this->Position = rhs.Position;
+}
+IEntity &IEntity::operator=(const IEntity &rhs)
+{
+    if(this != &rhs)
+    {
+        this->Id = IEntity::getNextId();
+        this->Components.clear();
+        std::copy(rhs.Components.begin(), rhs.Components.end(), std::back_inserter(Components));
+        this->Name = rhs.Name;
+        this->Position = rhs.Position;
+    }
+    return *this;
+}

@@ -33,12 +33,12 @@ bool MapEditor::initWindow()
 
     window.setKeyRepeatEnabled(true);
     window.setVerticalSyncEnabled(true);
-    levelManager = new SLevelManager();
-    CurrentLevel = new Level(0, "Test");
+    levelManager = std::make_unique<SLevelManager>();
+    CurrentLevel = std::make_shared<Level>(0, "Test");
     CurrentLevel->initGui(window);
 
     LevelObjects = &CurrentLevel->getAllObjects();
-    
+
     levelManager->registerLevel(CurrentLevel);
     while (window.isOpen())
     {
@@ -86,10 +86,7 @@ bool MapEditor::initWindow()
         gui->draw();
         window.display();
     }
-    for (auto t : TileMap)
-    {
-        delete t;
-    }
+
     TileMap.clear();
     delete gui;
     return true;
@@ -145,7 +142,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     //added tiles
     for (uint i = 1; i <= height * width; i++)
     {
-        TileMap.push_back(new CPrimitiveQuad(nullptr, IDGenerator::getId(), "tile"));
+        TileMap.push_back(new CPrimitiveQuad());
     }
 
     //set position
@@ -213,8 +210,9 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                 MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
                         if (clickCondition)
                         {
-                            auto eobj = new EObject(CurrentPathFile);
+                            auto eobj = std::make_shared<EObject>(CurrentPathFile);
                             eobj->setPosition(t->getPosition());
+                            std::weak_ptr<CTile> body = std::make_shared<CTile>(eobj, IDGenerator::getId(), "body", CurrentPathFile, eobj->getPosition());
                             CurrentLevel->addObject(eobj);
                             const std::string objName = LevelObjects->back()->getName();
                             ObjectListBox->addItem(objName);
@@ -227,19 +225,20 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 {
                     for (auto o : *LevelObjects)
                     {
+                        auto body = o->getComponent<CPrimitiveQuad>("body");
                         clickCondition =
-                                MouseGlobalPosition.x > o->getBody()->getPosition().x &&
-                                MouseGlobalPosition.y > o->getBody()->getPosition().y &&
+                                MouseGlobalPosition.x > body.lock()->getPosition().x &&
+                                MouseGlobalPosition.y > body.lock()->getPosition().y &&
                                 MouseGlobalPosition.x <
-                                o->getBody()->getPosition().x + o->getBody()->getTextureSize().x &&
-                                MouseGlobalPosition.y <
-                                o->getBody()->getPosition().y + o->getBody()->getTextureSize().y;
+                                body.lock()->getPosition().x + body.lock()->getTextureSize().x &&
+                                MouseGlobalPosition.y < body.lock()->getPosition().y + body.lock()->getTextureSize().y;
+
                         if (clickCondition)
                         {
                             SelectedEntities.clear();
-                            std::cout << "Edit x: " << o->getBody()->getPosition().x << " y: "
-                                      << o->getBody()->getPosition().y
-                                      << " object " << o->getName() << " (index: " << o->getBody()->getIndex() << ")"
+                            std::cout << "Edit x: " << body.lock()->getPosition().x << " y: "
+                                      << body.lock()->getPosition().y
+                                      << " object " << o->getName() << " (index: " << body.lock()->getIndex() << ")"
                                       << std::endl;
                             std::cout << "-----------" << std::endl;
                             ObjectListBox->setSelectedItem(o->getName());
@@ -252,24 +251,28 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 {
                     for (auto o : *LevelObjects)
                     {
+                        auto body = o->getComponent<CPrimitiveQuad>("body");
                         clickCondition =
-                                MouseGlobalPosition.x > o->getBody()->getPosition().x &&
-                                MouseGlobalPosition.y > o->getBody()->getPosition().y &&
+                                MouseGlobalPosition.x > body.lock()->getPosition().x &&
+                                MouseGlobalPosition.y > body.lock()->getPosition().y &&
                                 MouseGlobalPosition.x <
-                                o->getBody()->getPosition().x + o->getBody()->getTextureSize().x &&
-                                MouseGlobalPosition.y <
-                                o->getBody()->getPosition().y + o->getBody()->getTextureSize().y;
+                                body.lock()->getPosition().x + body.lock()->getTextureSize().x &&
+                                MouseGlobalPosition.y < body.lock()->getPosition().y + body.lock()->getTextureSize().y;
                         if (clickCondition)
                         {
                             if (SelectedEntities.empty())
                             {
-                                SelectedEntities.insert({SelectedEntity});
+                                //                                SelectedEntities.insert({SelectedEntity});
+                                SelectedEntities.insert(
+                                        std::pair<int, std::shared_ptr<IEntity>>(SelectedEntity->GetId(),
+                                                                                 SelectedEntity));
                             }
-                            SelectedEntities.insert({dynamic_cast<EObject *>(o)});
+                            //                            SelectedEntities.insert({dynamic_cast<EObject *>(o)});
+                            SelectedEntities.insert(std::pair<int, std::shared_ptr<IEntity>>(o->GetId(), o));
                             ObjectListBox->setSelectedItem(o->getName());
                             for (auto s : SelectedEntities)
                             {
-                                std::cout << s->getName() << std::endl;
+                                std::cout << s.second->getName() << std::endl;
                             }
                         }
                     }
@@ -339,17 +342,19 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 CurrentMode = EditorMode::ADD;
                 if (SelectedEntity != nullptr)
                 {
-                    if (SelectedEntity->getBody() != nullptr)
+                    auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
+                    if (body.lock())
                     {
-                        SelectedEntity->getBody()->hideBounds();
+                        body.lock()->hideBounds();
                     }
                 }
                 SelectedEntity = nullptr;
                 for (auto o : *LevelObjects)
                 {
-                    if (o->getBody() != nullptr)
+                    auto body = o->getComponent<CPrimitiveQuad>("body");
+                    if (body.lock())
                     {
-                        o->getBody()->hideBounds();
+                        body.lock()->hideBounds();
                     }
                 }
                 SelectedEntities.clear();
@@ -416,7 +421,8 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 for (auto o : *LevelObjects)
                 {
                     //                    o->setSize({128, 128});
-                    o->getBody()->setSize({128, 128});
+                    //                    o->getBody()->setSize({128, 128});
+                    o->getComponent<CPrimitiveQuad>("body").lock()->setSize({128, 128});
                 }
                 break;
             }
@@ -447,7 +453,7 @@ void MapEditor::addInfoToPropertiesPanel()
     {
         return;
     }
-    SelectedEntity = findEntityByName(ObjectListBox->getSelectedItem().toAnsiString());
+    SelectedEntity = CurrentLevel->getObjectByName(ObjectListBox->getSelectedItem().toAnsiString());
     if (SelectedEntity == nullptr)
     {
         std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
@@ -460,9 +466,10 @@ void MapEditor::addInfoToPropertiesPanel()
     {
         if (o != SelectedEntity)
         {
-            if (o->getBody() != nullptr)
+            auto body = o->getComponent<CPrimitiveQuad>("body");
+            if (body.lock())
             {
-                o->getBody()->hideBounds();
+                body.lock()->hideBounds();
             }
         }
     }
@@ -470,30 +477,32 @@ void MapEditor::addInfoToPropertiesPanel()
     {
         for (auto s : SelectedEntities)
         {
-            if (s->getBody() != nullptr)
+            auto body = s.second->getComponent<CPrimitiveQuad>("body");
+            if (body.lock())
             {
-                s->getBody()->drawBounds();
-                s->getBody()->ShowBounds = true;
+                body.lock()->drawBounds();
+                body.lock()->ShowBounds = true;
             }
         }
     } else
     {
-        auto body = SelectedEntity->getBody();
-        if (!body)
+        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
+
+        if (!body.lock())
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
             objIndexEdit->label->setText("0");
             return;
         }
 
-        body->drawBounds();
-        body->ShowBounds = true;
-        objIndexEdit->setText(std::to_string(body->getIndex()));
+        body.lock()->drawBounds();
+        body.lock()->ShowBounds = true;
+        objIndexEdit->setText(std::to_string(body.lock()->getIndex()));
         tgui::Picture::Ptr compPic;
         tgui::Button::Ptr addComp;
         tgui::ScrollablePanel::Ptr compList;
 
-        compPic = tgui::Picture::create(body->getTexturePath());
+        compPic = tgui::Picture::create(body.lock()->getTexturePath());
         compPic->setPosition(objIndexEdit->getPosition().x,
                              objIndexEdit->getPosition().y + objIndexEdit->getSize().y + 4);
         addComp = tgui::Button::create("Add component");
@@ -512,7 +521,7 @@ void MapEditor::addInfoToPropertiesPanel()
         {
             for (const auto &item : SelectedEntity->getDrawable())
             {
-                if (item != body)
+                if (item.lock() != body.lock())
                 {
                     //ToDo: create class for GUI Components
                 }
@@ -520,19 +529,7 @@ void MapEditor::addInfoToPropertiesPanel()
         }
     }
 }
-EObject *MapEditor::findEntityByName(const std::string &ObjName)
-{
-    for (auto &o : *LevelObjects)
-    {
-        if (o->getName() == ObjName)
-        {
-            //TODO: remove cast
-            return dynamic_cast<EObject *>(o);
-        }
-    }
-    std::cerr << "findEntityByName returned null reference" << std::endl;
-    return nullptr;
-}
+
 void MapEditor::UpdateObjectFromProperties()
 {
     if (SelectedEntity == nullptr)
@@ -543,25 +540,27 @@ void MapEditor::UpdateObjectFromProperties()
     {
         for (auto s : SelectedEntities)
         {
-            s->setPosition(std::atof(objPositionX->getText().toAnsiString().c_str()),
-                           std::atof(objPositionY->getText().toAnsiString().c_str()));
-            if (s->getBody() != nullptr)
+            s.second->setPosition(std::atof(objPositionX->getText().toAnsiString().c_str()),
+                                  std::atof(objPositionY->getText().toAnsiString().c_str()));
+            auto body = s.second->getComponent<CPrimitiveQuad>("body");
+
+            if (body.lock())
             {
-                s->getBody()->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
+                body.lock()->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
             }
-            s->setName(objPropChangeNameBox->getText().toAnsiString());
+            s.second->setName(objPropChangeNameBox->getText().toAnsiString());
         }
     } else
     {
-        auto body = SelectedEntity->getBody();
-        if (!body)
+        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
+        if (!body.lock())
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
             return;
         }
         SelectedEntity->setPosition(static_cast<float>(std::atof(objPositionX->getText().toAnsiString().c_str())),
                                     static_cast<float>(std::atof(objPositionY->getText().toAnsiString().c_str())));
-        body->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
+        body.lock()->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
         SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
     }
 
@@ -578,9 +577,11 @@ void MapEditor::UpdateObjectFromProperties()
         }
         if (o->getPosition() == SelectedEntity->getPosition())
         {
-            if (o->getBody()->getIndex() == SelectedEntity->getBody()->getIndex())
+            auto body = o->getComponent<CPrimitiveQuad>("body");
+            if (body.lock()->getIndex() == SelectedEntity->getComponent<CPrimitiveQuad>("body").lock()->getIndex())
             {
-                SelectedEntity->getBody()->setIndex(SelectedEntity->getBody()->getIndex() + 1);
+                SelectedEntity->getComponent<CPrimitiveQuad>("body").lock()->setIndex(
+                        SelectedEntity->getComponent<CPrimitiveQuad>("body").lock()->getIndex() + 1);
             }
         }
     }
@@ -645,7 +646,7 @@ void MapEditor::LoadUI()
     objPropChangeNameBox->getRenderer()->setBorderColorFocused(sf::Color(0, 0, 0, 0));
     objPropChangeNameBox->getRenderer()->setBorderColorHover(sf::Color(0, 0, 0, 0));
     objPropChangeNameBox->connect(objPropChangeNameBox->onReturnKeyPress.getName(),
-                                   &MapEditor::UpdateObjectFromProperties, this);
+                                  &MapEditor::UpdateObjectFromProperties, this);
 
     objPositionLabel = tgui::Label::create();
     objPositionLabel->getRenderer()->setTextColor(sf::Color::White);
