@@ -13,10 +13,6 @@
 #include <cstring>
 #include <list>
 #include "CTile.h"
-#include "json.hpp"
-
-
-using json = nlohmann::json;
 
 class MapIO
 {

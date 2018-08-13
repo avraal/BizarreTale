@@ -46,9 +46,9 @@ private:
         delete levelManager;
     }
     std::vector<IEntity*> *LevelObjects;
-    Level *CurrentLevel;                                   //container for all object on CurrentLevel
+    Level *CurrentLevel;                                            //container for all object on CurrentLevel
     SLevelManager *levelManager;
-    std::vector<CPrimitiveQuad*> TileMap;           //draw grid for add new objects
+    std::vector<CPrimitiveQuad*> TileMap;                           //draw grid for add new objects
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats
     std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;        //grid of lines
@@ -56,23 +56,26 @@ private:
     sf::RenderWindow window;                                        //main window
     sf::View MainCamera;                                            //main camera
     sf::Clock clock;
-    //-------------------------------
-    tgui::Panel::Ptr                objectProperties;
+    //------------------------------UI------------------------------
+        //-------------------Object properties----------------------
+            tgui::Panel::Ptr                objectProperties;
+            tgui::Label::Ptr                objPositionLabel;
+            tgui::EditboxAndLabel::Ptr      objIndexEdit;
+            tgui::EditboxAndLabel::Ptr      objPropChangeNameBox;
+            tgui::EditboxAndLabel::Ptr      objPositionX;
+            tgui::EditboxAndLabel::Ptr      objPositionY;
+            tgui::ScrollablePanel::Ptr      scrollProperties;
+            tgui::Button::Ptr               objConfirmChanges;
+        //--------------------Object properties---------------------
 
-    tgui::Label::Ptr                objPositionLabel;
-    tgui::EditboxAndLabel::Ptr     objIndexEdit;
-    tgui::EditboxAndLabel::Ptr     objPropChangeNameBox;
-    tgui::EditboxAndLabel::Ptr     objPositionX;
-    tgui::EditboxAndLabel::Ptr     objPositionY;
-    tgui::ScrollablePanel::Ptr      scrollProperties;
-    tgui::Button::Ptr               objConfirmChanges;
+        //--------------------------Info----------------------------
+            tgui::Panel::Ptr infoPanel;
+            tgui::Label::Ptr infoObjCountLabel;
+            tgui::Label::Ptr infoFPSLabel;
+        //--------------------------Info----------------------------
 
-    tgui::ScrollablePanel::Ptr scrollPanel;                         //panel with images
-
-    tgui::Label::Ptr infoObjCountLabel;                             //show count of objects
-    tgui::Label::Ptr infoFPSLabel;                                  //show current Framerate-Per-Second
-    tgui::Panel::Ptr infoPanel;                                     //TODO: ?
-    //-------------------------------
+        tgui::ScrollablePanel::Ptr scrollPanel;
+    //------------------------------UI------------------------------
 
     tgui::ListBox::Ptr ObjectListBox;
 

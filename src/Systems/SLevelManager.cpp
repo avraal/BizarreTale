@@ -7,11 +7,7 @@
 //
 
 #include "SLevelManager.hpp"
-void SLevelManager::registerLevel(const std::string &name)
-{
-    Level *l = new Level(Levels.size() + 1, name);
-    registerLevel(l);
-}
+
 void SLevelManager::registerLevel(Level *l)
 {
     Levels.insert(std::pair<std::string, Level*>(l->getName(), l));

@@ -22,7 +22,6 @@ private:
 public:
     SLevelManager();
     virtual void Execute ();
-    void registerLevel(const std::string &name);
     void registerLevel(Level *l);
     Level *changeLevelByName(const std::string &name);
     virtual ~SLevelManager();

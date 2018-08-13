@@ -10,9 +10,11 @@
 #include "MapEditor.h"
 #include "CPrimitiveQuad.hpp"
 #include "Entity/EObject.hpp"
+#include "Util/IDGenerator.hpp"
 
 bool MapEditor::initWindow()
 {
+
     window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT),
                   "Bizarre Tale: Map Editor"/*, sf::Style::Titlebar | sf::Style::Close*/);
     MainCamera = window.getView();
@@ -36,7 +38,7 @@ bool MapEditor::initWindow()
     CurrentLevel->initGui(window);
 
     LevelObjects = &CurrentLevel->getAllObjects();
-
+    
     levelManager->registerLevel(CurrentLevel);
     while (window.isOpen())
     {
@@ -143,7 +145,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     //added tiles
     for (uint i = 1; i <= height * width; i++)
     {
-        TileMap.push_back(new CPrimitiveQuad());
+        TileMap.push_back(new CPrimitiveQuad(nullptr, IDGenerator::getId(), "tile"));
     }
 
     //set position
@@ -320,6 +322,12 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
     {
         switch (event.key.code)
         {
+            case sf::Keyboard::Q:
+            {
+                int randID = (rand() % (CurrentLevel->getObjCount())) + 1;
+                CurrentLevel->DestroyEntity(randID);
+                break;
+            }
             case sf::Keyboard::E:
             {
                 CurrentMode = EditorMode::SELECT;
