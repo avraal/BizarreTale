@@ -10,17 +10,13 @@ SingletonClass &obj = SingletonClass::Instance();
 - Has private ctor and dtor
 - Copy and move ctors has specificator **delete**
 
-<br>
 
 # IComponent
-### Pattern: Entity-Component-System
+### Pattern: Entity-Component-System, Command
 Base abstract class for all Components  
 Every Component has Name  
 Has only one field with setters and getters for him
  
-<br>
-
-<br>
 
 # IEntity
 ### Pattern: Entity-Component-System
@@ -32,13 +28,9 @@ Every Entity has a:
 * Unique Name - on level;
 * Body - empty CPrimitiveQuad.
 
-<br>
-
 # ISystem
 ### Pattern: Entity-Component-System
 Base behaviour for all System. 
-
-<br>
 
 # SLevelManager
 ### Parent: ISystem
@@ -47,8 +39,6 @@ If you're going to use some level, you must register him.
 ```cpp
 levelManager->registerLevel(CurrentLevel);
 ``` 
-
-<br>
 
 # Level
 **Now, he haven't Parent**  
@@ -74,7 +64,6 @@ CurrentLevel->addObject(obj);
 ```
 
 After this, you can see you new object on display.
-<br>
 
 # EObject
 ### Parent: IEntity
@@ -88,15 +77,12 @@ or
 EObject *obj = new EObject("image.png");
 ```
 
-<br>
 
 # CTile
-### Pattern: Component
-### Parent: CPrimitiveQuad
+## Pattern: Component  
+## Parent: CPrimitiveQuad
 
 Basic Component for render.
-
-<br>
 
 # CPrimitiveQuad
 ### Pattern: Component
@@ -104,7 +90,6 @@ Basic Component for render.
 
 Represents array of vertex `(sf::VertexArray)`.
 
-<br>
 
 # MapEditor
 ### Pattern: Singleton
