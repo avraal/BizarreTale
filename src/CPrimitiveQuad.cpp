@@ -8,6 +8,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <iostream>
 #include "CPrimitiveQuad.hpp"
+#include "Abstract/IEntity.hpp"
 #include "CONST_DEFINITIONS.h"
 
 CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
@@ -21,7 +22,7 @@ CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
     shape = ThicknessLineArray();
 }
 
-CPrimitiveQuad::CPrimitiveQuad(std::shared_ptr<IEntity> entity, int id, const std::string &name, sf::Color c) : IComponent(entity, id, name)
+CPrimitiveQuad::CPrimitiveQuad(int id, const std::string &name, sf::Color c) : IComponent(id, name)
 {
     std::cout << "CPCtor" << std::endl;
     index = 0;
@@ -32,7 +33,7 @@ CPrimitiveQuad::CPrimitiveQuad(std::shared_ptr<IEntity> entity, int id, const st
     setSize({TSD, TSD});
     shape = ThicknessLineArray();
 }
-CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p) : IComponent(p.entity, p.id, p.Name)
+CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p) : IComponent(p.id, p.Name)
 {
     std::cout << "Copy" << std::endl;
     this->color = p.color;
@@ -42,7 +43,7 @@ CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p) : IComponent(p.entity, p
     setSize({TSD, TSD}); //TODO: Change TSD to real size
     shape = p.shape;
 }
-CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &&p) : IComponent(p.entity, p.id, p.Name)
+CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &&p) : IComponent(p.id, p.Name)
 {
     std::cout << "Move" << std::endl;
     this->color = p.color;
@@ -125,6 +126,11 @@ const sf::Texture *CPrimitiveQuad::getTexture() const
 std::string &CPrimitiveQuad::getTexturePath()
 {
     return ImagePath;
+}
+void CPrimitiveQuad::Attach(std::shared_ptr<IEntity> ptr)
+{
+    IComponent::Attach(ptr);
+    setPosition(ptr->getPosition());
 }
 
 

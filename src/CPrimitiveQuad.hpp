@@ -28,7 +28,7 @@ private:
 
 public:
     CPrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
-    CPrimitiveQuad(std::shared_ptr<IEntity> entity, int id, const std::string &name, sf::Color c = sf::Color(91, 97, 91));
+    CPrimitiveQuad(int id, const std::string &name, sf::Color c = sf::Color(91, 97, 91));
     CPrimitiveQuad(const CPrimitiveQuad &);
     CPrimitiveQuad(const CPrimitiveQuad &&);
     sf::Vector2u getTextureSize() const;
@@ -38,6 +38,7 @@ public:
     virtual void changeVertexColor(sf::Color c);
     virtual void drawBounds();
     virtual void hideBounds();
+    virtual void Attach(std::shared_ptr<IEntity> ptr) override;
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);
     virtual std::string &getTexturePath();

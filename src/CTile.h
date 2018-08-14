@@ -29,9 +29,9 @@ protected:
 
 public:
     CTile() = delete;
-    CTile(std::shared_ptr<IEntity> entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index = 0);
-    CTile(const CTile &entity);
-    CTile(const CTile &&entity);
+    CTile(int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index = 0);
+    CTile(const CTile &tile);
+    CTile(const CTile &&tile);
     CTile &operator=(sf::Drawable const &) = delete;
 
     CTile &operator=(CTile const &me);

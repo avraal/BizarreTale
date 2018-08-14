@@ -19,15 +19,15 @@ protected:
     std::string Name;
     int id;
     std::shared_ptr<IEntity> entity;
+
 public:
-
     IComponent();
-    IComponent(std::shared_ptr<IEntity>, int id, const std::string &name);
+    IComponent(int id, const std::string &name);
     virtual ~IComponent() = 0;
-
+    virtual void Attach(std::shared_ptr<IEntity>);
     virtual std::string getName() const noexcept final;
     virtual int getId() const noexcept final;
-    virtual std::weak_ptr<IEntity> getEntity();
+    virtual std::shared_ptr<IEntity> getEntity();
 };
 
 #endif //BIZARRETALE_ICOMPONENT_HPP

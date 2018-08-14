@@ -15,8 +15,8 @@ void CTile::LoadTexture(std::string ImagePath)
     sprite.setTexture(texture);
 }
 
-CTile::CTile(std::shared_ptr<IEntity> entity, int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index)
-        : CPrimitiveQuad(entity, id, Name)
+CTile::CTile(int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index)
+        : CPrimitiveQuad(id, Name)
 {
     std::cout << "CTCtor" << std::endl;
     this->ImagePath = ImagePath;
@@ -26,13 +26,13 @@ CTile::CTile(std::shared_ptr<IEntity> entity, int id, const std::string &Name, s
     setPosition(position.x, position.y);
 }
 
-CTile::CTile(const CTile &entity) : CTile(entity.entity, entity.id, entity.Name, entity.ImagePath, entity.getPosition(),
-                                          entity.index)
+CTile::CTile(const CTile &tile) : CTile(tile.id, tile.Name, tile.ImagePath, tile.getPosition(),
+                                        tile.index)
 {
     std::cout << "Copy ctor" << std::endl;
 }
 
-CTile::CTile(const CTile &&entity) : CTile(entity)
+CTile::CTile(const CTile &&tile) : CTile(tile)
 {
     std::cout << "Move ctor" << std::endl;
 }
