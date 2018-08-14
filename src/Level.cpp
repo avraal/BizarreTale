@@ -34,10 +34,10 @@ void Level::addObject(std::shared_ptr<IEntity> ie)
         int count = 0;
         for(auto o : ObjList)
         {
-            auto body = o->getComponent<CPrimitiveQuad>("body").lock();
+            auto body = o->getComponent<CPrimitiveQuad>("body");
             if(o == ie)
                 continue;
-            if(body && ie->getComponent<CPrimitiveQuad>("body").lock())
+            if(body && ie->getComponent<CPrimitiveQuad>("body"))
             {
                 if(o->getPosition() == ie->getPosition())
                 {
@@ -49,7 +49,7 @@ void Level::addObject(std::shared_ptr<IEntity> ie)
                 return;
             }
         }
-        ie->getComponent<CPrimitiveQuad>("body").lock()->setIndex(count);
+        ie->getComponent<CPrimitiveQuad>("body")->setIndex(count);
     }
 }
 std::shared_ptr<IEntity> Level::getObject(int index)
@@ -98,8 +98,8 @@ void Level::sortedObjectsByIndex()
     std::sort(ObjList.begin(), ObjList.end(),
             [](std::shared_ptr<IEntity> t1, std::shared_ptr<IEntity> t2)
             {
-                auto b1 = t1->getComponent<CPrimitiveQuad>("body").lock();
-                auto b2 = t2->getComponent<CPrimitiveQuad>("body").lock();
+                auto b1 = t1->getComponent<CPrimitiveQuad>("body");
+                auto b2 = t2->getComponent<CPrimitiveQuad>("body");
                 if (b1 && b2)
                 {
                     return b1->getIndex() < b2->getIndex();

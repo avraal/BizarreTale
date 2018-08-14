@@ -18,7 +18,6 @@ void CTile::LoadTexture(std::string ImagePath)
 CTile::CTile(int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index)
         : CPrimitiveQuad(id, Name)
 {
-    std::cout << "CTCtor" << std::endl;
     this->ImagePath = ImagePath;
     this->Name = Name;
     LoadTexture(ImagePath);

@@ -43,18 +43,18 @@ public:
     virtual void setPosition(const sf::Vector2f &position) = 0;
     void addComponent(std::shared_ptr<IComponent> component);
     sf::Vector2f getPosition()                        const;
-    std::weak_ptr<IComponent> getComponent(int id);
-    std::weak_ptr<IComponent> getComponent(const std::string &Name);
+    std::shared_ptr<IComponent> getComponent(int id);
+    std::shared_ptr<IComponent> getComponent(const std::string &Name);
     std::vector<std::shared_ptr<CPrimitiveQuad>> getDrawable();
 
     template <class T>
-    std::weak_ptr<T> getComponent(const std::string &Name)
+    std::shared_ptr<T> getComponent(const std::string &Name)
     {
         for (auto c : Components)
         {
             if (c.lock()->getName() == Name)
             {
-                return static_pointer_cast<CPrimitiveQuad>(c);
+                return std::dynamic_pointer_cast<T>(c.lock());
             }
         }
     }

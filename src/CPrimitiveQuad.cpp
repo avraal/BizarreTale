@@ -24,7 +24,6 @@ CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
 
 CPrimitiveQuad::CPrimitiveQuad(int id, const std::string &name, sf::Color c) : IComponent(id, name)
 {
-    std::cout << "CPCtor" << std::endl;
     index = 0;
     this->color = c;
     body.setPrimitiveType(sf::PrimitiveType::Quads);

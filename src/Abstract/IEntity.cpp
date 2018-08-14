@@ -50,25 +50,25 @@ int IEntity::getNextId()
     return IEntity::currentId++;
 }
 
-std::weak_ptr<IComponent> IEntity::getComponent(int id)
+std::shared_ptr<IComponent> IEntity::getComponent(int id)
 {
     for (auto c : Components)
     {
         if (c.lock()->getId() == id)
         {
-            return c;
+            return c.lock();
         }
     }
 //    return nullptr;
 }
 
-std::weak_ptr<IComponent> IEntity::getComponent(const std::string &Name)
+std::shared_ptr<IComponent> IEntity::getComponent(const std::string &Name)
 {
     for (auto c : Components)
     {
         if (c.lock()->getName() == Name)
         {
-            return c;
+            return c.lock();
         }
     }
 }
@@ -81,10 +81,8 @@ std::vector<std::shared_ptr<CPrimitiveQuad>> IEntity::getDrawable()
         if (p)
         {
             result.push_back(p);
-            std::cout << "Add component " << p->getName() << ':' << p->getId() << " to " << getName() << std::endl;
         }
     }
-    std::cout << result.size() << std::endl;
     return result;
 }
 IEntity::IEntity(const IEntity &rhs)

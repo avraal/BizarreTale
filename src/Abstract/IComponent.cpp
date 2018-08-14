@@ -16,7 +16,6 @@ IComponent::IComponent()
 
 IComponent::IComponent(int id, const std::string &name)
 {
-    std::cout << "ICCtor" << std::endl;
     this->Name = name;
     this->id = id;
 }

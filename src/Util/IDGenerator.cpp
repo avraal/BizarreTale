@@ -11,6 +11,5 @@ int IDGenerator::currentId = 0;
 
 int IDGenerator::getId()
 {
-    std::cout << "IDGenerator returned " << IDGenerator::currentId + 1 << std::endl;
     return IDGenerator::currentId++;
 }
