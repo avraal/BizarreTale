@@ -14,16 +14,9 @@
 
 EObject::~EObject()
 {
-//    delete body;
 }
-EObject::EObject(const std::string &ImagePath)
+EObject::EObject()
 {
-    std::cout << "EO default ctor" << std::endl;
-    if (!ImagePath.empty())
-    {
-//        body = new CTile(this, IDGenerator::getId(), "body", ImagePath, getPosition());
-//        auto body = std::make_shared<CTile>()
-    }
 }
 EObject::EObject(EObject &&eo)
 {
@@ -48,22 +41,13 @@ EObject &EObject::operator=(const EObject &rhs)
 }
 void EObject::setPosition(float x, float y)
 {
-    if (body)
-    {
-        body->setPosition(x, y);
-        Position.x = x;
-        Position.y = y;
-    }
+    setPosition({x, y});
 }
 void EObject::setPosition(const sf::Vector2f &position)
 {
-    if (body)
+    this->Position = position;
+    for (auto c : getDrawable())
     {
-        body->setPosition(position);
-        this->Position = position;
+        c->setPosition(position);
     }
-}
-std::shared_ptr<CPrimitiveQuad> EObject::getBody()
-{
-    return getComponent<CPrimitiveQuad>("body").lock();
 }

@@ -72,19 +72,19 @@ std::weak_ptr<IComponent> IEntity::getComponent(const std::string &Name)
         }
     }
 }
-std::vector<std::weak_ptr<CPrimitiveQuad>> IEntity::getDrawable()
+std::vector<std::shared_ptr<CPrimitiveQuad>> IEntity::getDrawable()
 {
-    std::vector<std::weak_ptr<CPrimitiveQuad>> result;
+    std::vector<std::shared_ptr<CPrimitiveQuad>> result;
     for (auto c : Components)
     {
-//        CPrimitiveQuad *p1 = dynamic_cast<CPrimitiveQuad *>(c);
-        std::weak_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c.lock());
-        if (p.lock())
+        std::shared_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c.lock());
+        if (p)
         {
             result.push_back(p);
-            std::cout << "Add component to " << getName() << std::endl;
+            std::cout << "Add component " << p->getName() << ':' << p->getId() << " to " << getName() << std::endl;
         }
     }
+    std::cout << result.size() << std::endl;
     return result;
 }
 IEntity::IEntity(const IEntity &rhs)

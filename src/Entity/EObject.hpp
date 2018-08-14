@@ -15,14 +15,13 @@ class CTile;
 class EObject : public IEntity
 {
 private:
-    std::shared_ptr<CPrimitiveQuad> body;
 public:
-    EObject(const std::string &ImagePath);
+    EObject();
     EObject(const EObject&);
     EObject(EObject &&eo);
     EObject&operator=(const EObject&);
 
-    std::shared_ptr<CPrimitiveQuad> getBody();
+    std::shared_ptr<CPrimitiveQuad> body;
 
     virtual void setPosition(float x, float y) override;
     virtual void setPosition(const sf::Vector2f &position) override;

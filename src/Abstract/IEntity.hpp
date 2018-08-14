@@ -45,7 +45,7 @@ public:
     sf::Vector2f getPosition()                        const;
     std::weak_ptr<IComponent> getComponent(int id);
     std::weak_ptr<IComponent> getComponent(const std::string &Name);
-    std::vector<std::weak_ptr<CPrimitiveQuad>> getDrawable();
+    std::vector<std::shared_ptr<CPrimitiveQuad>> getDrawable();
 
     template <class T>
     std::weak_ptr<T> getComponent(const std::string &Name)
