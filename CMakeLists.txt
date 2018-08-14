@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(BizarreTale)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
 add_executable(BizarreTale  src/main.cpp
                             src/CTile.cpp
@@ -19,7 +19,8 @@ add_executable(BizarreTale  src/main.cpp
                             src/Systems/SLevelManager.cpp
                             src/Entity/EObject.cpp
                             src/Systems/SUi.cpp
-                            src/CustomGUI/EditboxAndLabel.cpp src/Util/IDGenerator.cpp src/Util/IDGenerator.hpp)
+                            src/CustomGUI/EditboxAndLabel.cpp
+                            src/Util/IDGenerator.cpp)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics network audio)
 include_directories(/usr/local/include)
