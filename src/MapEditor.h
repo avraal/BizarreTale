@@ -90,7 +90,6 @@ private:
 
     std::mutex b_mutex;
     std::shared_ptr<IEntity> SelectedEntity;
-//    std::set<std::shared_ptr<EObject>> SelectedEntities;
     std::map<int, std::shared_ptr<IEntity>> SelectedEntities;
 
     void drawTileMap(float size_x, float size_y);
@@ -102,7 +101,6 @@ private:
     void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
     void LoadUI();
-    void sortObjects();
 
 public:
     MapEditor(MapEditor const&) = delete;

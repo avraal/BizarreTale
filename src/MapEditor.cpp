@@ -210,9 +210,10 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                 MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
                         if (clickCondition)
                         {
-                            auto eobj = std::make_shared<EObject>(CurrentPathFile);
+                            auto eobj = std::make_shared<EObject>();
+                            auto body = std::make_shared<CTile>(IDGenerator::getId(), "body", CurrentPathFile, eobj->getPosition());
                             eobj->setPosition(t->getPosition());
-                            std::weak_ptr<CTile> body = std::make_shared<CTile>(eobj, IDGenerator::getId(), "body", CurrentPathFile, eobj->getPosition());
+                            body->Attach(eobj);
                             CurrentLevel->addObject(eobj);
                             const std::string objName = LevelObjects->back()->getName();
                             ObjectListBox->addItem(objName);
@@ -262,12 +263,10 @@ void MapEditor::MouseCallbacks(sf::Event event)
                         {
                             if (SelectedEntities.empty())
                             {
-                                //                                SelectedEntities.insert({SelectedEntity});
                                 SelectedEntities.insert(
                                         std::pair<int, std::shared_ptr<IEntity>>(SelectedEntity->GetId(),
                                                                                  SelectedEntity));
                             }
-                            //                            SelectedEntities.insert({dynamic_cast<EObject *>(o)});
                             SelectedEntities.insert(std::pair<int, std::shared_ptr<IEntity>>(o->GetId(), o));
                             ObjectListBox->setSelectedItem(o->getName());
                             for (auto s : SelectedEntities)
@@ -420,8 +419,6 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 }
                 for (auto o : *LevelObjects)
                 {
-                    //                    o->setSize({128, 128});
-                    //                    o->getBody()->setSize({128, 128});
                     o->getComponent<CPrimitiveQuad>("body").lock()->setSize({128, 128});
                 }
                 break;
@@ -521,7 +518,7 @@ void MapEditor::addInfoToPropertiesPanel()
         {
             for (const auto &item : SelectedEntity->getDrawable())
             {
-                if (item.lock() != body.lock())
+                if (item != body.lock())
                 {
                     //ToDo: create class for GUI Components
                 }
@@ -548,7 +545,6 @@ void MapEditor::UpdateObjectFromProperties()
             {
                 body.lock()->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
             }
-            s.second->setName(objPropChangeNameBox->getText().toAnsiString());
         }
     } else
     {
@@ -586,17 +582,6 @@ void MapEditor::UpdateObjectFromProperties()
         }
     }
 
-    sortObjects();
-}
-
-void MapEditor::sortObjects()
-{
-    ObjectListBox->removeAllItems();
-
-    for (auto o : *LevelObjects)
-    {
-        ObjectListBox->addItem(o->getName());
-    }
     CurrentLevel->sortedObjectsByIndex();
 }
 
