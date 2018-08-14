@@ -25,9 +25,9 @@ void Level::addObject(std::shared_ptr<IEntity> ie)
 {
     ObjList.push_back(ie);
     ie->setName("def" + std::to_string(ObjList.size()));
-    for(auto &d : ie->getDrawable())
+    for(auto d : ie->getDrawable())
     {
-        DrawableComponents.push_back(d.lock());
+        DrawableComponents.push_back(d);
     }
     if(ObjList.size() > 1)
     {
@@ -49,7 +49,6 @@ void Level::addObject(std::shared_ptr<IEntity> ie)
                 return;
             }
         }
-//        ie->getBody()->setIndex(count);
         ie->getComponent<CPrimitiveQuad>("body").lock()->setIndex(count);
     }
 }
@@ -101,20 +100,17 @@ void Level::sortedObjectsByIndex()
             {
                 auto b1 = t1->getComponent<CPrimitiveQuad>("body").lock();
                 auto b2 = t2->getComponent<CPrimitiveQuad>("body").lock();
-                if(b1 && b2)
+                if (b1 && b2)
                 {
                     return b1->getIndex() < b2->getIndex();
                 }
                 return false;
             });
-    DrawableComponents.clear();
-    for(auto o : ObjList)
-    {
-        for(auto &d : o->getDrawable())
-        {
-            DrawableComponents.push_back(d.lock());
-        }
-    }
+    std::sort(DrawableComponents.begin(), DrawableComponents.end(),
+            [](std::shared_ptr<CPrimitiveQuad> c1, std::shared_ptr<CPrimitiveQuad> c2)
+            {
+                return c1->getIndex() < c2->getIndex();
+            });
 
 }
 void Level::loadGui(sf::RenderWindow &window)
