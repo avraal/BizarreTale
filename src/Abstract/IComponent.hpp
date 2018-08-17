@@ -24,6 +24,7 @@ public:
     IComponent();
     IComponent(int id, const std::string &name);
     virtual ~IComponent() = 0;
+    virtual void release() = 0;
     virtual void Attach(std::shared_ptr<IEntity>);
     virtual std::string getName() const noexcept final;
     virtual int getId() const noexcept final;

@@ -131,5 +131,10 @@ void CPrimitiveQuad::Attach(std::shared_ptr<IEntity> ptr)
     IComponent::Attach(ptr);
     setPosition(ptr->getPosition());
 }
+void CPrimitiveQuad::release()
+{
+    body.clear();
+    shape.clear();
+}
 
 
