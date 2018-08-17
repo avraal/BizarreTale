@@ -29,6 +29,7 @@ void IEntity::addComponent(std::shared_ptr<IComponent> component)
 }
 IEntity::~IEntity()
 {
+    std::cout << "dtor" << std::endl;
     Components.clear();
 }
 
@@ -104,4 +105,26 @@ IEntity &IEntity::operator=(const IEntity &rhs)
         this->Position = rhs.Position;
     }
     return *this;
+}
+void IEntity::removeComponent(int compId)
+{
+
+    std::remove_if(Components.begin(), Components.end(), [compId](std::weak_ptr<IComponent> comp)
+    {
+        if (comp.lock()->getId() == compId)
+        {
+            comp.lock()->release();
+            return true;
+        }
+
+        return false;
+    });
+}
+void IEntity::removeComponents()
+{
+    for (const auto &component : Components)
+    {
+        component.lock()->release();
+    }
+    Components.clear();
 }

@@ -11,6 +11,8 @@
 
 #include <vector>
 #include <memory>
+#include <forward_list>
+#include <algorithm>
 #include "../CPrimitiveQuad.hpp"
 
 class Level;
@@ -42,7 +44,9 @@ public:
     virtual void setPosition(float x, float y) = 0;
     virtual void setPosition(const sf::Vector2f &position) = 0;
     void addComponent(std::shared_ptr<IComponent> component);
-    sf::Vector2f getPosition()                        const;
+    void removeComponent(int compId);
+    void removeComponents();
+    sf::Vector2f getPosition() const;
     std::shared_ptr<IComponent> getComponent(int id);
     std::shared_ptr<IComponent> getComponent(const std::string &Name);
     std::vector<std::shared_ptr<CPrimitiveQuad>> getDrawable();
