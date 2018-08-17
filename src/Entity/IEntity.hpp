@@ -13,7 +13,7 @@
 #include <memory>
 #include <forward_list>
 #include <algorithm>
-#include "../CPrimitiveQuad.hpp"
+#include "../Components/CPrimitiveQuad.hpp"
 
 class Level;
 class IComponent;

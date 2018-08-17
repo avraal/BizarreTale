@@ -18,7 +18,7 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <forward_list>
-#include "CPrimitiveQuad.hpp"
+#include "Components/CPrimitiveQuad.hpp"
 #include "Systems/SUi.hpp"
 
 class IEntity;

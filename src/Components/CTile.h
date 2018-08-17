@@ -16,7 +16,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <cstring>
-#include "CONST_DEFINITIONS.h"
+#include "../CONST_DEFINITIONS.h"
 #include "CPrimitiveQuad.hpp"
 
 class CTile : public CPrimitiveQuad

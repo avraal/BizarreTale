@@ -12,7 +12,7 @@
 #include <memory>
 #include <cstring>
 #include <list>
-#include "CTile.h"
+#include "Components/CTile.h"
 
 class MapIO
 {

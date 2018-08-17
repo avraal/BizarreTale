@@ -8,8 +8,8 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <iostream>
 #include "CPrimitiveQuad.hpp"
-#include "Abstract/IEntity.hpp"
-#include "CONST_DEFINITIONS.h"
+#include "../Entity/IEntity.hpp"
+#include "../CONST_DEFINITIONS.h"
 
 CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
 {

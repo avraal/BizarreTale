@@ -12,7 +12,7 @@
 #include <vector>
 #include <memory>
 #include <map>
-#include "../Abstract/ISystem.hpp"
+#include "ISystem.hpp"
 #include "../Level.hpp"
 
 class SLevelManager : public ISystem

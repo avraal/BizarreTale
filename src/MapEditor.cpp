@@ -8,7 +8,7 @@
 
 #include <thread>
 #include "MapEditor.h"
-#include "CPrimitiveQuad.hpp"
+#include "Components/CPrimitiveQuad.hpp"
 #include "Entity/EObject.hpp"
 #include "Util/IDGenerator.hpp"
 

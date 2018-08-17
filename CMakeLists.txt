@@ -6,16 +6,16 @@ set(CMAKE_CXX_COMPILER /usr/bin/g++-7)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
 add_executable(BizarreTale  src/main.cpp
-                            src/CTile.cpp
+        src/Components/CTile.cpp
                             src/MapEditor.cpp
-                            src/CPrimitiveQuad.cpp
+        src/Components/CPrimitiveQuad.cpp
                             src/MapIO.cpp
                             src/ThicknessLine.cpp
                             src/ThicknessLineArray.cpp
-                            src/Abstract/IEntity.cpp
-                            src/Abstract/IComponent.cpp
+        src/Entity/IEntity.cpp
+        src/Components/IComponent.cpp
                             src/Systems/SRender.cpp
-                            src/Abstract/ISystem.cpp
+        src/Systems/ISystem.cpp
                             src/Level.cpp
                             src/Systems/SLevelManager.cpp
                             src/Entity/EObject.cpp

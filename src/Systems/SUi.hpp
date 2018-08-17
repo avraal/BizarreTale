@@ -10,7 +10,7 @@
 #define BIZARRETALE_SUI_HPP
 
 #include <TGUI/Gui.hpp>
-#include "../Abstract/ISystem.hpp"
+#include "ISystem.hpp"
 
 class SUi : public ISystem
 {

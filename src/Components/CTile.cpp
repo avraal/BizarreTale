@@ -38,7 +38,6 @@ CTile::CTile(const CTile &&tile) : CTile(tile)
 
 void CTile::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    //    states.texture = &texture;
     target.draw(sprite, states);
     target.draw(shape, states);
 }

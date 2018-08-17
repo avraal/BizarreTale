@@ -16,10 +16,10 @@
 #include <string>
 #include <mutex>
 #include <set>
-#include "CTile.h"
+#include "Components/CTile.h"
 #include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
-#include "CPrimitiveQuad.hpp"
+#include "Components/CPrimitiveQuad.hpp"
 #include "Level.hpp"
 #include "Systems/SLevelManager.hpp"
 #include "CustomGUI/EditboxAndLabel.hpp"

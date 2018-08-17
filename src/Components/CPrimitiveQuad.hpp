@@ -14,10 +14,10 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
-#include "ThicknessLine.hpp"
-#include "ThicknessLineArray.hpp"
-#include "Abstract/IComponent.hpp"
-#include "CONST_DEFINITIONS.h"
+#include "../ThicknessLine.hpp"
+#include "../ThicknessLineArray.hpp"
+#include "IComponent.hpp"
+#include "../CONST_DEFINITIONS.h"
 
 #define TSD TILE_SIZE_DEFAULT
 

@@ -7,7 +7,7 @@
 //
 
 #include "IComponent.hpp"
-#include "IEntity.hpp"
+#include "../Entity/IEntity.hpp"
 #include "../Util/IDGenerator.hpp"
 IComponent::IComponent()
 {

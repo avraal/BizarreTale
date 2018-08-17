@@ -8,7 +8,7 @@
 
 #include <SFML/Window/Event.hpp>
 #include "Level.hpp"
-#include "Abstract/IEntity.hpp"
+#include "Entity/IEntity.hpp"
 Level::Level(int id, const std::string &Name)
 {
     this->Id = id;

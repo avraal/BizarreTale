@@ -9,7 +9,7 @@
 #ifndef BIZARRETALE_EOBJECT_HPP
 #define BIZARRETALE_EOBJECT_HPP
 
-#include "../Abstract/IEntity.hpp"
+#include "IEntity.hpp"
 
 class CTile;
 class EObject : public IEntity

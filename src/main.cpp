@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <chrono>
-#include "CTile.h"
+#include "Components/CTile.h"
 #include "MapEditor.h"
 
 
