@@ -351,8 +351,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 CurrentMode = EditorMode::ADD;
                 if (SelectedEntity != nullptr)
                 {
-                    auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
-                    if (body)
+                    if (auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body"); body)
                     {
                         body->hideBounds();
                     }
@@ -360,8 +359,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 SelectedEntity = nullptr;
                 for (auto o : *LevelObjects)
                 {
-                    auto body = o->getComponent<CPrimitiveQuad>("body");
-                    if (body)
+                    if (auto body = o->getComponent<CPrimitiveQuad>("body"); body)
                     {
                         body->hideBounds();
                     }
@@ -474,8 +472,7 @@ void MapEditor::addInfoToPropertiesPanel()
     {
         if (o != SelectedEntity)
         {
-            auto body = o->getComponent<CPrimitiveQuad>("body");
-            if (body)
+            if (auto body = o->getComponent<CPrimitiveQuad>("body"); body)
             {
                 body->hideBounds();
             }
@@ -485,8 +482,7 @@ void MapEditor::addInfoToPropertiesPanel()
     {
         for (auto s : SelectedEntities)
         {
-            auto body = s.second->getComponent<CPrimitiveQuad>("body");
-            if (body)
+            if (auto body = s.second->getComponent<CPrimitiveQuad>("body"); body)
             {
                 body->drawBounds();
                 body->ShowBounds = true;
@@ -494,14 +490,13 @@ void MapEditor::addInfoToPropertiesPanel()
         }
     } else
     {
-        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
-
-        if (!body)
+        if (auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body"); !body)
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
             objIndexEdit->label->setText("0");
             return;
         }
+        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
 
         body->drawBounds();
         body->ShowBounds = true;
@@ -550,21 +545,19 @@ void MapEditor::UpdateObjectFromProperties()
         {
             s.second->setPosition(std::atof(objPositionX->getText().toAnsiString().c_str()),
                                   std::atof(objPositionY->getText().toAnsiString().c_str()));
-            auto body = s.second->getComponent<CPrimitiveQuad>("body");
-
-            if (body)
+            if (auto body = s.second->getComponent<CPrimitiveQuad>("body"); body)
             {
                 body->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
             }
         }
     } else
     {
-        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
-        if (!body)
+        if (auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body"); !body)
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
-            return;
+            return;;
         }
+        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
         SelectedEntity->setPosition(static_cast<float>(std::atof(objPositionX->getText().toAnsiString().c_str())),
                                     static_cast<float>(std::atof(objPositionY->getText().toAnsiString().c_str())));
         body->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
@@ -584,11 +577,13 @@ void MapEditor::UpdateObjectFromProperties()
         }
         if (o->getPosition() == SelectedEntity->getPosition())
         {
-            auto body = o->getComponent<CPrimitiveQuad>("body");
-            if (body->getIndex() == SelectedEntity->getComponent<CPrimitiveQuad>("body")->getIndex())
+            if (auto body = o->getComponent<CPrimitiveQuad>("body"); body)
             {
-                SelectedEntity->getComponent<CPrimitiveQuad>("body")->setIndex(
-                        SelectedEntity->getComponent<CPrimitiveQuad>("body")->getIndex() + 1);
+                if (body->getIndex() == SelectedEntity->getComponent<CPrimitiveQuad>("body")->getIndex())
+                {
+                    SelectedEntity->getComponent<CPrimitiveQuad>("body")->setIndex(
+                            SelectedEntity->getComponent<CPrimitiveQuad>("body")->getIndex() + 1);
+                }
             }
         }
     }
