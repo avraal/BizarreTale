@@ -10,6 +10,7 @@
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include <vector>
 #include "ThicknessLine.hpp"
 
 class ThicknessLineArray : public sf::Drawable

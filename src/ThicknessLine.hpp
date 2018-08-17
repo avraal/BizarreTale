@@ -14,6 +14,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <iostream>
+#include <cmath>
 
 class ThicknessLine : public sf::Drawable
 {
