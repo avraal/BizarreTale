@@ -61,6 +61,7 @@ public:
                 return std::dynamic_pointer_cast<T>(c.lock());
             }
         }
+        return nullptr;
     }
 
     inline bool operator==(const IEntity &rhs) const

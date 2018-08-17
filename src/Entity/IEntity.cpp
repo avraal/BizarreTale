@@ -60,7 +60,7 @@ std::shared_ptr<IComponent> IEntity::getComponent(int id)
             return c.lock();
         }
     }
-//    return nullptr;
+    return nullptr;
 }
 
 std::shared_ptr<IComponent> IEntity::getComponent(const std::string &Name)
@@ -72,6 +72,7 @@ std::shared_ptr<IComponent> IEntity::getComponent(const std::string &Name)
             return c.lock();
         }
     }
+    return nullptr;
 }
 std::vector<std::shared_ptr<CPrimitiveQuad>> IEntity::getDrawable()
 {
@@ -108,7 +109,6 @@ IEntity &IEntity::operator=(const IEntity &rhs)
 }
 void IEntity::removeComponent(int compId)
 {
-
     std::remove_if(Components.begin(), Components.end(), [compId](std::weak_ptr<IComponent> comp)
     {
         if (comp.lock()->getId() == compId)
