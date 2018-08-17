@@ -23,6 +23,7 @@ public:
     void resize(size_t lineCount);
     void Hide();
     void ChangeColor(sf::Color c);
+    void clear();
     size_t getLineCount();
 
     ThicknessLine &operator[](size_t index);

@@ -45,3 +45,7 @@ void ThicknessLineArray::ChangeColor(sf::Color c)
         l.ChangeColor(c);
     }
 }
+void ThicknessLineArray::clear()
+{
+    lines.clear();
+}
