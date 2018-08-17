@@ -6,8 +6,8 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <chrono>
-#include "Components/CTile.h"
-#include "MapEditor.h"
+#include "Engine/Components/CTile.h"
+#include "Engine/MapEditor.h"
 
 
 int main(int argc, char **argv)

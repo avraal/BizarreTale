@@ -533,6 +533,11 @@ void MapEditor::addInfoToPropertiesPanel()
     }
 }
 
+void MapEditor::ClearObjectProperties()
+{
+
+}
+
 void MapEditor::UpdateObjectFromProperties()
 {
     if (SelectedEntity == nullptr)

@@ -99,6 +99,7 @@ private:
     void KeyBoardCallbacks(sf::Event event);
     void ZoomViewAt(sf::Vector2i pixel, float zoom);
     void releaseSelectEntity();
+    void ClearObjectProperties();
     void addInfoToPropertiesPanel();
     void UpdateObjectFromProperties();
     void LoadUI();
