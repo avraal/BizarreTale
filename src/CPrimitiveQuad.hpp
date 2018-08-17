@@ -38,6 +38,7 @@ public:
     virtual void changeVertexColor(sf::Color c);
     virtual void drawBounds();
     virtual void hideBounds();
+    virtual void release();
     virtual void Attach(std::shared_ptr<IEntity> ptr) override;
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);
@@ -46,6 +47,11 @@ public:
     int getIndex() const;
     void setIndex(int index);
     bool ShowBounds;
+
+    inline bool operator==(const CPrimitiveQuad &rhs) const
+    {
+        return this->id == rhs.id && this->Name == rhs.Name;
+    }
 protected:
     std::string ImagePath = "";
     int index;
