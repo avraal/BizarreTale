@@ -211,7 +211,8 @@ void MapEditor::MouseCallbacks(sf::Event event)
                         if (clickCondition)
                         {
                             auto eobj = std::make_shared<EObject>();
-                            auto body = std::make_shared<CTile>(IDGenerator::getId(), "body", CurrentPathFile, eobj->getPosition());
+                            auto body = std::make_shared<CTile>(IDGenerator::getId(), "body", CurrentPathFile,
+                                                                eobj->getPosition());
                             eobj->setPosition(t->getPosition());
                             body->Attach(eobj);
                             CurrentLevel->addObject(eobj);
@@ -261,12 +262,6 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                 MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
                         if (clickCondition)
                         {
-                            if (SelectedEntities.empty())
-                            {
-                                SelectedEntities.insert(
-                                        std::pair<int, std::shared_ptr<IEntity>>(SelectedEntity->GetId(),
-                                                                                 SelectedEntity));
-                            }
                             SelectedEntities.insert(std::pair<int, std::shared_ptr<IEntity>>(o->GetId(), o));
                             ObjectListBox->setSelectedItem(o->getName());
                             for (auto s : SelectedEntities)
@@ -324,10 +319,25 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
     {
         switch (event.key.code)
         {
-            case sf::Keyboard::Q:
+            case sf::Keyboard::Delete:
             {
-                int randID = (rand() % (CurrentLevel->getObjCount())) + 1;
-                CurrentLevel->DestroyEntity(randID);
+                if (CurrentLevel->getObjCount() > 0 && SelectedEntity)
+                {
+                    for (auto it = SelectedEntities.begin(); it != SelectedEntities.end();)
+                    {
+                        std::string _n = it->second->getName();
+                        if (CurrentLevel->DestroyEntity(it->first))
+                        {
+                            ObjectListBox->removeItem(_n);
+                            it = SelectedEntities.erase(it);
+                        } else
+                        {
+                            ++it;
+                        }
+                    }
+                    ObjectListBox->removeItem(SelectedEntity->getName());
+                    CurrentLevel->DestroyEntity(SelectedEntity->GetId());
+                }
                 break;
             }
             case sf::Keyboard::E:
@@ -456,6 +466,7 @@ void MapEditor::addInfoToPropertiesPanel()
         std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
         return;
     }
+//    SelectedEntities.insert(std::pair<int, std::shared_ptr<IEntity>>(SelectedEntity->GetId(), SelectedEntity));
     objPropChangeNameBox->setText(SelectedEntity->getName());
     objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
     objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
@@ -735,5 +746,13 @@ void MapEditor::LoadUI()
     {
         canScroll = false;
     });
+}
+void MapEditor::releaseSelectEntity()
+{
+    if (SelectedEntity)
+    {
+        SelectedEntity->removeComponents();
+        SelectedEntity = nullptr;
+    }
 }
 

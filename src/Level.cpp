@@ -117,11 +117,33 @@ void Level::loadGui(sf::RenderWindow &window)
 {
 
 }
-void Level::DestroyEntity(int entityId)
+bool Level::DestroyEntity(int entityId)
 {
-    std::cout << "Destroyed id: " << entityId << std::endl;
-    //ToDo: replace raw-pointer to smart pointers. Again
+    std::size_t beforeObjCount = ObjList.size();
+    std::size_t beforeDrawCount = DrawableComponents.size();
+    auto target = getObjectById(entityId);
+    if (!target)
+    {
+        return false;
+    }
+    std::cout << target->getComponent("body").use_count() << std::endl;
+    target->removeComponents();
+
+    for (auto it = DrawableComponents.begin(); it != DrawableComponents.end(); )
+    {
+        if ((*it)->getEntity() == target)
+        {
+            (*it)->release();
+            it = DrawableComponents.erase(it);
+        } else
+        {
+            ++it;
+        }
+    }
+
     ObjList.erase(std::remove(ObjList.begin(), ObjList.end(), getObjectById(entityId)), ObjList.end());
+
+    return beforeObjCount != ObjList.size() && beforeDrawCount != DrawableComponents.size();
 }
 std::shared_ptr<IEntity> Level::getObjectById(int id)
 {

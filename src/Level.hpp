@@ -17,6 +17,7 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
+#include <forward_list>
 #include "CPrimitiveQuad.hpp"
 #include "Systems/SUi.hpp"
 
@@ -43,7 +44,7 @@ public:
     ~Level();
     void draw(sf::RenderWindow &window);
 
-    void DestroyEntity(int entityId);
+    bool DestroyEntity(int entityId);
     void addObject(std::shared_ptr<IEntity> ie);
     void initGui(sf::RenderWindow &window);
     void sortedObjectsByIndex();
