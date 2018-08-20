@@ -21,7 +21,8 @@ add_executable(BizarreTale src/main.cpp
         src/Engine/Entity/EObject.cpp
         src/Engine/Systems/SUi.cpp
         src/Engine/CustomGUI/EditboxAndLabel.cpp
-        src/Engine/Util/IDGenerator.cpp)
+        src/Engine/Util/IDGenerator.cpp
+        src/Game/Game.cpp)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics network audio)
 include_directories(/usr/local/include)
