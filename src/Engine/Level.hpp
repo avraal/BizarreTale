@@ -23,37 +23,44 @@
 
 class IEntity;
 class EObject;
-class Level final
+class Level
 {
-private:
+protected:
     int Id;
     std::string Name;
     std::vector<std::shared_ptr<IEntity>> ObjList;
     std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
     std::vector<tgui::Widget::Ptr> guiContainer;
     sf::Clock clock;
-    void sortObjects();
-    void loadGui(sf::RenderWindow &window);
+    sf::View *MainCamera;
+    sf::Color backGroundColor;
+    void virtual loadGui(sf::RenderWindow &window);
+    void initGui(sf::RenderWindow &window);
     std::unique_ptr<SUi> UserInterface;
 public:
-
     Level() = delete;
     Level(int id, const std::string &Name);
     Level(const Level&);
     Level(const Level&&);
     ~Level();
-    void draw(sf::RenderWindow &window);
+    virtual void draw(sf::RenderWindow &window);
 
     bool DestroyEntity(int entityId);
     void addObject(std::shared_ptr<IEntity> ie);
-    void initGui(sf::RenderWindow &window);
+    virtual bool prepareLevel(sf::RenderWindow &window);
     void sortedObjectsByIndex();
+    void setCamera(sf::View &camera);
+    void virtual MouseCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
+    void virtual KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
+    void HandleGUIEvent(sf::Event &event);
     size_t getObjCount();
     std::shared_ptr<IEntity> getObject(int index);
     std::shared_ptr<IEntity> getObjectById(int id);
     std::shared_ptr<IEntity> getObjectByName(const std::string &Name);
     std::vector<std::shared_ptr<IEntity>> &getAllObjects();
     std::string getName() const;
+    std::string ImageDirectory;
+
 };
 
 #endif //BIZARRETALE_LEVEL_HPP

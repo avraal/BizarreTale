@@ -13,6 +13,7 @@ Level::Level(int id, const std::string &Name)
 {
     this->Id = id;
     this->Name = Name;
+    backGroundColor = sf::Color::Black;
     UserInterface = std::make_unique<SUi>();
 }
 Level::Level(const Level &l) : Level(l.Id, l.Name)
@@ -73,7 +74,7 @@ Level::~Level()
 {
     DrawableComponents.clear();
     ObjList.clear();
-    delete UserInterface->gui;
+//    delete UserInterface->gui;
 }
 void Level::draw(sf::RenderWindow &window)
 {
@@ -90,7 +91,8 @@ std::string Level::getName() const
 }
 void Level::initGui(sf::RenderWindow &window)
 {
-    UserInterface->gui = new tgui::Gui(window);
+//    UserInterface->gui = new tgui::Gui(window);
+    UserInterface->gui = std::make_unique<tgui::Gui>(window);
     loadGui(window);
 }
 void Level::sortedObjectsByIndex()
@@ -111,7 +113,6 @@ void Level::sortedObjectsByIndex()
             {
                 return c1->getIndex() < c2->getIndex();
             });
-
 }
 void Level::loadGui(sf::RenderWindow &window)
 {
@@ -166,4 +167,19 @@ std::shared_ptr<IEntity> Level::getObjectByName(const std::string &N)
         }
     }
     return nullptr;
+}
+bool Level::prepareLevel(sf::RenderWindow &window)
+{
+    bool result = true;
+    initGui(window);
+    return result;
+}
+void Level::HandleGUIEvent(sf::Event &event)
+{
+    UserInterface->gui->handleEvent(event);
+}
+
+void Level::setCamera(sf::View &camera)
+{
+    this->MainCamera = &camera;
 }
