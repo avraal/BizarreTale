@@ -7,6 +7,7 @@
 //
 
 #include "SLevelManager.hpp"
+#include <algorithm>
 
 void SLevelManager::registerLevel(std::shared_ptr<Level> l)
 {
@@ -31,4 +32,12 @@ std::shared_ptr<Level> SLevelManager::changeLevelByName(const std::string &name)
         return Levels[name];
     }
     return nullptr;
+}
+std::shared_ptr<Level> SLevelManager::loadLevel(const std::string &name)
+{
+    if (Levels.find(name) == Levels.end())
+    {
+        return nullptr;
+    }
+    return Levels.find(name)->second;
 }
