@@ -16,7 +16,8 @@ class SUi : public ISystem
 {
 private:
 public:
-    tgui::Gui *gui;
+//    tgui::Gui *gui;
+    std::unique_ptr<tgui::Gui> gui;
     SUi();
     virtual void Execute();
     virtual ~SUi();

@@ -17,4 +17,5 @@ void SUi::Execute()
 }
 SUi::~SUi()
 {
+    //deleted in dtor Level
 }
