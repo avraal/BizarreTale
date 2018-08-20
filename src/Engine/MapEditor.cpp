@@ -12,95 +12,112 @@
 #include "Entity/EObject.hpp"
 #include "Util/IDGenerator.hpp"
 
-bool MapEditor::initWindow()
+MapEditor::MapEditor(int id, const std::string &Name) : Level(id, Name)
 {
+    ImageDirectory = "";
+    CurrentPathFile  = "";
+    ImagesFormats.push_back(".png");
+    ImagesFormats.push_back(".jpg");
+    CameraSpeed = 4.0f;
+    showInfo = true;
+    canScroll = true;
+    CurrentMode = EditorMode::SELECT;
+    SelectedEntity = nullptr;
+    backGroundColor = sf::Color(42, 76, 61);
+}
 
-    window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT),
-                  "Bizarre Tale: Map Editor"/*, sf::Style::Titlebar | sf::Style::Close*/);
-    MainCamera = window.getView();
-    MainCamera.setCenter(300, 320);
-    findAllFiles(PathToImages, ImagesFormats);
-    drawTileMap(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT);
-    auto gui = new tgui::Gui(window);
-    tgui::Theme theme{"tgui_themes/Black.txt"};
-
-    LoadUI();
-
-    gui->add(infoPanel);
-    gui->add(scrollPanel);
-    gui->add(ObjectListBox);
-    gui->add(scrollProperties);
-
-    window.setKeyRepeatEnabled(true);
-    window.setVerticalSyncEnabled(true);
-    levelManager = std::make_unique<SLevelManager>();
-    CurrentLevel = std::make_shared<Level>(0, "Test");
-    CurrentLevel->initGui(window);
-
-    LevelObjects = &CurrentLevel->getAllObjects();
-
-    levelManager->registerLevel(CurrentLevel);
-    while (window.isOpen())
+bool MapEditor::prepareLevel(sf::RenderWindow &window)
+{
+    if (!findAllFiles(PathToImages, ImagesFormats))
     {
-        float currentTime = clock.restart().asSeconds();
-        float fps = 1.f / currentTime;
-        sf::Event event;
-        window.clear(sf::Color(42, 76, 61));
-
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-            //            if (event.type == sf::Event::Resized)
-            //            {
-            //                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-            //                window.setView(sf::View(visibleArea));
-            //            }
-            MouseCallbacks(event);
-            KeyBoardCallbacks(event);
-            gui->handleEvent(event);
-        }
-
-        window.setView(MainCamera);
-
-        for (auto t : TileMap)
-        {
-            window.draw(*t);
-        }
-
-        for (auto g : LineGrid)
-        {
-            sf::Vertex line[] =
-                    {
-                            g.first,
-                            g.second
-                    };
-            window.draw(line, 2, sf::Lines);
-        }
-        CurrentLevel->draw(window);
-
-        infoObjCountLabel->setText("Object count: " + std::to_string(CurrentLevel->getObjCount()));
-        infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
-        gui->draw();
-        window.display();
+        return false;
     }
+    Level::prepareLevel(window);
+    drawTileMap(TILE_SIZE_DEFAULT, TILE_SIZE_DEFAULT);
 
-    TileMap.clear();
-    delete gui;
+    UserInterface->gui->add(infoPanel);
+    UserInterface->gui->add(scrollPanel);
+    UserInterface->gui->add(ObjectListBox);
+    UserInterface->gui->add(scrollProperties);
+
+    tgui::Theme theme{"tgui_themes/Black.txt"};
     return true;
 }
 
-void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
+void MapEditor::draw(sf::RenderWindow &window)
 {
+    for (auto t : TileMap)
+    {
+        window.draw(*t);
+    }
+
+    for (auto g : LineGrid)
+    {
+        sf::Vertex line[] =
+                {
+                        g.first,
+                        g.second
+                };
+        window.draw(line, 2, sf::Lines);
+    }
+    Level::draw(window);
+}
+
+bool MapEditor::initWindow()
+{
+//    window.setKeyRepeatEnabled(true);
+//    window.setVerticalSyncEnabled(true);
+//
+//    LevelObjects = &CurrentLevel->getAllObjects();
+//
+//    while (window.isOpen())
+//    {
+//        float currentTime = clock.restart().asSeconds();
+//        float fps = 1.f / currentTime;
+//        sf::Event event;
+//        window.clear(sf::Color(42, 76, 61));
+//
+//        while (window.pollEvent(event))
+//        {
+//            if (event.type == sf::Event::Closed)
+//            {
+//                window.close();
+//            }
+//            //            if (event.type == sf::Event::Resized)
+//            //            {
+//            //                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+//            //                window.setView(sf::View(visibleArea));
+//            //            }
+//            MouseCallbacks(event);
+//            KeyBoardCallbacks(event);
+//            gui->handleEvent(event);
+//        }
+//
+//        window.setView(MainCamera);
+//
+//        CurrentLevel->draw(window);
+//
+//        infoObjCountLabel->setText("Object count: " + std::to_string(CurrentLevel->getObjCount()));
+//        infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
+//        gui->draw();
+//        window.display();
+//    }
+//
+//    TileMap.clear();
+//    delete gui;
+//    return true;
+}
+
+bool MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
+{
+    bool result = false;
     DIR *dir;
     dirent *directory;
     if (FileFormats.empty())
     {
         FileFormats.emplace_back(".*");
     }
-    if ((dir = opendir(MapEditor::ImageDirectory.c_str())) != nullptr)
+    if ((dir = opendir(ImageDirectory.c_str())) != nullptr)
     {
         while ((directory = readdir(dir)) != nullptr)
         {
@@ -111,8 +128,9 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
                 {
                     if (strcmp(last, f.c_str()) == 0)
                     {
-                        std::cout << MapEditor::ImageDirectory << directory->d_name << " added to stack" << std::endl;
-                        Container.push_back(MapEditor::ImageDirectory + directory->d_name);
+                        std::cout << ImageDirectory << directory->d_name << " added to stack" << std::endl;
+                        Container.push_back(ImageDirectory + directory->d_name);
+                        result = true;
                     }
                 }
             }
@@ -120,8 +138,10 @@ void MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
         closedir(dir);
     } else
     {
-        std::cerr << "Cant open a dir" << std::endl;
+        std::cerr << "Can't open a dir" << std::endl;
+        result = false;
     }
+    return result;
 }
 void MapEditor::SelectImage(const std::string &imagePath)
 {
@@ -185,7 +205,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     }
 
 }
-void MapEditor::MouseCallbacks(sf::Event event)
+void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
@@ -215,8 +235,8 @@ void MapEditor::MouseCallbacks(sf::Event event)
                                                                 eobj->getPosition());
                             eobj->setPosition(t->getPosition());
                             body->Attach(eobj);
-                            CurrentLevel->addObject(eobj);
-                            const std::string objName = LevelObjects->back()->getName();
+                            addObject(eobj);
+                            const std::string objName = ObjList.back()->getName();
                             ObjectListBox->addItem(objName);
                             ObjectListBox->setSelectedItem(objName);
                         }
@@ -225,7 +245,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 }
                 case EditorMode::SELECT:
                 {
-                    for (auto o : *LevelObjects)
+                    for (auto o : ObjList)
                     {
                         auto body = o->getComponent<CPrimitiveQuad>("body");
                         clickCondition =
@@ -251,7 +271,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
                 }
                 case EditorMode::MULTISELECT:
                 {
-                    for (auto o : *LevelObjects)
+                    for (auto o : ObjList)
                     {
                         auto body = o->getComponent<CPrimitiveQuad>("body");
                         clickCondition =
@@ -279,7 +299,7 @@ void MapEditor::MouseCallbacks(sf::Event event)
             sf::Vector2i Mouse = sf::Mouse::getPosition(window);
             float w = window.mapPixelToCoords(Mouse).x;
             float h = window.mapPixelToCoords(Mouse).y;
-            MainCamera.setCenter(w, h);
+            MainCamera->setCenter(w, h);
         }
     }
 
@@ -287,21 +307,22 @@ void MapEditor::MouseCallbacks(sf::Event event)
     {
         if (canScroll)
         {
-            ZoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y},
+            ZoomViewAt(window, {event.mouseWheelScroll.x, event.mouseWheelScroll.y},
                        event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
         }
     }
 }
 
-void MapEditor::ZoomViewAt(sf::Vector2i pixel, float zoom)
+void MapEditor::ZoomViewAt(sf::RenderWindow &window, sf::Vector2i pixel, float zoom)
 {
     const sf::Vector2f beforeCoord{window.mapPixelToCoords(pixel)};
-    MainCamera.zoom(zoom);
+    MainCamera->zoom(zoom);
     const sf::Vector2f afterCoord{window.mapPixelToCoords(pixel)};
     const sf::Vector2f offsetCoord{beforeCoord - afterCoord};
-    MainCamera.move(offsetCoord);
+    MainCamera->move(offsetCoord);
+    std::cout << offsetCoord.x << " | " << offsetCoord.y << std::endl;
 }
-void MapEditor::KeyBoardCallbacks(sf::Event event)
+void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
     if (event.type == sf::Event::KeyReleased)
     {
@@ -321,12 +342,12 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
         {
             case sf::Keyboard::Delete:
             {
-                if (CurrentLevel->getObjCount() > 0 && SelectedEntity)
+                if (ObjList.size() > 0 && SelectedEntity)
                 {
                     for (auto it = SelectedEntities.begin(); it != SelectedEntities.end();)
                     {
                         std::string _n = it->second->getName();
-                        if (CurrentLevel->DestroyEntity(it->first))
+                        if (DestroyEntity(it->first))
                         {
                             ObjectListBox->removeItem(_n);
                             it = SelectedEntities.erase(it);
@@ -336,7 +357,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                         }
                     }
                     ObjectListBox->removeItem(SelectedEntity->getName());
-                    CurrentLevel->DestroyEntity(SelectedEntity->GetId());
+                    DestroyEntity(SelectedEntity->GetId());
                 }
                 break;
             }
@@ -357,7 +378,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                     }
                 }
                 SelectedEntity = nullptr;
-                for (auto o : *LevelObjects)
+                for (auto o : ObjList)
                 {
                     if (auto body = o->getComponent<CPrimitiveQuad>("body"); body)
                     {
@@ -382,22 +403,22 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
             }
             case sf::Keyboard::Right:
             {
-                MainCamera.move(CameraSpeed, 0.0f);
+                MainCamera->move(CameraSpeed, 0.0f);
                 break;
             }
             case sf::Keyboard::Left:
             {
-                MainCamera.move(-CameraSpeed, 0.0f);
+                MainCamera->move(-CameraSpeed, 0.0f);
                 break;
             }
             case sf::Keyboard::Up:
             {
-                MainCamera.move(0.0f, -CameraSpeed);
+                MainCamera->move(0.0f, -CameraSpeed);
                 break;
             }
             case sf::Keyboard::Down:
             {
-                MainCamera.move(0.0f, CameraSpeed);
+                MainCamera->move(0.0f, CameraSpeed);
                 break;
             }
             case sf::Keyboard::F3:
@@ -425,7 +446,7 @@ void MapEditor::KeyBoardCallbacks(sf::Event event)
                 {
                     t->setSize({128, 128});
                 }
-                for (auto o : *LevelObjects)
+                for (auto o : ObjList)
                 {
                     o->getComponent<CPrimitiveQuad>("body")->setSize({128, 128});
                 }
@@ -458,17 +479,16 @@ void MapEditor::addInfoToPropertiesPanel()
     {
         return;
     }
-    SelectedEntity = CurrentLevel->getObjectByName(ObjectListBox->getSelectedItem().toAnsiString());
+    SelectedEntity = getObjectByName(ObjectListBox->getSelectedItem().toAnsiString());
     if (SelectedEntity == nullptr)
     {
         std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
         return;
     }
-//    SelectedEntities.insert(std::pair<int, std::shared_ptr<IEntity>>(SelectedEntity->GetId(), SelectedEntity));
     objPropChangeNameBox->setText(SelectedEntity->getName());
     objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
     objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
-    for (auto o : *LevelObjects)
+    for (auto o : ObjList)
     {
         if (o != SelectedEntity)
         {
@@ -538,6 +558,7 @@ void MapEditor::ClearObjectProperties()
 
 }
 
+
 void MapEditor::UpdateObjectFromProperties()
 {
     if (SelectedEntity == nullptr)
@@ -570,7 +591,7 @@ void MapEditor::UpdateObjectFromProperties()
     }
 
     int count = 0;
-    for (auto o : *LevelObjects)
+    for (auto o : ObjList)
     {
         if (o == SelectedEntity)
         {
@@ -593,10 +614,14 @@ void MapEditor::UpdateObjectFromProperties()
         }
     }
 
-    CurrentLevel->sortedObjectsByIndex();
-}
+    for (const auto &o : ObjList)
+    {
+        std::cout << o->getName() << std::endl;
+    }
 
-void MapEditor::LoadUI()
+    sortedObjectsByIndex();
+}
+void MapEditor::loadGui(sf::RenderWindow &window)
 {
     ObjectListBox = ::tgui::ListBox::create();
     scrollPanel = tgui::ScrollablePanel::create({"100%", "25%"});
