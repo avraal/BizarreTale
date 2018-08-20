@@ -6,22 +6,21 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <chrono>
+#include "Game/Game.hpp"
 #include "Engine/Components/CTile.h"
 #include "Engine/MapEditor.h"
 
 
 int main(int argc, char **argv)
 {
-    std::cout << argv[0] << std::endl;
-    MapEditor &Editor = MapEditor::Instance();
-    Editor.ImageDirectory.clear();
-    Editor.ImageDirectory.append(argv[0]);
-    Editor.ImageDirectory = Editor.ImageDirectory.substr(0, Editor.ImageDirectory.size() - 11);
-    Editor.ImageDirectory.append("Res/Images/");
-
-    std::cout << Editor.ImageDirectory << std::endl;
-
-    Editor.initWindow();
-
+    Game game("Bizarre Tale");
+    game.ImageDirectory.clear();
+    game.ImageDirectory.append(argv[0]);
+    game.ImageDirectory = game.ImageDirectory.substr(0, game.ImageDirectory.size() - 11);
+    game.ImageDirectory.append("Res/Images/");
+    if (!game.start())
+    {
+        return 1;
+    }
     return 0;
 }
