@@ -1,4 +1,4 @@
-# BizarreTale
+# BizarreTale (Deprecated)
 Simple constructor for gamedev
 Guide for using BizarreTale Editor v. 0.3
 
