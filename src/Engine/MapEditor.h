@@ -48,6 +48,9 @@ private:
         //--------------------------Info----------------------------
             tgui::Panel::Ptr infoPanel;
             tgui::Label::Ptr infoObjCountLabel;
+            tgui::Label::Ptr infoObjReferenceCount;
+            tgui::Label::Ptr infoDrawableObjCountLabel;
+            tgui::Label::Ptr infoDrawableReferenceCount;
             tgui::Label::Ptr infoFPSLabel;
         //--------------------------Info----------------------------
 

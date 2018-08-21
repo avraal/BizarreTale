@@ -61,6 +61,21 @@ void MapEditor::draw(sf::RenderWindow &window)
         window.draw(line, 2, sf::Lines);
     }
     Level::draw(window);
+    infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
+    infoFPSLabel->setText("FPS: " + std::to_string((int)fps));
+    int objReferenceCount = 0;
+    int drawableReferenceCount = 0;
+    for (const auto &item : ObjList)
+    {
+        objReferenceCount += item.use_count();
+    }
+    for (const auto &component : DrawableComponents)
+    {
+        drawableReferenceCount += component.use_count();
+    }
+    infoObjReferenceCount->setText("ObjReferenceCount: " + std::to_string(objReferenceCount));
+    infoDrawableObjCountLabel->setText("Drawable count: " + std::to_string(DrawableComponents.size()));
+    infoDrawableReferenceCount->setText("DrawableReferenceCount: " + std::to_string(drawableReferenceCount));
 }
 
 bool MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
@@ -275,7 +290,6 @@ void MapEditor::ZoomViewAt(sf::RenderWindow &window, sf::Vector2i pixel, float z
     const sf::Vector2f afterCoord{window.mapPixelToCoords(pixel)};
     const sf::Vector2f offsetCoord{beforeCoord - afterCoord};
     MainCamera->move(offsetCoord);
-    std::cout << offsetCoord.x << " | " << offsetCoord.y << std::endl;
 }
 void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
@@ -506,13 +520,15 @@ void MapEditor::UpdateObjectFromProperties()
         if (auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body"); !body)
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
-            return;;
+            return;
         }
         auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
         SelectedEntity->setPosition(static_cast<float>(std::atof(objPositionX->getText().toAnsiString().c_str())),
                                     static_cast<float>(std::atof(objPositionY->getText().toAnsiString().c_str())));
         body->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
+        std::string beforeName = SelectedEntity->getName();
         SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
+        ObjectListBox->changeItem(beforeName, SelectedEntity->getName());
     }
 
     int count = 0;
@@ -659,16 +675,32 @@ void MapEditor::loadGui(sf::RenderWindow &window)
     infoPanel->setPosition(scrollProperties->getPosition().x - infoPanel->getSize().x, 0);
     infoPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
 
-    infoObjCountLabel = tgui::Label::create();
-    infoObjCountLabel->getRenderer()->setTextColor(sf::Color::White);
-    infoObjCountLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
-
     infoFPSLabel = tgui::Label::create();
     infoFPSLabel->getRenderer()->setTextColor(sf::Color::White);
     infoFPSLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
-    infoFPSLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
+//    infoFPSLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
+
+    infoObjCountLabel = tgui::Label::create();
+    infoObjCountLabel->getRenderer()->setTextColor(sf::Color::White);
+    infoObjCountLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
+    infoObjCountLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
+
+    infoObjReferenceCount = tgui::Label::create();
+    infoObjReferenceCount->getRenderer()->setTextColor(sf::Color::White);
+    infoObjReferenceCount->setTextSize(INFO_PANEL_TEXT_SIZE);
+    infoObjReferenceCount->setPosition(0, infoObjCountLabel->getPosition().y + INFO_PANEL_TEXT_SIZE + 2);
+
+    infoDrawableObjCountLabel = tgui::Label::copy(infoObjReferenceCount);
+    infoDrawableObjCountLabel->setPosition(0, infoObjReferenceCount->getPosition().y + INFO_PANEL_TEXT_SIZE + 2);
+
+    infoDrawableReferenceCount = tgui::Label::copy(infoDrawableObjCountLabel);
+    infoDrawableReferenceCount->setPosition(0, infoDrawableObjCountLabel->getPosition().y + INFO_PANEL_TEXT_SIZE + 2);
+
     infoPanel->add(infoObjCountLabel);
     infoPanel->add(infoFPSLabel);
+    infoPanel->add(infoObjReferenceCount);
+    infoPanel->add(infoDrawableObjCountLabel);
+    infoPanel->add(infoDrawableReferenceCount);
 
     scrollPanel->connect(scrollPanel->onMouseLeave.getName(), [this]()
     {
