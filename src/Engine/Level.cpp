@@ -78,6 +78,8 @@ Level::~Level()
 }
 void Level::draw(sf::RenderWindow &window)
 {
+    float currentTime = clock.restart().asSeconds();
+    fps = 1.f / currentTime;
     for(auto d : DrawableComponents)
     {
         window.draw(*d);

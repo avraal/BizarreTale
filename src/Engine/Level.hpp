@@ -60,6 +60,7 @@ public:
     std::vector<std::shared_ptr<IEntity>> &getAllObjects();
     std::string getName() const;
     std::string ImageDirectory;
+    float fps;
 
 };
 
