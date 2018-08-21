@@ -9,17 +9,14 @@ add_executable(BizarreTale src/main.cpp
         src/Engine/Components/CTile.cpp
         src/Engine/MapEditor.cpp
         src/Engine/Components/CPrimitiveQuad.cpp
-        src/Engine/MapIO.cpp
         src/Engine/ThicknessLine.cpp
         src/Engine/ThicknessLineArray.cpp
         src/Engine/Entity/IEntity.cpp
         src/Engine/Components/IComponent.cpp
-        src/Engine/Systems/SRender.cpp
-        src/Engine/Systems/ISystem.cpp
         src/Engine/Level.cpp
-        src/Engine/Systems/SLevelManager.cpp
+        src/Engine/Systems/LevelManager.cpp
         src/Engine/Entity/EObject.cpp
-        src/Engine/Systems/SUi.cpp
+        src/Engine/Systems/UIWrapper.cpp
         src/Engine/CustomGUI/EditboxAndLabel.cpp
         src/Engine/Util/IDGenerator.cpp
         src/Game/Game.cpp)

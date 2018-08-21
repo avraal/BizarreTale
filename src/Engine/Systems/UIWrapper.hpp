@@ -10,13 +10,10 @@
 #define BIZARRETALE_SUI_HPP
 
 #include <TGUI/Gui.hpp>
-#include "ISystem.hpp"
 
-class SUi : public ISystem
+class SUi
 {
-private:
 public:
-//    tgui::Gui *gui;
     std::unique_ptr<tgui::Gui> gui;
     SUi();
     virtual void Execute();
