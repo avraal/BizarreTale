@@ -19,7 +19,7 @@
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <forward_list>
 #include "Components/CPrimitiveQuad.hpp"
-#include "Systems/SUi.hpp"
+#include "Systems/UIWrapper.hpp"
 
 class IEntity;
 class EObject;
@@ -36,7 +36,7 @@ protected:
     sf::Color backGroundColor;
     void virtual loadGui(sf::RenderWindow &window);
     void initGui(sf::RenderWindow &window);
-    std::unique_ptr<SUi> UserInterface;
+    std::unique_ptr<UIWrapper> UserInterface;
 public:
     Level() = delete;
     Level(int id, const std::string &Name);

@@ -32,7 +32,7 @@ Every Entity has a:
 ### Pattern: Entity-Component-System
 Base behaviour for all System. 
 
-# SLevelManager
+# LevelManager
 ### Parent: ISystem
 Manage you levels, saved their by name in map.
 If you're going to use some level, you must register him.

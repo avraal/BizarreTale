@@ -17,11 +17,10 @@
 #include <mutex>
 #include <set>
 #include "Components/CTile.h"
-#include "MapIO.h"
 #include "CONST_DEFINITIONS.h"
 #include "Components/CPrimitiveQuad.hpp"
 #include "Level.hpp"
-#include "Systems/SLevelManager.hpp"
+#include "Systems/LevelManager.hpp"
 #include "CustomGUI/EditboxAndLabel.hpp"
 
 class EObject;
@@ -61,8 +60,6 @@ private:
     bool canScroll;
     float CameraSpeed;
 
-    MapIO &mio = MapIO::Instance();
-
     enum class EditorMode {ADD, SELECT, MULTISELECT};
 
     EditorMode CurrentMode;
@@ -93,9 +90,5 @@ public:
     virtual ~MapEditor() {}
 
     virtual bool prepareLevel(sf::RenderWindow &window) override;
-    bool initWindow();
-
-//    void SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj);
-//    void LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj);
 };
 #endif //BIZARRETALE_MAPEDITOR_H

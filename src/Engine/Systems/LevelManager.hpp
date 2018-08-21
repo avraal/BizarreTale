@@ -12,20 +12,19 @@
 #include <vector>
 #include <memory>
 #include <map>
-#include "ISystem.hpp"
 #include "../Level.hpp"
 
-class SLevelManager : public ISystem
+class LevelManager
 {
 private:
     std::map<std::string, std::shared_ptr<Level>> Levels;
 public:
-    SLevelManager();
+    LevelManager();
     virtual void Execute ();
     void registerLevel(std::shared_ptr<Level> l);
     std::shared_ptr<Level> changeLevelByName(const std::string &name);
     std::shared_ptr<Level> loadLevel(const std::string &name);
-    virtual ~SLevelManager();
+    virtual ~LevelManager();
 };
 
 #endif //BIZARRETALE_LEVELMANAGER_HPP

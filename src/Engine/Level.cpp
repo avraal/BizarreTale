@@ -14,7 +14,7 @@ Level::Level(int id, const std::string &Name)
     this->Id = id;
     this->Name = Name;
     backGroundColor = sf::Color::Black;
-    UserInterface = std::make_unique<SUi>();
+    UserInterface = std::make_unique<UIWrapper>();
 }
 Level::Level(const Level &l) : Level(l.Id, l.Name)
 {

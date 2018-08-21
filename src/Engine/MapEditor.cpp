@@ -63,51 +63,6 @@ void MapEditor::draw(sf::RenderWindow &window)
     Level::draw(window);
 }
 
-bool MapEditor::initWindow()
-{
-//    window.setKeyRepeatEnabled(true);
-//    window.setVerticalSyncEnabled(true);
-//
-//    LevelObjects = &CurrentLevel->getAllObjects();
-//
-//    while (window.isOpen())
-//    {
-//        float currentTime = clock.restart().asSeconds();
-//        float fps = 1.f / currentTime;
-//        sf::Event event;
-//        window.clear(sf::Color(42, 76, 61));
-//
-//        while (window.pollEvent(event))
-//        {
-//            if (event.type == sf::Event::Closed)
-//            {
-//                window.close();
-//            }
-//            //            if (event.type == sf::Event::Resized)
-//            //            {
-//            //                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-//            //                window.setView(sf::View(visibleArea));
-//            //            }
-//            MouseCallbacks(event);
-//            KeyBoardCallbacks(event);
-//            gui->handleEvent(event);
-//        }
-//
-//        window.setView(MainCamera);
-//
-//        CurrentLevel->draw(window);
-//
-//        infoObjCountLabel->setText("Object count: " + std::to_string(CurrentLevel->getObjCount()));
-//        infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
-//        gui->draw();
-//        window.display();
-//    }
-//
-//    TileMap.clear();
-//    delete gui;
-//    return true;
-}
-
 bool MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
 {
     bool result = false;
@@ -427,18 +382,6 @@ void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
                 infoPanel->setVisible(showInfo);
                 break;
             }
-                //            case sf::Keyboard::Space:
-                //            {
-                //                std::thread thr(&MapEditor::SaveToFile, this, "test.mio", ObjList);
-                //                thr.join();
-                //                break;
-                //            }
-                //            case sf::Keyboard::LControl:
-                //            {
-                //                std::thread thr(&MapEditor::LoadFromFile, this, "test.mio", std::ref(ObjList));
-                //                thr.join();
-                //                break;
-                //            }
             case sf::Keyboard::R:
             {
                 drawTileMap(128, 128);
@@ -456,23 +399,6 @@ void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
     }
 }
 
-//void MapEditor::LoadFromFile(std::string fileName, std::vector<std::shared_ptr<CTile>> &obj)
-//{
-//    b_mutex.lock();
-//    mio.LoadFromFile(std::move(fileName), obj);
-//    b_mutex.unlock();
-//    ObjectListBox->removeAllItems();
-//    for (auto o : obj)
-//    {
-//        //        ObjectListBox->addItem(o->GetName());
-//    }
-//}
-//void MapEditor::SaveToFile(std::string fileName, std::vector<std::shared_ptr<CTile>> obj)
-//{
-//    b_mutex.lock();
-//    mio.SaveToFile(std::move(fileName), obj);
-//    b_mutex.unlock();
-//}
 void MapEditor::addInfoToPropertiesPanel()
 {
     if (ObjectListBox->getSelectedItemIndex() < 0)
@@ -557,7 +483,6 @@ void MapEditor::ClearObjectProperties()
 {
 
 }
-
 
 void MapEditor::UpdateObjectFromProperties()
 {

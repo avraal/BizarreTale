@@ -11,7 +11,7 @@
 
 #include <string>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "../Engine/Systems/SLevelManager.hpp"
+#include "../Engine/Systems/LevelManager.hpp"
 
 class Game final
 {
@@ -20,7 +20,7 @@ private:
     sf::View MainCamera;
     std::string Title;
 
-    std::unique_ptr<SLevelManager> levelManager;
+    std::unique_ptr<LevelManager> levelManager;
     std::shared_ptr<Level> CurrentLevel;
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats

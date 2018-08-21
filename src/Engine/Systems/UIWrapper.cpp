@@ -6,16 +6,16 @@
 // Created by Andrew Volski on 25.07.18.
 //
 
-#include "SUi.hpp"
-SUi::SUi()
+#include "UIWrapper.hpp"
+UIWrapper::UIWrapper()
 {
     gui = nullptr;
 }
-void SUi::Execute()
+void UIWrapper::Execute()
 {
     gui->draw();
 }
-SUi::~SUi()
+UIWrapper::~UIWrapper()
 {
     //deleted in dtor Level
 }

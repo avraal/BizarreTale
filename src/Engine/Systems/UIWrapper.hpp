@@ -11,13 +11,13 @@
 
 #include <TGUI/Gui.hpp>
 
-class SUi
+class UIWrapper
 {
 public:
     std::unique_ptr<tgui::Gui> gui;
-    SUi();
+    UIWrapper();
     virtual void Execute();
-    virtual ~SUi();
+    virtual ~UIWrapper();
 };
 
 #endif //BIZARRETALE_SUI_HPP

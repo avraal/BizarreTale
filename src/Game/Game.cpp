@@ -15,7 +15,7 @@
 Game::Game(const std::string &title)
 {
     this->Title = title;
-    levelManager = std::make_unique<SLevelManager>();
+    levelManager = std::make_unique<LevelManager>();
     std::shared_ptr<MapEditor> editor = std::make_shared<MapEditor>(0, "MapEditor"); //ToDo: Add generate ID for Level's
     levelManager->registerLevel(editor);
 }
