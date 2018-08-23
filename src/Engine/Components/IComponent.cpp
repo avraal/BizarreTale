@@ -11,7 +11,7 @@
 #include "../Util/IDGenerator.hpp"
 IComponent::IComponent()
 {
-    this->id = IDGenerator::getId();
+    this->id = IDGenerator::getNextId();
 }
 
 IComponent::IComponent(int id, const std::string &name)
