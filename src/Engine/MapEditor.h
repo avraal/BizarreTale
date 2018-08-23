@@ -16,6 +16,7 @@
 #include <string>
 #include <mutex>
 #include <set>
+#include <nfd.h>
 #include "Components/CTile.h"
 #include "CONST_DEFINITIONS.h"
 #include "Components/CPrimitiveQuad.hpp"

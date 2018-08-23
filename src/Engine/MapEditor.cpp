@@ -478,10 +478,18 @@ void MapEditor::addInfoToPropertiesPanel()
         addComp->setSize(objectProperties->getSize().x - 4, addComp->getSize().y);
         addComp->connect(addComp->onClick.getName(), [this]()
         {
-            auto comp = std::make_shared<CTile>(IDGenerator::getNextId(), "comp1", CurrentPathFile,
-                                                SelectedEntity->getPosition());
-            comp->Attach(SelectedEntity);
-            addInfoToPropertiesPanel();
+            std::string pathToImage = "";
+            nfdchar_t *outPath = nullptr;
+            nfdresult_t result = NFD_OpenDialog(nullptr, nullptr, &outPath);
+            if (result == NFD_OKAY)
+            {
+                auto comp = std::make_shared<CTile>(IDGenerator::getNextId(), "comp1", outPath,
+                                                    SelectedEntity->getPosition());
+                comp->Attach(SelectedEntity);
+                delete outPath;
+                addInfoToPropertiesPanel();
+            }
+
         });
 
         compList->setPosition(objIndexEdit->getPosition().x, addComp->getPosition().y + addComp->getSize().y + 4);
@@ -491,7 +499,6 @@ void MapEditor::addInfoToPropertiesPanel()
         objectProperties->add(compList, "compList");
         objectProperties->add(addComp, "addComp");
 
-        std::cout << "Size: " << SelectedEntity->getDrawable().size() << std::endl;
         int posY = 0;
         for (const auto &item : SelectedEntity->getDrawable())
         {
