@@ -34,7 +34,7 @@ CPrimitiveQuad::CPrimitiveQuad(int id, const std::string &name, sf::Color c) : I
 }
 CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p) : IComponent(p.id, p.Name)
 {
-    std::cout << "Copy" << std::endl;
+    std::cout << "СЗCopy" << std::endl;
     this->color = p.color;
     this->index = p.index;
     this->body = p.body;
@@ -44,7 +44,7 @@ CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &p) : IComponent(p.id, p.Nam
 }
 CPrimitiveQuad::CPrimitiveQuad(const CPrimitiveQuad &&p) : IComponent(p.id, p.Name)
 {
-    std::cout << "Move" << std::endl;
+    std::cout << "СЗMove" << std::endl;
     this->color = p.color;
     this->index = p.index;
     this->body = p.body;

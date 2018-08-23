@@ -31,9 +31,12 @@ public:
     CPrimitiveQuad(int id, const std::string &name, sf::Color c = sf::Color(91, 97, 91));
     CPrimitiveQuad(const CPrimitiveQuad &);
     CPrimitiveQuad(const CPrimitiveQuad &&);
-    sf::Vector2u getTextureSize() const;
-    sf::Color getColor() const;
     virtual ~CPrimitiveQuad();
+
+    sf::Vector2u getTextureSize()                                   const;
+    sf::Color getColor()                                            const;
+
+    virtual std::string &getTexturePath();
     virtual void setSize(sf::Vector2f s);
     virtual void changeVertexColor(sf::Color c);
     virtual void drawBounds();
@@ -42,19 +45,20 @@ public:
     virtual void Attach(std::shared_ptr<IEntity> ptr) override;
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);
-    virtual std::string &getTexturePath();
-    const sf::Texture *getTexture() const;
-    int getIndex() const;
     void setIndex(int index);
+
+    const sf::Texture *getTexture()                                 const;
+    int getIndex() const;
     bool ShowBounds;
 
-    inline bool operator==(const CPrimitiveQuad &rhs) const
+    inline bool operator==(const CPrimitiveQuad &rhs)               const
     {
         return this->id == rhs.id && this->Name == rhs.Name;
     }
+
 protected:
-    std::string ImagePath = "";
     int index;
+    std::string ImagePath = "";
     sf::VertexArray body;
     sf::Texture texture;
     sf::Image image;
