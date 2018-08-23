@@ -37,11 +37,15 @@ protected:
     void virtual loadGui(sf::RenderWindow &window);
     void initGui(sf::RenderWindow &window);
     std::unique_ptr<UIWrapper> UserInterface;
+
+    static int currentId;
+    static int getNextId();
 public:
     Level() = delete;
-    Level(int id, const std::string &Name);
-    Level(const Level&);
-    Level(const Level&&);
+    Level(const std::string &Name);
+    Level(const Level&)             = delete;
+    Level(const Level&&)            = delete;
+    Level&operator=(const Level&)   = delete;
     ~Level();
     virtual void draw(sf::RenderWindow &window);
 

@@ -9,18 +9,15 @@
 #include <SFML/Window/Event.hpp>
 #include "Level.hpp"
 #include "Entity/IEntity.hpp"
-Level::Level(int id, const std::string &Name)
+
+int Level::currentId = 0;
+
+Level::Level(const std::string &Name)
 {
-    this->Id = id;
+    this->Id = Level::getNextId();
     this->Name = Name;
     backGroundColor = sf::Color::Black;
     UserInterface = std::make_unique<UIWrapper>();
-}
-Level::Level(const Level &l) : Level(l.Id, l.Name)
-{
-}
-Level::Level(const Level &&l) : Level(l.Id, l.Name)
-{
 }
 void Level::addObject(std::shared_ptr<IEntity> ie)
 {
@@ -74,7 +71,6 @@ Level::~Level()
 {
     DrawableComponents.clear();
     ObjList.clear();
-//    delete UserInterface->gui;
 }
 void Level::draw(sf::RenderWindow &window)
 {
@@ -93,7 +89,6 @@ std::string Level::getName() const
 }
 void Level::initGui(sf::RenderWindow &window)
 {
-//    UserInterface->gui = new tgui::Gui(window);
     UserInterface->gui = std::make_unique<tgui::Gui>(window);
     loadGui(window);
 }
@@ -185,3 +180,8 @@ void Level::setCamera(sf::View &camera)
 {
     this->MainCamera = &camera;
 }
+int Level::getNextId()
+{
+    return Level::currentId++;
+}
+
