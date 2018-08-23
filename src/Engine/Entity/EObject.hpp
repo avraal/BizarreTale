@@ -21,8 +21,6 @@ public:
     EObject(EObject &&eo);
     EObject&operator=(const EObject&);
 
-    std::shared_ptr<CPrimitiveQuad> body;
-
     virtual void setPosition(float x, float y) override;
     virtual void setPosition(const sf::Vector2f &position) override;
 

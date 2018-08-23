@@ -21,7 +21,6 @@ EObject::EObject()
 EObject::EObject(EObject &&eo)
 {
     std::cout << "EO move ctor" << std::endl;
-    body = eo.body;
     Position = eo.Position;
     Components.clear();
     std::copy(eo.Components.begin(), eo.Components.end(), std::back_inserter(Components));
@@ -31,12 +30,10 @@ EObject::EObject(EObject &&eo)
 EObject::EObject(const EObject &rhs) : IEntity(rhs)
 {
     std::cout << "EO copy ctor" << std::endl;
-    this->body = rhs.body;
 }
 EObject &EObject::operator=(const EObject &rhs)
 {
     IEntity::operator=(rhs);
-    this->body = rhs.body;
     return *this;
 }
 void EObject::setPosition(float x, float y)
