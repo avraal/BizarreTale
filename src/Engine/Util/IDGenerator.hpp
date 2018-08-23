@@ -23,7 +23,7 @@ public:
     IDGenerator &operator=(const IDGenerator &) = delete;
     IDGenerator &operator=(const IDGenerator &&) = delete;
 
-    static int getId();
+    static int getNextId();
 };
 
 #endif //BIZARRETALE_IDGENERATOR_HPP

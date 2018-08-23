@@ -9,7 +9,7 @@
 #include "IDGenerator.hpp"
 int IDGenerator::currentId = 0;
 
-int IDGenerator::getId()
+int IDGenerator::getNextId()
 {
     return IDGenerator::currentId++;
 }
