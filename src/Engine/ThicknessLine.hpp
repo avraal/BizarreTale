@@ -58,15 +58,15 @@ public:
             vertices[i].color = color;
         }
     }
-    ThicknessLine() {}
+    ThicknessLine() : color(sf::Color::Red), thickness(3.f) {}
 private:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override
     {
         target.draw(vertices, 4, sf::Quads, states);
     }
     sf::Color color;
-    float thickness;
     sf::Vertex vertices[4];
+    float thickness;
 };
 
 #endif //BIZARRETALE_THICKNESSLINE_HPP
