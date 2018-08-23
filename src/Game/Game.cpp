@@ -16,7 +16,7 @@ Game::Game(const std::string &title)
 {
     this->Title = title;
     levelManager = std::make_unique<LevelManager>();
-    std::shared_ptr<MapEditor> editor = std::make_shared<MapEditor>(0, "MapEditor"); //ToDo: Add generate ID for Level's
+    auto editor = std::make_shared<MapEditor>("MapEditor");
     levelManager->registerLevel(editor);
 }
 
@@ -24,9 +24,14 @@ bool Game::start()
 {
     window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT), Title);
     MainCamera = window.getView();
-    MainCamera.setCenter(300, 320);
+    MainCamera.setCenter(WINDOW_SIZE_HD_WIDTH * 0.35, WINDOW_SIZE_HD_HEIGHT * 0.45);
 
     CurrentLevel = levelManager->loadLevel("MapEditor");
+    if (!CurrentLevel)
+    {
+        return false;
+    }
+    std::cout << "Load " << CurrentLevel->getName() << std::endl;
     CurrentLevel->ImageDirectory = this->ImageDirectory;
     if (!CurrentLevel->prepareLevel(window))
     {
@@ -52,7 +57,6 @@ bool Game::start()
             CurrentLevel->KeyBoardCallbacks(window, event);
             CurrentLevel->HandleGUIEvent(event);
         }
-
         window.setView(MainCamera);
 
         CurrentLevel->draw(window);
@@ -60,39 +64,3 @@ bool Game::start()
     }
     return true;
 }
-
-bool Game::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
-{
-    bool result = false;
-    DIR *dir;
-    dirent *directory;
-    if (FileFormats.empty())
-    {
-        FileFormats.emplace_back(".*");
-    }
-    if ((dir = opendir(ImageDirectory.c_str())) != nullptr)
-    {
-        while ((directory = readdir(dir)) != nullptr)
-        {
-            char *last = strrchr(directory->d_name, '.');
-            if (last != nullptr)
-            {
-                for (const auto &f : FileFormats)
-                {
-                    if (strcmp(last, f.c_str()) == 0)
-                    {
-                        std::cout << ImageDirectory << directory->d_name << " added to stack" << std::endl;
-                        Container.push_back(ImageDirectory + directory->d_name);
-                        result = true;
-                    }
-                }
-            }
-        }
-        closedir(dir);
-    } else
-    {
-        std::cerr << "Can't open a dir" << std::endl;
-    }
-    return result;
-}
-

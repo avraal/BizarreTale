@@ -25,7 +25,6 @@ private:
     std::vector<std::string> PathToImages;                          //all images
     std::vector<std::string> ImagesFormats;                         //all supported image formats
 
-    bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
 public:
     Game(const std::string &title);
     bool start();
