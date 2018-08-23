@@ -24,16 +24,12 @@ protected:
     int Id;
     sf::Vector2f Position;
     std::string Name;
-    std::vector<std::weak_ptr<IComponent>> Components;
+//    std::vector<std::weak_ptr<IComponent>> Components;
+    std::vector<std::shared_ptr<IComponent>> Components;
 
     static int currentId;
     static int getNextId();
 
-    template <class T, class U>
-    std::weak_ptr<T> static_pointer_cast(std::weak_ptr<U> const &rhs)
-    {
-        return std::static_pointer_cast<T>(std::shared_ptr<U>(rhs));
-    }
 public:
     IEntity();
     IEntity(const IEntity&);
@@ -56,9 +52,10 @@ public:
     {
         for (auto c : Components)
         {
-            if (c.lock()->getName() == Name)
+//            if (c.lock()->getName() == Name)
+            if (c->getName() == Name)
             {
-                return std::dynamic_pointer_cast<T>(c.lock());
+                return std::dynamic_pointer_cast<T>(c);
             }
         }
         return nullptr;

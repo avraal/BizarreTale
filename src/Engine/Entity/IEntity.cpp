@@ -55,9 +55,11 @@ std::shared_ptr<IComponent> IEntity::getComponent(int id)
 {
     for (auto c : Components)
     {
-        if (c.lock()->getId() == id)
+//        if (c.lock()->getId() == id)
+        if (c->getId() == id)
         {
-            return c.lock();
+//            return c.lock();
+            return c;
         }
     }
     return nullptr;
@@ -67,9 +69,11 @@ std::shared_ptr<IComponent> IEntity::getComponent(const std::string &Name)
 {
     for (auto c : Components)
     {
-        if (c.lock()->getName() == Name)
+//        if (c.lock()->getName() == Name)
+        if (c->getName() == Name)
         {
-            return c.lock();
+//            return c.lock();
+            return c;
         }
     }
     return nullptr;
@@ -79,7 +83,8 @@ std::vector<std::shared_ptr<CPrimitiveQuad>> IEntity::getDrawable()
     std::vector<std::shared_ptr<CPrimitiveQuad>> result;
     for (auto c : Components)
     {
-        std::shared_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c.lock());
+//        std::shared_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c.lock());
+        std::shared_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c);
         if (p)
         {
             result.push_back(p);
@@ -109,7 +114,7 @@ IEntity &IEntity::operator=(const IEntity &rhs)
 }
 void IEntity::removeComponent(int compId)
 {
-    std::remove_if(Components.begin(), Components.end(), [compId](std::weak_ptr<IComponent> comp)
+    auto target = std::remove_if(Components.begin(), Components.end(), [compId](std::weak_ptr<IComponent> comp)
     {
         if (comp.lock()->getId() == compId)
         {
@@ -119,12 +124,15 @@ void IEntity::removeComponent(int compId)
 
         return false;
     });
+
+    Components.erase(target, Components.end());
 }
 void IEntity::removeComponents()
 {
     for (const auto &component : Components)
     {
-        component.lock()->release();
+//        component.lock()->release();
+        component->release();
     }
     Components.clear();
 }
