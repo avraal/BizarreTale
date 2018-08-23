@@ -45,19 +45,18 @@ private:
             tgui::Button::Ptr               objConfirmChanges;
         //--------------------Object properties---------------------
 
-        //--------------------------Info----------------------------
+        //-------------------------Info-----------------------------
             tgui::Panel::Ptr infoPanel;
             tgui::Label::Ptr infoObjCountLabel;
             tgui::Label::Ptr infoObjReferenceCount;
             tgui::Label::Ptr infoDrawableObjCountLabel;
             tgui::Label::Ptr infoDrawableReferenceCount;
             tgui::Label::Ptr infoFPSLabel;
-        //--------------------------Info----------------------------
+        //-------------------------Info-----------------------------
 
         tgui::ScrollablePanel::Ptr scrollPanel;
+        tgui::ListBox::Ptr ObjectListBox;
     //------------------------------UI------------------------------
-
-    tgui::ListBox::Ptr ObjectListBox;
 
     bool showInfo;
     bool canScroll;
@@ -71,9 +70,6 @@ private:
     std::shared_ptr<IEntity> SelectedEntity;
     std::map<int, std::shared_ptr<IEntity>> SelectedEntities;
 
-public:
-    virtual void draw(sf::RenderWindow &window) override;
-private:
     void drawTileMap(float size_x, float size_y);
     bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void SelectImage(const std::string &imagePath);
@@ -89,8 +85,9 @@ protected:
     void virtual loadGui(sf::RenderWindow &window);
 
 public:
-    MapEditor(int id, const std::string &Name);
+    MapEditor(const std::string &Name);
     virtual ~MapEditor() {}
+    virtual void draw(sf::RenderWindow &window) override;
 
     virtual bool prepareLevel(sf::RenderWindow &window) override;
 };

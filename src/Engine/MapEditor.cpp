@@ -12,10 +12,10 @@
 #include "Entity/EObject.hpp"
 #include "Util/IDGenerator.hpp"
 
-MapEditor::MapEditor(int id, const std::string &Name) : Level(id, Name)
+MapEditor::MapEditor(const std::string &Name) : Level(Name)
 {
     ImageDirectory = "";
-    CurrentPathFile  = "";
+    CurrentPathFile = "";
     ImagesFormats.push_back(".png");
     ImagesFormats.push_back(".jpg");
     CameraSpeed = 4.0f;
@@ -62,9 +62,10 @@ void MapEditor::draw(sf::RenderWindow &window)
     }
     Level::draw(window);
     infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
-    infoFPSLabel->setText("FPS: " + std::to_string((int)fps));
-    int objReferenceCount = 0;
-    int drawableReferenceCount = 0;
+    infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
+    int objReferenceCount = 0; //---------\
+                                           |------ ToDo: move this calculating in methods for add and remove objects/components
+    int drawableReferenceCount = 0; //----/
     for (const auto &item : ObjList)
     {
         objReferenceCount += item.use_count();
@@ -98,7 +99,6 @@ bool MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<st
                 {
                     if (strcmp(last, f.c_str()) == 0)
                     {
-                        std::cout << ImageDirectory << directory->d_name << " added to stack" << std::endl;
                         Container.push_back(ImageDirectory + directory->d_name);
                         result = true;
                     }
@@ -201,7 +201,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                         if (clickCondition)
                         {
                             auto eobj = std::make_shared<EObject>();
-                            auto body = std::make_shared<CTile>(IDGenerator::getId(), "body", CurrentPathFile,
+                            auto body = std::make_shared<CTile>(IDGenerator::getNextId(), "body", CurrentPathFile,
                                                                 eobj->getPosition());
                             eobj->setPosition(t->getPosition());
                             body->Attach(eobj);
@@ -221,8 +221,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                         clickCondition =
                                 MouseGlobalPosition.x > body->getPosition().x &&
                                 MouseGlobalPosition.y > body->getPosition().y &&
-                                MouseGlobalPosition.x <
-                                body->getPosition().x + body->getTextureSize().x &&
+                                MouseGlobalPosition.x < body->getPosition().x + body->getTextureSize().x &&
                                 MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
 
                         if (clickCondition)
@@ -247,8 +246,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                         clickCondition =
                                 MouseGlobalPosition.x > body->getPosition().x &&
                                 MouseGlobalPosition.y > body->getPosition().y &&
-                                MouseGlobalPosition.x <
-                                body->getPosition().x + body->getTextureSize().x &&
+                                MouseGlobalPosition.x < body->getPosition().x + body->getTextureSize().x &&
                                 MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
                         if (clickCondition)
                         {
@@ -326,7 +324,10 @@ void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
                         }
                     }
                     ObjectListBox->removeItem(SelectedEntity->getName());
-                    DestroyEntity(SelectedEntity->GetId());
+                    if (DestroyEntity(SelectedEntity->GetId()))
+                    {
+                        ClearObjectProperties();
+                    }
                 }
                 break;
             }
@@ -356,6 +357,7 @@ void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
                 }
                 SelectedEntities.clear();
                 ObjectListBox->deselectItem();
+                ClearObjectProperties();
                 std::cout << "Prepare to add new object" << std::endl;
                 break;
             }
@@ -425,6 +427,7 @@ void MapEditor::addInfoToPropertiesPanel()
         std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
         return;
     }
+    ClearObjectProperties();
     objPropChangeNameBox->setText(SelectedEntity->getName());
     objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
     objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
@@ -466,28 +469,38 @@ void MapEditor::addInfoToPropertiesPanel()
         tgui::ScrollablePanel::Ptr compList;
 
         compPic = tgui::Picture::create(body->getTexturePath());
+        addComp = tgui::Button::create("Add component");
+        compList = tgui::ScrollablePanel::create({objectProperties->getSize().x, 250});
+
         compPic->setPosition(objIndexEdit->getPosition().x,
                              objIndexEdit->getPosition().y + objIndexEdit->getSize().y + 4);
-        addComp = tgui::Button::create("Add component");
         addComp->setPosition(compPic->getPosition().x, compPic->getPosition().y + compPic->getSize().y + 4);
         addComp->setSize(objectProperties->getSize().x - 4, addComp->getSize().y);
+        addComp->connect(addComp->onClick.getName(), [this]()
+        {
+            auto comp = std::make_shared<CTile>(IDGenerator::getNextId(), "comp1", CurrentPathFile,
+                                                SelectedEntity->getPosition());
+            comp->Attach(SelectedEntity);
+            addInfoToPropertiesPanel();
+        });
 
-        compList = tgui::ScrollablePanel::create({objectProperties->getSize().x, 250});
         compList->setPosition(objIndexEdit->getPosition().x, addComp->getPosition().y + addComp->getSize().y + 4);
         compList->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 140));
 
-        objectProperties->add(compPic);
-        objectProperties->add(addComp);
-        objectProperties->add(compList);
+        objectProperties->add(compPic, "compPic");
+        objectProperties->add(compList, "compList");
+        objectProperties->add(addComp, "addComp");
 
-        if (SelectedEntity->getDrawable().size() > 1)
+        std::cout << "Size: " << SelectedEntity->getDrawable().size() << std::endl;
+        int posY = 0;
+        for (const auto &item : SelectedEntity->getDrawable())
         {
-            for (const auto &item : SelectedEntity->getDrawable())
+            if (item != body)
             {
-                if (item != body)
-                {
-                    //ToDo: create class for GUI Components
-                }
+                tgui::Picture::Ptr c = tgui::Picture::create(item->getTexturePath());
+                c->setPosition(0, posY);
+                compList->add(c);
+                posY += c->getSize().y + 4;
             }
         }
     }
@@ -495,7 +508,14 @@ void MapEditor::addInfoToPropertiesPanel()
 
 void MapEditor::ClearObjectProperties()
 {
+    objPropChangeNameBox->setText("");
+    objIndexEdit->setText("");
+    objPositionX->setText("");
+    objPositionY->setText("");
 
+    objectProperties->remove(objectProperties->get("compPic"));
+    objectProperties->remove(objectProperties->get("compList"));
+    objectProperties->remove(objectProperties->get("addComp"));
 }
 
 void MapEditor::UpdateObjectFromProperties()
@@ -678,7 +698,7 @@ void MapEditor::loadGui(sf::RenderWindow &window)
     infoFPSLabel = tgui::Label::create();
     infoFPSLabel->getRenderer()->setTextColor(sf::Color::White);
     infoFPSLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
-//    infoFPSLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
+    //    infoFPSLabel->setPosition(0, INFO_PANEL_TEXT_SIZE + 2);
 
     infoObjCountLabel = tgui::Label::create();
     infoObjCountLabel->getRenderer()->setTextColor(sf::Color::White);
@@ -737,4 +757,3 @@ void MapEditor::releaseSelectEntity()
         SelectedEntity = nullptr;
     }
 }
-
