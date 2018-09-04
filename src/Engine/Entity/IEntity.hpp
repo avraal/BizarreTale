@@ -21,29 +21,29 @@ class CTile;
 class IEntity
 {
 protected:
-    int Id;
+    us_int Id;
     sf::Vector2f Position;
     std::string Name;
 //    std::vector<std::weak_ptr<IComponent>> Components;
     std::vector<std::shared_ptr<IComponent>> Components;
 
-    static int currentId;
-    static int getNextId();
+    static us_int currentId;
+    static us_int getNextId();
 
 public:
     IEntity();
     IEntity(const IEntity&);
     IEntity&operator=(const IEntity&);
-    virtual int GetId()                               const noexcept final;
+    virtual us_int GetId()                               const noexcept final;
     virtual void setName(const std::string &name)           noexcept final;
     virtual std::string getName()                     const noexcept final;
     virtual void setPosition(float x, float y) = 0;
     virtual void setPosition(const sf::Vector2f &position) = 0;
     void addComponent(std::shared_ptr<IComponent> component);
-    void removeComponent(int compId);
+    void removeComponent(us_int compId);
     void removeComponents();
     sf::Vector2f getPosition() const;
-    std::shared_ptr<IComponent> getComponent(int id);
+    std::shared_ptr<IComponent> getComponent(us_int id);
     std::shared_ptr<IComponent> getComponent(const std::string &Name);
     std::vector<std::shared_ptr<CPrimitiveQuad>> getDrawable();
 

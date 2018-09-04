@@ -22,7 +22,7 @@ CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
     shape = ThicknessLineArray();
 }
 
-CPrimitiveQuad::CPrimitiveQuad(int id, const std::string &name, sf::Color c) : IComponent(id, name)
+CPrimitiveQuad::CPrimitiveQuad(us_int id, const std::string &name, sf::Color c) : IComponent(id, name)
 {
     index = 0;
     this->color = c;
@@ -102,11 +102,11 @@ sf::Color CPrimitiveQuad::getColor() const
 {
     return color;
 }
-int CPrimitiveQuad::getIndex() const
+us_int CPrimitiveQuad::getIndex() const
 {
     return index;
 }
-void CPrimitiveQuad::setIndex(int index)
+void CPrimitiveQuad::setIndex(us_int index)
 {
     this->index = index;
 }

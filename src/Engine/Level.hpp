@@ -23,10 +23,20 @@
 
 class IEntity;
 class EObject;
+
+struct ObjectsDetails
+{
+    ObjectsDetails() : objReferenceCount{0}, drawableReferenceCount{0}, objCount{0}, drawableCount{0} {}
+    us_int objReferenceCount;
+    us_int drawableReferenceCount;
+    us_int objCount;
+    us_int drawableCount;
+};
+
 class Level
 {
 protected:
-    int Id;
+    size_t Id;
     std::string Name;
     std::vector<std::shared_ptr<IEntity>> ObjList;
     std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
@@ -38,8 +48,8 @@ protected:
     void initGui(sf::RenderWindow &window);
     std::unique_ptr<UIWrapper> UserInterface;
 
-    static int currentId;
-    static int getNextId();
+    static us_int currentId;
+    static us_int getNextId();
 public:
     Level() = delete;
     Level(const std::string &Name);
@@ -49,20 +59,21 @@ public:
     ~Level();
     virtual void draw(sf::RenderWindow &window);
 
-    bool DestroyEntity(int entityId);
-    void addObject(std::shared_ptr<IEntity> ie);
+    bool DestroyEntity(us_int entityId);
     virtual bool prepareLevel(sf::RenderWindow &window);
+    void addObject(std::shared_ptr<IEntity> ie);
     void sortedObjectsByIndex();
     void setCamera(sf::View &camera);
     void virtual MouseCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
     void virtual KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
     void HandleGUIEvent(sf::Event &event);
-    size_t getObjCount();
-    std::shared_ptr<IEntity> getObject(int index);
-    std::shared_ptr<IEntity> getObjectById(int id);
+    us_int getObjCount();
+    std::shared_ptr<IEntity> getObject(us_int index);
+    std::shared_ptr<IEntity> getObjectById(us_int id);
     std::shared_ptr<IEntity> getObjectByName(const std::string &Name);
+    std::unique_ptr<ObjectsDetails> objDetails;
     std::vector<std::shared_ptr<IEntity>> &getAllObjects();
-    std::string getName() const;
+    virtual std::string getName() const;
     std::string ImageDirectory;
     float fps;
 

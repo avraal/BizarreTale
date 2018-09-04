@@ -16,7 +16,6 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <cstring>
-#include "../CONST_DEFINITIONS.h"
 #include "CPrimitiveQuad.hpp"
 
 class CTile : public CPrimitiveQuad
@@ -29,7 +28,7 @@ protected:
 
 public:
     CTile() = delete;
-    CTile(int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index = 0);
+    CTile(us_int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, us_int index = 0);
     CTile(const CTile &tile);
     CTile(const CTile &&tile);
     CTile &operator=(sf::Drawable const &) = delete;

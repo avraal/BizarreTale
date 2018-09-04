@@ -21,14 +21,14 @@ private:
 public:
     ThicknessLineArray(){}
     void append(const ThicknessLine &line);
-    void resize(size_t lineCount);
+    void resize(us_int lineCount);
     void Hide();
     void ChangeColor(sf::Color c);
     void clear();
-    size_t getLineCount();
+    us_int getLineCount();
 
-    ThicknessLine &operator[](size_t index);
-    const ThicknessLine &operator[](size_t index) const;
+    ThicknessLine &operator[](us_int index);
+    const ThicknessLine &operator[](us_int index) const;
 
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

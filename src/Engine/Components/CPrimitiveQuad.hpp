@@ -17,7 +17,6 @@
 #include "../ThicknessLine.hpp"
 #include "../ThicknessLineArray.hpp"
 #include "IComponent.hpp"
-#include "../CONST_DEFINITIONS.h"
 
 #define TSD TILE_SIZE_DEFAULT
 
@@ -28,7 +27,7 @@ private:
 
 public:
     CPrimitiveQuad(sf::Color c = sf::Color(91, 97, 91));
-    CPrimitiveQuad(int id, const std::string &name, sf::Color c = sf::Color(91, 97, 91));
+    CPrimitiveQuad(us_int id, const std::string &name, sf::Color c = sf::Color(91, 97, 91));
     CPrimitiveQuad(const CPrimitiveQuad &);
     CPrimitiveQuad(const CPrimitiveQuad &&);
     virtual ~CPrimitiveQuad();
@@ -45,10 +44,10 @@ public:
     virtual void Attach(std::shared_ptr<IEntity> ptr) override;
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);
-    void setIndex(int index);
+    void setIndex(us_int index);
 
     const sf::Texture *getTexture()                                 const;
-    int getIndex() const;
+    us_int getIndex() const;
     bool ShowBounds;
 
     inline bool operator==(const CPrimitiveQuad &rhs)               const
@@ -57,7 +56,7 @@ public:
     }
 
 protected:
-    int index;
+    us_int index;
     std::string ImagePath = "";
     sf::VertexArray body;
     sf::Texture texture;

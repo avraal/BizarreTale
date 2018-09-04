@@ -15,6 +15,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <iostream>
 #include <cmath>
+#include "CONST_DEFINITIONS.h"
 
 class ThicknessLine : public sf::Drawable
 {
@@ -45,7 +46,7 @@ public:
     }
     void ChangeColor(sf::Color c)
     {
-        for(int i = 0; i < 4; i++)
+        for(us_int i = 0; i < 4; i++)
         {
             vertices[i].color = c;
         }
@@ -53,7 +54,7 @@ public:
 
     void Show()
     {
-        for(int i = 0; i < 4; i++)
+        for(us_int i = 0; i < 4; i++)
         {
             vertices[i].color = color;
         }

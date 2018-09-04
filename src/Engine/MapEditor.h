@@ -69,8 +69,9 @@ private:
 
     std::mutex b_mutex;
     std::shared_ptr<IEntity> SelectedEntity;
-    std::map<int, std::shared_ptr<IEntity>> SelectedEntities;
+    std::map<us_int, std::shared_ptr<IEntity>> SelectedEntities;
 
+private:
     void drawTileMap(float size_x, float size_y);
     bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void SelectImage(const std::string &imagePath);

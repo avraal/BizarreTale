@@ -9,7 +9,7 @@
 #include "IEntity.hpp"
 #include "../Level.hpp"
 
-int IEntity::currentId = 0;
+us_int IEntity::currentId = 0;
 
 IEntity::IEntity()
 {
@@ -18,7 +18,7 @@ IEntity::IEntity()
     Name = "def";
 }
 
-int IEntity::GetId() const noexcept
+us_int IEntity::GetId() const noexcept
 {
     return Id;
 }
@@ -46,12 +46,12 @@ sf::Vector2f IEntity::getPosition() const
 {
     return Position;
 }
-int IEntity::getNextId()
+us_int IEntity::getNextId()
 {
     return IEntity::currentId++;
 }
 
-std::shared_ptr<IComponent> IEntity::getComponent(int id)
+std::shared_ptr<IComponent> IEntity::getComponent(us_int id)
 {
     for (auto c : Components)
     {
@@ -112,7 +112,7 @@ IEntity &IEntity::operator=(const IEntity &rhs)
     }
     return *this;
 }
-void IEntity::removeComponent(int compId)
+void IEntity::removeComponent(us_int compId)
 {
     auto target = std::remove_if(Components.begin(), Components.end(), [compId](std::weak_ptr<IComponent> comp)
     {

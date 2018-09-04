@@ -11,22 +11,23 @@
 
 #include <string>
 #include <memory>
+#include "../CONST_DEFINITIONS.h"
 
 class IEntity;
 class IComponent : public std::enable_shared_from_this<IComponent>
 {
 protected:
-    int id;
+    us_int id;
     std::string Name;
     std::shared_ptr<IEntity> entity;
 
 public:
     IComponent();
-    IComponent(int id, const std::string &name);
+    IComponent(us_int id, const std::string &name);
     virtual ~IComponent()   = 0;
     virtual void release()  = 0;
     virtual void Attach(std::shared_ptr<IEntity>);
-    virtual int getId() const noexcept final;
+    virtual us_int getId() const noexcept final;
     virtual std::string getName() const noexcept final;
     virtual std::shared_ptr<IEntity> getEntity();
 

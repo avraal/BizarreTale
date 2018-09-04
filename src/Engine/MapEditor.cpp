@@ -61,22 +61,21 @@ void MapEditor::draw(sf::RenderWindow &window)
         window.draw(line, 2, sf::Lines);
     }
     Level::draw(window);
-    infoObjCountLabel->setText("Object count: " + std::to_string(ObjList.size()));
-    infoFPSLabel->setText("FPS: " + std::to_string((int) fps));
-    int objReferenceCount = 0; //---------\
-                                           |------ ToDo: move this calculating in methods for add and remove objects/components
-    int drawableReferenceCount = 0; //----/
+    infoObjCountLabel->setText("Object count: " + std::to_string(objDetails->objCount));
+    infoFPSLabel->setText("FPS: " + std::to_string((us_int) fps));
+    objDetails->objReferenceCount = 0;
+    objDetails->drawableReferenceCount = 0;
     for (const auto &item : ObjList)
     {
-        objReferenceCount += item.use_count();
+        objDetails->objReferenceCount += item.use_count();
     }
     for (const auto &component : DrawableComponents)
     {
-        drawableReferenceCount += component.use_count();
+        objDetails->drawableReferenceCount += component.use_count();
     }
-    infoObjReferenceCount->setText("ObjReferenceCount: " + std::to_string(objReferenceCount));
-    infoDrawableObjCountLabel->setText("Drawable count: " + std::to_string(DrawableComponents.size()));
-    infoDrawableReferenceCount->setText("DrawableReferenceCount: " + std::to_string(drawableReferenceCount));
+    infoObjReferenceCount->setText("ObjReferenceCount: " + std::to_string(objDetails->objReferenceCount));
+    infoDrawableObjCountLabel->setText("Drawable count: " + std::to_string(objDetails->drawableCount));
+    infoDrawableReferenceCount->setText("DrawableReferenceCount: " + std::to_string(objDetails->drawableReferenceCount));
 }
 
 bool MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
@@ -123,20 +122,20 @@ void MapEditor::drawTileMap(float size_x, float size_y)
 {
     LineGrid.clear();
     TileMap.clear();
-    int height = 10;
-    int width = 15;
+    us_int height = 10;
+    us_int width = 15;
     std::vector<std::string> Tiles;
     std::vector<std::string> Formats;
     Formats.emplace_back(".png");
     findAllFiles(Tiles, Formats);
     //added tiles
-    for (uint i = 1; i <= height * width; i++)
+    for (us_int i = 1; i <= height * width; i++)
     {
         TileMap.push_back(new CPrimitiveQuad());
     }
 
     //set position
-    uint x = 0, y = 0;
+    us_int x = 0, y = 0;
     for (auto t : TileMap)
     {
         t->setPosition(x * size_x, y * size_y);
@@ -150,7 +149,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
     }
 
     //draw horizontal lines
-    for (uint i = 1; i < y; i++)
+    for (us_int i = 1; i < y; i++)
     {
         sf::Vertex line[] =
                 {
@@ -162,7 +161,7 @@ void MapEditor::drawTileMap(float size_x, float size_y)
         LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
     //draw vertical lines
-    for (uint i = 1; i < width; i++)
+    for (us_int i = 1; i < width; i++)
     {
         sf::Vertex line[] =
                 {
@@ -250,7 +249,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                                 MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
                         if (clickCondition)
                         {
-                            SelectedEntities.insert(std::pair<int, std::shared_ptr<IEntity>>(o->GetId(), o));
+                            SelectedEntities.insert(std::pair<us_int, std::shared_ptr<IEntity>>(o->GetId(), o));
                             ObjectListBox->setSelectedItem(o->getName());
                             for (auto s : SelectedEntities)
                             {
@@ -499,7 +498,7 @@ void MapEditor::addInfoToPropertiesPanel()
         objectProperties->add(compList, "compList");
         objectProperties->add(addComp, "addComp");
 
-        int posY = 0;
+        us_int posY = 0;
         for (const auto &item : SelectedEntity->getDrawable())
         {
             if (item != body)
@@ -558,7 +557,7 @@ void MapEditor::UpdateObjectFromProperties()
         ObjectListBox->changeItem(beforeName, SelectedEntity->getName());
     }
 
-    int count = 0;
+    us_int count = 0;
     for (auto o : ObjList)
     {
         if (o == SelectedEntity)
@@ -680,7 +679,7 @@ void MapEditor::loadGui(sf::RenderWindow &window)
     scrollPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 225));
     auto imgInRow = scrollPanel->getSize().x / 64 - (PathToImages.size() * 0.25);
     std::cout << imgInRow << std::endl;
-    uint x = 0, y = 0;
+    us_int x = 0, y = 0;
     for (const auto &i : PathToImages)
     {
         auto pic = tgui::Picture::create(i);

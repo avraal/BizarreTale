@@ -14,7 +14,7 @@ IComponent::IComponent()
     this->id = IDGenerator::getNextId();
 }
 
-IComponent::IComponent(int id, const std::string &name)
+IComponent::IComponent(us_int id, const std::string &name)
 {
     this->Name = name;
     this->id = id;
@@ -26,7 +26,7 @@ std::string IComponent::getName() const noexcept
 IComponent::~IComponent()
 {
 }
-int IComponent::getId() const noexcept
+us_int IComponent::getId() const noexcept
 {
     return id;
 }

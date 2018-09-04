@@ -10,20 +10,20 @@ void ThicknessLineArray::append(const ThicknessLine &line)
 {
     lines.push_back(line);
 }
-void ThicknessLineArray::resize(size_t lineCount)
+void ThicknessLineArray::resize(us_int lineCount)
 {
     lines.resize(lineCount);
 }
-size_t ThicknessLineArray::getLineCount()
+us_int ThicknessLineArray::getLineCount()
 {
     return lines.size();
 }
-ThicknessLine &ThicknessLineArray::operator[](size_t index)
+ThicknessLine &ThicknessLineArray::operator[](us_int index)
 {
     return lines[index];
 }
 
-const ThicknessLine &ThicknessLineArray::operator[](size_t index) const
+const ThicknessLine &ThicknessLineArray::operator[](us_int index) const
 {
     return lines[index];
 }

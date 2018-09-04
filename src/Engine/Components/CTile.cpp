@@ -15,7 +15,7 @@ void CTile::LoadTexture(std::string ImagePath)
     sprite.setTexture(texture);
 }
 
-CTile::CTile(int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, int index)
+CTile::CTile(us_int id, const std::string &Name, std::string ImagePath, sf::Vector2f position, us_int index)
         : CPrimitiveQuad(id, Name)
 {
     this->ImagePath = ImagePath;

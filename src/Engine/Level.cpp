@@ -10,7 +10,7 @@
 #include "Level.hpp"
 #include "Entity/IEntity.hpp"
 
-int Level::currentId = 0;
+us_int Level::currentId = 0;
 
 Level::Level(const std::string &Name)
 {
@@ -18,18 +18,21 @@ Level::Level(const std::string &Name)
     this->Name = Name;
     backGroundColor = sf::Color::Black;
     UserInterface = std::make_unique<UIWrapper>();
+    objDetails = std::make_unique<ObjectsDetails>();
 }
 void Level::addObject(std::shared_ptr<IEntity> ie)
 {
     ObjList.push_back(ie);
+    objDetails->objCount++;
     ie->setName("def" + std::to_string(ObjList.size()));
     for(auto d : ie->getDrawable())
     {
         DrawableComponents.push_back(d);
+        objDetails->drawableCount++;
     }
     if(ObjList.size() > 1)
     {
-        int count = 0;
+        us_int count = 0;
         for(auto o : ObjList)
         {
             auto body = o->getComponent<CPrimitiveQuad>("body");
@@ -50,7 +53,7 @@ void Level::addObject(std::shared_ptr<IEntity> ie)
         ie->getComponent<CPrimitiveQuad>("body")->setIndex(count);
     }
 }
-std::shared_ptr<IEntity> Level::getObject(int index)
+std::shared_ptr<IEntity> Level::getObject(us_int index)
 {
     if (!ObjList.empty())
     {
@@ -62,7 +65,7 @@ std::vector<std::shared_ptr<IEntity>> &Level::getAllObjects()
 {
     return ObjList;
 }
-size_t Level::getObjCount()
+us_int Level::getObjCount()
 {
     return ObjList.size();
 }
@@ -115,10 +118,10 @@ void Level::loadGui(sf::RenderWindow &window)
 {
 
 }
-bool Level::DestroyEntity(int entityId)
+bool Level::DestroyEntity(us_int entityId)
 {
-    std::size_t beforeObjCount = ObjList.size();
-    std::size_t beforeDrawCount = DrawableComponents.size();
+    us_int beforeObjCount = ObjList.size();
+    us_int beforeDrawCount = DrawableComponents.size();
     auto target = getObjectById(entityId);
     if (!target)
     {
@@ -133,6 +136,7 @@ bool Level::DestroyEntity(int entityId)
         {
             (*it)->release();
             it = DrawableComponents.erase(it);
+            objDetails->drawableCount--;
         } else
         {
             ++it;
@@ -140,10 +144,10 @@ bool Level::DestroyEntity(int entityId)
     }
 
     ObjList.erase(std::remove(ObjList.begin(), ObjList.end(), getObjectById(entityId)), ObjList.end());
-
+    objDetails->objCount--;
     return beforeObjCount != ObjList.size() && beforeDrawCount != DrawableComponents.size();
 }
-std::shared_ptr<IEntity> Level::getObjectById(int id)
+std::shared_ptr<IEntity> Level::getObjectById(us_int id)
 {
     for(auto o : ObjList)
     {
@@ -180,7 +184,7 @@ void Level::setCamera(sf::View &camera)
 {
     this->MainCamera = &camera;
 }
-int Level::getNextId()
+us_int Level::getNextId()
 {
     return Level::currentId++;
 }

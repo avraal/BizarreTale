@@ -10,11 +10,12 @@
 #define BIZARRETALE_IDGENERATOR_HPP
 
 #include <iostream>
+#include "../CONST_DEFINITIONS.h"
 
 class IDGenerator final
 {
 private:
-    static int currentId;
+    static us_int currentId;
 
 public:
     IDGenerator() = delete;
@@ -23,7 +24,7 @@ public:
     IDGenerator &operator=(const IDGenerator &) = delete;
     IDGenerator &operator=(const IDGenerator &&) = delete;
 
-    static int getNextId();
+    static us_int getNextId();
 };
 
 #endif //BIZARRETALE_IDGENERATOR_HPP
