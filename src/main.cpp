@@ -3,6 +3,11 @@
 
 #ifdef __linux__
 #define OS "LINUX"
+#elif __WIN32__
+#define OS "WIN32"
+#ifdef __WIN64__
+#define OS "WIN64"
+#endif
 #else
 #define OS "UNSUPPORTED OS"
 #endif
@@ -37,5 +42,5 @@ bool prepare()
 {
     std::cout << OS << std::endl;
     return strcmp(OS, "UNSUPPORTED OS");
-//    return OS != "UNSUPPORTED OS";
+    //    return OS != "UNSUPPORTED OS";
 }
