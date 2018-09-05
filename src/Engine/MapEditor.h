@@ -57,13 +57,17 @@ private:
 
         tgui::ScrollablePanel::Ptr scrollPanel;
         tgui::ListBox::Ptr ObjectListBox;
+        tgui::ChildWindow::Ptr selectComponentWindow;
     //------------------------------UI------------------------------
 
     bool showInfo;
     bool canScroll;
+    //TODO::Add functional for this variable
+    bool canCreateOrEdit;
     float CameraSpeed;
 
     enum class EditorMode {ADD, SELECT, MULTISELECT};
+    enum class ComponentsName {TILE};
 
     EditorMode CurrentMode;
 
@@ -81,6 +85,7 @@ private:
     void releaseSelectEntity();
     void ClearObjectProperties();
     void addInfoToPropertiesPanel();
+    void AddComponentToObject(std::shared_ptr<IEntity> e, int pos_x, int pos_y);
     void UpdateObjectFromProperties();
 
 protected:
