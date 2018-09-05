@@ -14,6 +14,7 @@
 
 MapEditor::MapEditor(const std::string &Name) : Level(Name)
 {
+    canCreateOrEdit = true;
     ImageDirectory = "";
     CurrentPathFile = "";
     ImagesFormats.push_back(".png");
@@ -178,86 +179,93 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
-        if (event.mouseButton.button == sf::Mouse::Left &&
-            !scrollPanel->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
-            !scrollProperties->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
-            !ObjectListBox->mouseOnWidget(tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+        canCreateOrEdit = !scrollPanel     ->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
+                          !scrollProperties->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
+                          !ObjectListBox   ->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y));
+
+        if (event.mouseButton.button == sf::Mouse::Left)
         {
-            sf::Vector2f MouseGlobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
-            bool clickCondition;
-
-            switch (CurrentMode)
+            if (canCreateOrEdit)
             {
-                case EditorMode::ADD:
-                {
-                    for (auto t : TileMap)
-                    {
-                        clickCondition =
-                                MouseGlobalPosition.x > t->getPosition().x &&
-                                MouseGlobalPosition.y > t->getPosition().y &&
-                                MouseGlobalPosition.x < t->getPosition().x + t->getTextureSize().x &&
-                                MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
-                        if (clickCondition)
-                        {
-                            auto eobj = std::make_shared<EObject>();
-                            auto body = std::make_shared<CTile>(IDGenerator::getNextId(), "body", CurrentPathFile,
-                                                                eobj->getPosition());
-                            eobj->setPosition(t->getPosition());
-                            body->Attach(eobj);
-                            addObject(eobj);
-                            const std::string objName = ObjList.back()->getName();
-                            ObjectListBox->addItem(objName);
-                            ObjectListBox->setSelectedItem(objName);
-                        }
-                    }
-                    break;
-                }
-                case EditorMode::SELECT:
-                {
-                    for (auto o : ObjList)
-                    {
-                        auto body = o->getComponent<CPrimitiveQuad>("body");
-                        clickCondition =
-                                MouseGlobalPosition.x > body->getPosition().x &&
-                                MouseGlobalPosition.y > body->getPosition().y &&
-                                MouseGlobalPosition.x < body->getPosition().x + body->getTextureSize().x &&
-                                MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
+                sf::Vector2f MouseGlobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
+                bool clickCondition = true;
 
-                        if (clickCondition)
-                        {
-                            SelectedEntities.clear();
-                            std::cout << "Edit x: " << body->getPosition().x << " y: "
-                                      << body->getPosition().y
-                                      << " object " << o->getName() << " (index: " << body->getIndex() << ")"
-                                      << std::endl;
-                            std::cout << "-----------" << std::endl;
-                            ObjectListBox->setSelectedItem(o->getName());
-                            ///this handler exec in addInfoToPropertiesPanel
-                        }
-                    }
-                    break;
-                }
-                case EditorMode::MULTISELECT:
+                switch (CurrentMode)
                 {
-                    for (auto o : ObjList)
+                    case EditorMode::ADD:
                     {
-                        auto body = o->getComponent<CPrimitiveQuad>("body");
-                        clickCondition =
-                                MouseGlobalPosition.x > body->getPosition().x &&
-                                MouseGlobalPosition.y > body->getPosition().y &&
-                                MouseGlobalPosition.x < body->getPosition().x + body->getTextureSize().x &&
-                                MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
-                        if (clickCondition)
+                        for (auto t : TileMap)
                         {
-                            SelectedEntities.insert(std::pair<us_int, std::shared_ptr<IEntity>>(o->GetId(), o));
-                            ObjectListBox->setSelectedItem(o->getName());
-                            for (auto s : SelectedEntities)
+                            //TODO::Create method to check this condition
+                            clickCondition =
+                                    MouseGlobalPosition.x > t->getPosition().x &&
+                                    MouseGlobalPosition.y > t->getPosition().y &&
+                                    MouseGlobalPosition.x < t->getPosition().x + t->getTextureSize().x &&
+                                    MouseGlobalPosition.y < t->getPosition().y + t->getTextureSize().y;
+                            if (clickCondition)
                             {
-                                std::cout << s.second->getName() << std::endl;
+                                auto eobj = std::make_shared<EObject>();
+                                auto body = std::make_shared<CTile>(IDGenerator::getNextId(), "body", CurrentPathFile,
+                                                                    eobj->getPosition());
+                                eobj->setPosition(t->getPosition());
+                                body->Attach(eobj);
+                                addObject(eobj);
+                                const std::string objName = ObjList.back()->getName();
+                                ObjectListBox->addItem(objName);
+                                ObjectListBox->setSelectedItem(objName);
+                                ///this handler exec in addInfoToPropertiesPanel
                             }
                         }
+                        break;
                     }
-                    break;
+                    case EditorMode::SELECT:
+                    {
+                        for (auto o : ObjList)
+                        {
+                            auto body = o->getComponent<CPrimitiveQuad>("body");
+                            //TODO::Create method to check this condition
+                            clickCondition =
+                                    MouseGlobalPosition.x > body->getPosition().x &&
+                                    MouseGlobalPosition.y > body->getPosition().y &&
+                                    MouseGlobalPosition.x < body->getPosition().x + body->getTextureSize().x &&
+                                    MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
+
+                            if (clickCondition)
+                            {
+                                SelectedEntities.clear();
+                                std::cout << "Edit x: " << body->getPosition().x << " y: "
+                                          << body->getPosition().y
+                                          << " object " << o->getName() << " (index: " << body->getIndex() << ")"
+                                          << std::endl;
+                                std::cout << "-----------" << std::endl;
+                                ObjectListBox->setSelectedItem(o->getName());
+                                ///this handler exec in addInfoToPropertiesPanel
+                            }
+                        }
+                        break;
+                    }
+                    case EditorMode::MULTISELECT:
+                    {
+                        for (auto o : ObjList)
+                        {
+                            auto body = o->getComponent<CPrimitiveQuad>("body");
+                            clickCondition =
+                                    MouseGlobalPosition.x > body->getPosition().x &&
+                                    MouseGlobalPosition.y > body->getPosition().y &&
+                                    MouseGlobalPosition.x < body->getPosition().x + body->getTextureSize().x &&
+                                    MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
+                            if (clickCondition)
+                            {
+                                SelectedEntities.insert(std::pair<us_int, std::shared_ptr<IEntity>>(o->GetId(), o));
+                                ObjectListBox->setSelectedItem(o->getName());
+                                for (auto s : SelectedEntities)
+                                {
+                                    std::cout << s.second->getName() << std::endl;
+                                }
+                            }
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -475,7 +483,9 @@ void MapEditor::addInfoToPropertiesPanel()
                              objIndexEdit->getPosition().y + objIndexEdit->getSize().y + 4);
         addComp->setPosition(compPic->getPosition().x, compPic->getPosition().y + compPic->getSize().y + 4);
         addComp->setSize(objectProperties->getSize().x - 4, addComp->getSize().y);
-        addComp->connect(addComp->onClick.getName(), [this]()
+        addComp->connect(addComp->onClick.getName(), &MapEditor::AddComponentToObject, this, SelectedEntity,
+                         scrollProperties->getPosition().x, addComp->getPosition().y);
+        /*addComp->connect(addComp->onClick.getName(), [this]()
         {
             std::string pathToImage = "";
             nfdchar_t *outPath = nullptr;
@@ -489,7 +499,7 @@ void MapEditor::addInfoToPropertiesPanel()
                 addInfoToPropertiesPanel();
             }
 
-        });
+        });*/
 
         compList->setPosition(objIndexEdit->getPosition().x, addComp->getPosition().y + addComp->getSize().y + 4);
         compList->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 140));
@@ -511,7 +521,27 @@ void MapEditor::addInfoToPropertiesPanel()
         }
     }
 }
+void MapEditor::AddComponentToObject(std::shared_ptr<IEntity> e, int pos_x, int pos_y)
+{
+    //TODO::Show dialog for select component type
+    tgui::Theme theme{"tgui_themes/Black.txt"};
 
+    selectComponentWindow = tgui::ChildWindow::create();
+    selectComponentWindow->setRenderer(theme.getRenderer("ChildWindow"));
+    selectComponentWindow->setSize(250, 120);
+    selectComponentWindow->setPosition(pos_x, pos_y);
+    selectComponentWindow->setTitle("Select component type");
+
+    tgui::ListBox::Ptr componentList = tgui::ListBox::create();
+    componentList->addItem("Primitive Quad");
+    componentList->addItem("Tile");
+
+    componentList->setSize(selectComponentWindow->getSize());
+
+    selectComponentWindow->add(componentList);
+    UserInterface->gui->add(selectComponentWindow);
+    //TODO::Add selected component
+}
 void MapEditor::ClearObjectProperties()
 {
     objPropChangeNameBox->setText("");
@@ -763,3 +793,4 @@ void MapEditor::releaseSelectEntity()
         SelectedEntity = nullptr;
     }
 }
+
