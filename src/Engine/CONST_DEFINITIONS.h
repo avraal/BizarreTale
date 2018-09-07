@@ -17,6 +17,10 @@
 
 using u_int  = unsigned int;                            // 4 (0     /     4 294 967 295)
 using us_int = unsigned short int;                      // 2 (0     /     65 535       )
-using ul_int = unsigned long  int;                      // 8 (0     /     18 446 744 073 709 551 615)
-
+using ul_int = unsigned long  int;                      
+/*
+ul_int
+linux: 8 (0     /     18 446 744 073 709 551 615)
+windows: // 4 (0     /     4 294 967 295)
+*/
 #endif //BIZARRETALE_CONST_DEFINITIONS_H
