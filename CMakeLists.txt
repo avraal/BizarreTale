@@ -3,7 +3,7 @@ project(BizarreTale)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_COMPILER /usr/bin/g++-7)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
@@ -23,7 +23,7 @@ add_executable(BizarreTale src/main.cpp
         src/Engine/Systems/UIWrapper.cpp
         src/Engine/CustomGUI/EditboxAndLabel.cpp
         src/Engine/Util/IDGenerator.cpp
-        src/Game/Game.cpp)
+        src/Game/Game.cpp src/Game/Labyrinth/Labyrinth.cpp src/Game/Labyrinth/Labyrinth.hpp)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics network audio)
 include_directories(nativefiledialog-master/src/include ${GTK3_INCLUDE_DIRS})
