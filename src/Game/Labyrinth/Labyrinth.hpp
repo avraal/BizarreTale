@@ -35,7 +35,7 @@ private:
     std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;        //grid of lines
 
     void drawTileMap();
-    void mazeGenerate();
+    std::vector<us_int> mazeGenerate();
     void showMaze(MazeData *maze);
     std::string CurrentPathFile;                                    //path to image, which added to map
 
@@ -53,8 +53,11 @@ public:
     virtual void draw(sf::RenderWindow &window) override;
     virtual void KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) override;
     virtual void HandleGUIEvent(sf::Event &event) override;
-    int getUnvisited(MazeData maze);
-    Point *getUnvisitedNeighbor(Labyrinth::MazeData maze, Point p);
+    int getUnvisitedCount(MazeData maze);
+    std::vector<Point> getUnvisitedNeighbor(Labyrinth::MazeData maze, Point p);
+    us_int **removeWall(Point currentPoint, Point nextCell, us_int **pInt);
+    std::vector<Point> getUnvisitedCells(us_int width, us_int height, MazeData maze);
+    void showMazeCoords(std::vector<us_int> coords);
 };
 
 #endif //BIZARRETALE_LABYRINTH_HPP

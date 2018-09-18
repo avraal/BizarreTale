@@ -5,6 +5,8 @@
 // Created by Andrew Volski on 14.09.18.
 //
 
+#include <zconf.h>
+#include <stack>
 #include "Labyrinth.hpp"
 Labyrinth::Labyrinth(const std::string &Name) : Level(Name)
 {
@@ -26,7 +28,8 @@ bool Labyrinth::prepareLevel(sf::RenderWindow &window)
     }
     Level::prepareLevel(window);
     drawTileMap();
-    mazeGenerate();
+    auto mazeCoords = mazeGenerate();
+    showMazeCoords(mazeCoords);
     return true;
 }
 void Labyrinth::drawTileMap()
@@ -113,7 +116,7 @@ void Labyrinth::draw(sf::RenderWindow &window)
     }
     Level::draw(window);
 }
-void Labyrinth::mazeGenerate()
+std::vector<us_int> Labyrinth::mazeGenerate()
 {
     MazeData maze;
     maze.data = new us_int*[width];
@@ -137,23 +140,59 @@ void Labyrinth::mazeGenerate()
         }
     }
 
+    std::stack<Point> path;
     Point startPoint {1, 1};
     Point currentPoint = startPoint;
+    path.push(currentPoint);
     maze.data[currentPoint.x][currentPoint.y] = VISITED;
-//    currentPoint = {1, 2};
-//    maze.data[currentPoint.x][currentPoint.y] = VISITED;
-
-//    do
-//    {
-        Point *unvisited = getUnvisitedNeighbor(maze, currentPoint);
-        for (us_int i = 0; i < 4; i++)
+    int randomRange = 0;
+    srand(static_cast<int>(time(NULL)));
+    do
+    {
+        std::vector<Point> unvisitedNeighbor = getUnvisitedNeighbor(maze, currentPoint);
+//        for (auto u : unvisitedNeighbor)
+//        {
+//            std::cout << u.x << " | " << u.y << std::endl;
+//        }
+        if (!unvisitedNeighbor.empty())
         {
-            std::cout << unvisited[i].x << " | " << unvisited[i].y << std::endl;
+            randomRange = rand() % unvisitedNeighbor.size();
+            Point nextCell = unvisitedNeighbor[randomRange];
+            maze.data = removeWall(currentPoint, nextCell, maze.data);
+            currentPoint = nextCell;
+            path.push(nextCell);
+            maze.data[currentPoint.x][currentPoint.y] = VISITED;
+            unvisitedNeighbor.clear();
         }
-//        return;
-
-//    }while(getUnvisited(maze) > 0);
+        else if (!path.empty())
+        {
+//            std::cout << "Go back (" << path.size() << ")" << std::endl;
+            currentPoint = path.top();
+            path.pop();
+        } else
+        {
+//            std::cout << "Find random unvisited" << std::endl;
+            std::vector<Point> unvisitedCells = getUnvisitedCells(width, height, maze);
+            if (!unvisitedCells.empty())
+            {
+                randomRange = rand() % unvisitedCells.size();
+                currentPoint = unvisitedCells[randomRange];
+                unvisitedCells.clear();
+            }
+        }
+//        std::cout << "" << std::endl;
+//        sleep(3);
+    }while(getUnvisitedCount(maze) > 0);
     showMaze(&maze);
+    std::vector<us_int> Maze;
+    for (us_int i = 0; i < width; i++)
+    {
+        for (us_int j = 0; j < height; j++)
+        {
+            Maze.push_back(maze.data[i][j]);
+        }
+    }
+    return Maze;
 }
 void Labyrinth::showMaze(MazeData *maze)
 {
@@ -166,23 +205,23 @@ void Labyrinth::showMaze(MazeData *maze)
         std::cout << std::endl;
     }
 }
-int Labyrinth::getUnvisited(MazeData maze)
+int Labyrinth::getUnvisitedCount(MazeData maze)
 {
     us_int count = 0;
     for (us_int i = 0; i < width; i++)
     {
         for (us_int j = 0; j < height; j++)
         {
-            if (maze.data[i][j] != VISITED)
+            if (maze.data[i][j] != VISITED && maze.data[i][j] != WALL)
             {
                 count++;
             }
 //            count += maze.data[i][j] != VISITED;
         }
     }
-    return 0;
+    return count;
 }
-Labyrinth::Point *Labyrinth::getUnvisitedNeighbor(Labyrinth::MazeData maze, Point p)
+std::vector<Labyrinth::Point> Labyrinth::getUnvisitedNeighbor(Labyrinth::MazeData maze, Point p)
 {
     Point up = {p.x, p.y - 2};
     Point rt = {p.x + 2, p.y};
@@ -190,21 +229,64 @@ Labyrinth::Point *Labyrinth::getUnvisitedNeighbor(Labyrinth::MazeData maze, Poin
     Point lt = {p.x - 2, p.y};
 
     Point d[4] = {dw, rt, up, lt};
-    Point *result = new Point[4];
-    us_int size = 0;
+//    Point *result = new Point[4];
+    std::vector<Point> result;
     for (us_int i = 0; i < 4; i++)
     {
-        if (d[i].x > 0 && d[i].x < width && d[i].y > 0 && d[i].y < height)
+        if (d[i].x > 0 && d[i].x < width - 1 && d[i].y > 0 && d[i].y < height - 1)
         {
             us_int currentCell = maze.data[d[i].x][d[i].y];
             Point currentPoint = d[i];
             if (currentCell != WALL && currentCell != VISITED && currentCell != WAY)
             {
-                result[size] = currentPoint;
-                size++;
+                result.push_back(currentPoint);
             }
         }
     }
-    std::cout << "Size: " << size << std::endl;
+
+//    std::cout << "Size: " << result.size() << std::endl;
     return result;
+}
+us_int **Labyrinth::removeWall(Labyrinth::Point currentPoint, Labyrinth::Point nextCell, us_int **pInt)
+{
+    int xDiff = nextCell.x - currentPoint.x;
+    int yDiff = nextCell.y - currentPoint.y;
+    int addX;
+    int addY;
+    Point target;
+
+    addX = (xDiff != 0) ? (xDiff / abs(xDiff)) : 0;
+    addY = (yDiff != 0) ? (yDiff / abs(yDiff)) : 0;
+
+    target.x = currentPoint.x + addX;
+    target.y = currentPoint.y + addY;
+    pInt[target.x][target.y] = VISITED;
+
+    return pInt;
+}
+std::vector<Labyrinth::Point> Labyrinth::getUnvisitedCells(us_int width, us_int height, Labyrinth::MazeData maze)
+{
+    std::vector<Point> result;
+    for (us_int i = 0; i < width; i++)
+    {
+        for (us_int j = 0; j < height; j++)
+        {
+            if ((maze.data[i][j] != WALL) && (maze.data[i][j] != VISITED))
+            {
+                result.push_back({i, j});
+            }
+        }
+    }
+//    std::cout << "Size: " << result.size() << std::endl;
+    return result;
+}
+void Labyrinth::showMazeCoords(std::vector<us_int> coords)
+{
+    for (us_int i = 0; i < height * width; i++)
+    {
+        if (coords[i] == VISITED)
+        {
+            TileMap.erase(std::remove(TileMap.begin(), TileMap.end(), TileMap[i]), TileMap.end());
+        }
+    }
 }
