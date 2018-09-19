@@ -10,8 +10,8 @@
 #include "Labyrinth.hpp"
 Labyrinth::Labyrinth(const std::string &Name) : Level(Name)
 {
-    height = 11;
-    width = 11;
+    height = 19;
+    width = 23;
     ImageDirectory = "";
     CurrentPathFile = "";
     ImagesFormats.push_back(".png");
@@ -28,8 +28,6 @@ bool Labyrinth::prepareLevel(sf::RenderWindow &window)
     }
     Level::prepareLevel(window);
     drawTileMap();
-    auto mazeCoords = mazeGenerate();
-    showMazeCoords(mazeCoords);
     return true;
 }
 void Labyrinth::drawTileMap()
@@ -38,7 +36,7 @@ void Labyrinth::drawTileMap()
     std::vector<std::string> Formats;
     Formats.emplace_back(".png");
     findAllFiles(Tiles, Formats);
-    for (us_int i = 1; i <= height * width; i++)
+    for (us_int i = 0; i < height * width; i++)
     {
         TileMap.push_back(new CPrimitiveQuad());
     }
@@ -55,7 +53,7 @@ void Labyrinth::drawTileMap()
     }
 
     //draw horizontal lines
-    for (us_int i = 1; i < y; i++)
+    for (us_int i = 0; i < height; i++)
     {
         sf::Vertex line[] =
                 {
@@ -67,7 +65,7 @@ void Labyrinth::drawTileMap()
         LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
     //draw vertical lines
-    for (us_int i = 1; i < width; i++)
+    for (us_int i = 0; i < width; i++)
     {
         sf::Vertex line[] =
                 {
@@ -78,9 +76,39 @@ void Labyrinth::drawTileMap()
                 };
         LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
+    auto walls = mazeGenerate();
+
+    for (us_int i = 0; i < TileMap.size(); i++)
+    {
+        if (walls[i] == VISITED)
+        {
+            TileMap[i]->setIndex(VISITED);
+        } else
+        {
+            TileMap[i]->setIndex(WALL);
+        }
+//        if (i % height == 0)
+        {
+//            std::cout << "" << std::endl;
+        }
+//        std::cout << TileMap[i]->getIndex() << " ";
+    }
+//    std::cout << "Width: " << width << std::endl;
+//    std::cout << "Height: " << height << std::endl;
+    for (us_int i = 0; i < TileMap.size(); i++)
+    {
+        if (TileMap[i]->getIndex() == VISITED)
+        {
+//            TileMap[i]->setPosition(-1000.f, -1000.f);
+        }
+    }
 }
 void Labyrinth::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
+    if (event.type == sf::Event::MouseWheelScrolled)
+    {
+        ZoomViewAt(window, {event.mouseWheelScroll.x, event.mouseWheelScroll.y}, event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
+    }
 }
 void Labyrinth::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
@@ -91,6 +119,26 @@ void Labyrinth::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
             case sf::Keyboard::Escape:
             {
                 window.close();
+                break;
+            }
+            case sf::Keyboard::Right:
+            {
+                MainCamera->move(CameraSpeed, 0.0f);
+                break;
+            }
+            case sf::Keyboard::Left:
+            {
+                MainCamera->move(-CameraSpeed, 0.0f);
+                break;
+            }
+            case sf::Keyboard::Up:
+            {
+                MainCamera->move(0.0f, -CameraSpeed);
+                break;
+            }
+            case sf::Keyboard::Down:
+            {
+                MainCamera->move(0.0f, CameraSpeed);
                 break;
             }
         }
@@ -105,6 +153,7 @@ void Labyrinth::draw(sf::RenderWindow &window)
     {
         window.draw(*t);
     }
+
     for (auto g : LineGrid)
     {
         sf::Vertex line[] =
@@ -191,16 +240,24 @@ std::vector<us_int> Labyrinth::mazeGenerate()
         {
             Maze.push_back(maze.data[i][j]);
         }
+
     }
+    for (us_int i = 0; i < width; i++)
+    {
+        delete [] maze.data[i];
+    }
+    delete [] maze.data;
     return Maze;
 }
 void Labyrinth::showMaze(MazeData *maze)
 {
+    std::cout << "Width: " << width << std::endl;
+    std::cout << "Height: " << height << std::endl;
     for (us_int i = 0; i < width; i++)
     {
         for (us_int j = 0; j < height; j++)
         {
-            std::cout << maze->data[i][j];
+            std::cout << maze->data[i][j] << " ";
         }
         std::cout << std::endl;
     }
@@ -264,6 +321,7 @@ us_int **Labyrinth::removeWall(Labyrinth::Point currentPoint, Labyrinth::Point n
 
     return pInt;
 }
+
 std::vector<Labyrinth::Point> Labyrinth::getUnvisitedCells(us_int width, us_int height, Labyrinth::MazeData maze)
 {
     std::vector<Point> result;
@@ -280,13 +338,13 @@ std::vector<Labyrinth::Point> Labyrinth::getUnvisitedCells(us_int width, us_int 
 //    std::cout << "Size: " << result.size() << std::endl;
     return result;
 }
-void Labyrinth::showMazeCoords(std::vector<us_int> coords)
+
+void Labyrinth::ZoomViewAt(sf::RenderWindow &window, sf::Vector2i pixel, float zoom)
 {
-    for (us_int i = 0; i < height * width; i++)
-    {
-        if (coords[i] == VISITED)
-        {
-            TileMap.erase(std::remove(TileMap.begin(), TileMap.end(), TileMap[i]), TileMap.end());
-        }
-    }
+    const sf::Vector2f beforeCoord{window.mapPixelToCoords(pixel)};
+    MainCamera->zoom(zoom);
+    const sf::Vector2f afterCoord{window.mapPixelToCoords(pixel)};
+    const sf::Vector2f offsetCoord{beforeCoord - afterCoord};
+    MainCamera->move(offsetCoord);
 }
+

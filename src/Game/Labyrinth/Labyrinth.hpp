@@ -14,15 +14,15 @@ class Labyrinth : public Level
 {
 private:
 
-    struct MazeData
-    {
-        us_int **data;
-    };
-
     struct Point
     {
         us_int x;
         us_int y;
+    };
+
+    struct MazeData
+    {
+        us_int **data;
     };
 
     enum MazeCellType {CELL, WALL, VISITED, WAY};
@@ -50,6 +50,7 @@ public:
 
     virtual bool prepareLevel(sf::RenderWindow &window) override;
     virtual void MouseCallbacks(sf::RenderWindow &window, sf::Event &event) override;
+    void ZoomViewAt(sf::RenderWindow &window, sf::Vector2i pixel, float zoom);
     virtual void draw(sf::RenderWindow &window) override;
     virtual void KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) override;
     virtual void HandleGUIEvent(sf::Event &event) override;
