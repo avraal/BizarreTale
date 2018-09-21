@@ -188,4 +188,39 @@ us_int Level::getNextId()
 {
     return Level::currentId++;
 }
+bool Level::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
+{
+    bool result = false;
+    DIR *dir;
+    dirent *directory;
+    if (FileFormats.empty())
+    {
+        FileFormats.emplace_back(".*");
+    }
+    std::cout << ImageDirectory << std::endl;
+    if ((dir = opendir(ImageDirectory.c_str())) != nullptr)
+    {
+        while ((directory = readdir(dir)) != nullptr)
+        {
+            char *last = strrchr(directory->d_name, '.');
+            if (last != nullptr)
+            {
+                for (const auto &f : FileFormats)
+                {
+                    if (strcmp(last, f.c_str()) == 0)
+                    {
+                        Container.push_back(ImageDirectory + directory->d_name);
+                        result = true;
+                    }
+                }
+            }
+        }
+        closedir(dir);
+    } else
+    {
+        std::cerr << "Can't open a dir" << std::endl;
+        result = false;
+    }
+    return result;
+}
 

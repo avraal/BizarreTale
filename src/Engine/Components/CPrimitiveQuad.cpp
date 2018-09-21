@@ -9,7 +9,7 @@
 #include <iostream>
 #include "CPrimitiveQuad.hpp"
 #include "../Entity/IEntity.hpp"
-#include "../CONST_DEFINITIONS.h"
+#include "../CONST_DEFINITIONS.hpp"
 
 CPrimitiveQuad::CPrimitiveQuad(sf::Color c)
 {

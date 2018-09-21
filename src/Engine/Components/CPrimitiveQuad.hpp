@@ -5,8 +5,8 @@
 // Created by Andrew Volski on 10.05.18.
 //
 
-#ifndef BIZARRETALE_TESTQUAD_HPP
-#define BIZARRETALE_TESTQUAD_HPP
+#ifndef DEMIURGE_CPRIMITIVEQUAD_HPP
+#define DEMIURGE_CPRIMITIVEQUAD_HPP
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -65,4 +65,4 @@ protected:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };
 
-#endif //BIZARRETALE_TESTQUAD_HPP
+#endif //DEMIURGE_CPRIMITIVEQUAD_HPP

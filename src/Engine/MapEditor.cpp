@@ -7,7 +7,7 @@
 //
 
 #include <thread>
-#include "MapEditor.h"
+#include "MapEditor.hpp"
 #include "Components/CPrimitiveQuad.hpp"
 #include "Entity/EObject.hpp"
 #include "Util/IDGenerator.hpp"
@@ -23,7 +23,6 @@ MapEditor::MapEditor(const std::string &Name) : Level(Name)
     showInfo = true;
     canScroll = true;
     CurrentMode = EditorMode::SELECT;
-    SelectedEntity = nullptr;
     backGroundColor = sf::Color(42, 76, 61);
 }
 
@@ -79,40 +78,40 @@ void MapEditor::draw(sf::RenderWindow &window)
     infoDrawableReferenceCount->setText("DrawableReferenceCount: " + std::to_string(objDetails->drawableReferenceCount));
 }
 
-bool MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
-{
-    bool result = false;
-    DIR *dir;
-    dirent *directory;
-    if (FileFormats.empty())
-    {
-        FileFormats.emplace_back(".*");
-    }
-    if ((dir = opendir(ImageDirectory.c_str())) != nullptr)
-    {
-        while ((directory = readdir(dir)) != nullptr)
-        {
-            char *last = strrchr(directory->d_name, '.');
-            if (last != nullptr)
-            {
-                for (const auto &f : FileFormats)
-                {
-                    if (strcmp(last, f.c_str()) == 0)
-                    {
-                        Container.push_back(ImageDirectory + directory->d_name);
-                        result = true;
-                    }
-                }
-            }
-        }
-        closedir(dir);
-    } else
-    {
-        std::cerr << "Can't open a dir" << std::endl;
-        result = false;
-    }
-    return result;
-}
+//bool MapEditor::findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats)
+//{
+//    bool result = false;
+//    DIR *dir;
+//    dirent *directory;
+//    if (FileFormats.empty())
+//    {
+//        FileFormats.emplace_back(".*");
+//    }
+//    if ((dir = opendir(ImageDirectory.c_str())) != nullptr)
+//    {
+//        while ((directory = readdir(dir)) != nullptr)
+//        {
+//            char *last = strrchr(directory->d_name, '.');
+//            if (last != nullptr)
+//            {
+//                for (const auto &f : FileFormats)
+//                {
+//                    if (strcmp(last, f.c_str()) == 0)
+//                    {
+//                        Container.push_back(ImageDirectory + directory->d_name);
+//                        result = true;
+//                    }
+//                }
+//            }
+//        }
+//        closedir(dir);
+//    } else
+//    {
+//        std::cerr << "Can't open a dir" << std::endl;
+//        result = false;
+//    }
+//    return result;
+//}
 void MapEditor::SelectImage(const std::string &imagePath)
 {
     CurrentPathFile = imagePath;
@@ -179,12 +178,13 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
-        canCreateOrEdit = !scrollPanel     ->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
-                          !scrollProperties->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
-                          !ObjectListBox   ->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y));
 
         if (event.mouseButton.button == sf::Mouse::Left)
         {
+            canCreateOrEdit = !scrollPanel     ->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
+                              !scrollProperties->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y)) &&
+                              !ObjectListBox   ->mouseOnWidget (tgui::Vector2f(event.mouseButton.x, event.mouseButton.y));
+
             if (canCreateOrEdit)
             {
                 sf::Vector2f MouseGlobalPosition{window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y})};
@@ -196,7 +196,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                     {
                         for (auto t : TileMap)
                         {
-                            //TODO::Create method to check this condition
+                            //TODO::Create method for this condition
                             clickCondition =
                                     MouseGlobalPosition.x > t->getPosition().x &&
                                     MouseGlobalPosition.y > t->getPosition().y &&
@@ -212,8 +212,8 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                                 addObject(eobj);
                                 const std::string objName = ObjList.back()->getName();
                                 ObjectListBox->addItem(objName);
-                                ObjectListBox->setSelectedItem(objName);
-                                ///this handler exec in addInfoToPropertiesPanel
+                                AddToSelectedEntities(eobj);
+                                ///this handler exec in addInfoToPropertiesPanel()
                             }
                         }
                         break;
@@ -223,7 +223,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                         for (auto o : ObjList)
                         {
                             auto body = o->getComponent<CPrimitiveQuad>("body");
-                            //TODO::Create method to check this condition
+                            //TODO::Create method for this condition
                             clickCondition =
                                     MouseGlobalPosition.x > body->getPosition().x &&
                                     MouseGlobalPosition.y > body->getPosition().y &&
@@ -233,13 +233,12 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                             if (clickCondition)
                             {
                                 SelectedEntities.clear();
+                                AddToSelectedEntities(o);
                                 std::cout << "Edit x: " << body->getPosition().x << " y: "
                                           << body->getPosition().y
                                           << " object " << o->getName() << " (index: " << body->getIndex() << ")"
                                           << std::endl;
                                 std::cout << "-----------" << std::endl;
-                                ObjectListBox->setSelectedItem(o->getName());
-                                ///this handler exec in addInfoToPropertiesPanel
                             }
                         }
                         break;
@@ -249,6 +248,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                         for (auto o : ObjList)
                         {
                             auto body = o->getComponent<CPrimitiveQuad>("body");
+                            //TODO::Create method for this condition
                             clickCondition =
                                     MouseGlobalPosition.x > body->getPosition().x &&
                                     MouseGlobalPosition.y > body->getPosition().y &&
@@ -256,12 +256,7 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                                     MouseGlobalPosition.y < body->getPosition().y + body->getTextureSize().y;
                             if (clickCondition)
                             {
-                                SelectedEntities.insert(std::pair<us_int, std::shared_ptr<IEntity>>(o->GetId(), o));
-                                ObjectListBox->setSelectedItem(o->getName());
-                                for (auto s : SelectedEntities)
-                                {
-                                    std::cout << s.second->getName() << std::endl;
-                                }
+                                AddToSelectedEntities(o);
                             }
                         }
                         break;
@@ -286,6 +281,14 @@ void MapEditor::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
                        event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
         }
     }
+}
+
+void MapEditor::AddToSelectedEntities(std::shared_ptr<IEntity> ie)
+{
+    SelectedEntities.insert(std::pair<us_int, std::shared_ptr<IEntity>>(ie->GetId(), ie));
+    std::cout << SelectedEntities.size() << std::endl;
+    ObjectListBox->setSelectedItem(ie->getName());
+    ///this handler exec in addInfoToPropertiesPanel()
 }
 
 void MapEditor::ZoomViewAt(sf::RenderWindow &window, sf::Vector2i pixel, float zoom)
@@ -316,7 +319,7 @@ void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
         {
             case sf::Keyboard::Delete:
             {
-                if (ObjList.size() > 0 && SelectedEntity)
+                if (!ObjList.empty())
                 {
                     for (auto it = SelectedEntities.begin(); it != SelectedEntities.end();)
                     {
@@ -330,11 +333,7 @@ void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
                             ++it;
                         }
                     }
-                    ObjectListBox->removeItem(SelectedEntity->getName());
-                    if (DestroyEntity(SelectedEntity->GetId()))
-                    {
-                        ClearObjectProperties();
-                    }
+                    ClearObjectProperties();
                 }
                 break;
             }
@@ -347,14 +346,6 @@ void MapEditor::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
             case sf::Keyboard::A:
             {
                 CurrentMode = EditorMode::ADD;
-                if (SelectedEntity != nullptr)
-                {
-                    if (auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body"); body)
-                    {
-                        body->hideBounds();
-                    }
-                }
-                SelectedEntity = nullptr;
                 for (auto o : ObjList)
                 {
                     if (auto body = o->getComponent<CPrimitiveQuad>("body"); body)
@@ -428,45 +419,32 @@ void MapEditor::addInfoToPropertiesPanel()
     {
         return;
     }
-    SelectedEntity = getObjectByName(ObjectListBox->getSelectedItem().toAnsiString());
-    if (SelectedEntity == nullptr)
-    {
-        std::cerr << "addInfoToPropertiesPanel returned null reference" << std::endl;
-        return;
-    }
+    //TODO:Replace getObjectByName to getObjectById
+
     ClearObjectProperties();
-    objPropChangeNameBox->setText(SelectedEntity->getName());
-    objPositionX->setText(std::to_string(SelectedEntity->getPosition().x));
-    objPositionY->setText(std::to_string(SelectedEntity->getPosition().y));
-    for (auto o : ObjList)
+    /*    =====>   */auto LastSelectedEntity = SelectedEntities.rend()->second; //why are you crash?
+    objPropChangeNameBox->setText(LastSelectedEntity->getName());
+    objPositionX->setText(std::to_string(LastSelectedEntity->getPosition().x));
+    objPositionY->setText(std::to_string(LastSelectedEntity->getPosition().y));
+
+
+    for (auto s : SelectedEntities)
     {
-        if (o != SelectedEntity)
+        if (auto body = s.second->getComponent<CPrimitiveQuad>("body"); body)
         {
-            if (auto body = o->getComponent<CPrimitiveQuad>("body"); body)
-            {
-                body->hideBounds();
-            }
+            body->drawBounds();
+            body->ShowBounds = true;
         }
     }
-    if (!SelectedEntities.empty())
     {
-        for (auto s : SelectedEntities)
-        {
-            if (auto body = s.second->getComponent<CPrimitiveQuad>("body"); body)
-            {
-                body->drawBounds();
-                body->ShowBounds = true;
-            }
-        }
-    } else
-    {
-        if (auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body"); !body)
+        auto body = LastSelectedEntity->getComponent<CPrimitiveQuad>("body");
+
+        if (!body)
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
             objIndexEdit->label->setText("0");
             return;
         }
-        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
 
         body->drawBounds();
         body->ShowBounds = true;
@@ -483,7 +461,7 @@ void MapEditor::addInfoToPropertiesPanel()
                              objIndexEdit->getPosition().y + objIndexEdit->getSize().y + 4);
         addComp->setPosition(compPic->getPosition().x, compPic->getPosition().y + compPic->getSize().y + 4);
         addComp->setSize(objectProperties->getSize().x - 4, addComp->getSize().y);
-        addComp->connect(addComp->onClick.getName(), &MapEditor::AddComponentToObject, this, SelectedEntity,
+        addComp->connect(addComp->onClick.getName(), &MapEditor::AddComponentToObject, this, LastSelectedEntity,
                          scrollProperties->getPosition().x, addComp->getPosition().y);
         /*addComp->connect(addComp->onClick.getName(), [this]()
         {
@@ -509,7 +487,7 @@ void MapEditor::addInfoToPropertiesPanel()
         objectProperties->add(addComp, "addComp");
 
         us_int posY = 0;
-        for (const auto &item : SelectedEntity->getDrawable())
+        for (const auto &item : LastSelectedEntity->getDrawable())
         {
             if (item != body)
             {
@@ -530,13 +508,27 @@ void MapEditor::AddComponentToObject(std::shared_ptr<IEntity> e, int pos_x, int 
     selectComponentWindow->setRenderer(theme.getRenderer("ChildWindow"));
     selectComponentWindow->setSize(250, 120);
     selectComponentWindow->setPosition(pos_x, pos_y);
+    selectComponentWindow->setPositionLocked(true);
     selectComponentWindow->setTitle("Select component type");
 
     tgui::ListBox::Ptr componentList = tgui::ListBox::create();
+    componentList->addItem("Cancel");
     componentList->addItem("Primitive Quad");
     componentList->addItem("Tile");
 
     componentList->setSize(selectComponentWindow->getSize());
+
+    componentList->connect(componentList->onItemSelect.getName(), [this, componentList]()
+    {
+        switch (componentList->getSelectedItemIndex())
+        {
+            case 0:
+            {
+                selectComponentWindow->destroy();
+                break;
+            }
+        }
+    });
 
     selectComponentWindow->add(componentList);
     UserInterface->gui->add(selectComponentWindow);
@@ -556,56 +548,50 @@ void MapEditor::ClearObjectProperties()
 
 void MapEditor::UpdateObjectFromProperties()
 {
-    if (SelectedEntity == nullptr)
+    if (SelectedEntities.empty())
     {
         return;
     }
-    if (!SelectedEntities.empty())
+    auto LastSelectedEntity = SelectedEntities.rend()->second;
     {
         for (auto s : SelectedEntities)
         {
             s.second->setPosition(std::atof(objPositionX->getText().toAnsiString().c_str()),
                                   std::atof(objPositionY->getText().toAnsiString().c_str()));
-            if (auto body = s.second->getComponent<CPrimitiveQuad>("body"); body)
-            {
-                body->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
-            }
         }
-    } else
+    }
     {
-        if (auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body"); !body)
+        auto body = LastSelectedEntity->getComponent<CPrimitiveQuad>("body");
+        if (!body)
         {
             std::cerr << "getBody: body returned nullptr" << std::endl;
             return;
         }
-        auto body = SelectedEntity->getComponent<CPrimitiveQuad>("body");
-        SelectedEntity->setPosition(static_cast<float>(std::atof(objPositionX->getText().toAnsiString().c_str())),
-                                    static_cast<float>(std::atof(objPositionY->getText().toAnsiString().c_str())));
         body->setIndex(std::stoi(objIndexEdit->getText().toAnsiString()));
-        std::string beforeName = SelectedEntity->getName();
-        SelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
-        ObjectListBox->changeItem(beforeName, SelectedEntity->getName());
+        std::string beforeName = LastSelectedEntity->getName();
+        LastSelectedEntity->setName(objPropChangeNameBox->getText().toAnsiString());
+        ObjectListBox->changeItem(beforeName, LastSelectedEntity->getName());
     }
 
     us_int count = 0;
     for (auto o : ObjList)
     {
-        if (o == SelectedEntity)
+        for (auto s : SelectedEntities)
         {
-            continue;
-        }
-        if (o->getName() == SelectedEntity->getName())
-        {
-            o->setName(SelectedEntity->getName() + '(' + std::to_string(++count) + ')');
-        }
-        if (o->getPosition() == SelectedEntity->getPosition())
-        {
-            if (auto body = o->getComponent<CPrimitiveQuad>("body"); body)
+            if (o->getName() == s.second->getName())
             {
-                if (body->getIndex() == SelectedEntity->getComponent<CPrimitiveQuad>("body")->getIndex())
+                s.second->setName(o->getName() + '(' + std::to_string(++count) + ')');
+            }
+            if (o->getPosition() == s.second->getPosition())
+            {
+                auto b1 = o->getComponent<CPrimitiveQuad>("body");
+                auto b2 = s.second->getComponent<CPrimitiveQuad>("body");
+                if (!b1 && !b2)
                 {
-                    SelectedEntity->getComponent<CPrimitiveQuad>("body")->setIndex(
-                            SelectedEntity->getComponent<CPrimitiveQuad>("body")->getIndex() + 1);
+                    if (b1->getIndex() == b2->getId())
+                    {
+                        b2->setIndex(b1->getIndex() + 1);
+                    }
                 }
             }
         }
@@ -784,13 +770,5 @@ void MapEditor::loadGui(sf::RenderWindow &window)
     {
         canScroll = false;
     });
-}
-void MapEditor::releaseSelectEntity()
-{
-    if (SelectedEntity)
-    {
-        SelectedEntity->removeComponents();
-        SelectedEntity = nullptr;
-    }
 }
 

@@ -6,8 +6,8 @@
 // Created by Andrew Volski on 10.07.18.
 //
 
-#ifndef BIZARRETALE_IENTITY_HPP
-#define BIZARRETALE_IENTITY_HPP
+#ifndef DEMIURGE_IENTITY_HPP
+#define DEMIURGE_IENTITY_HPP
 
 #include <vector>
 #include <memory>
@@ -84,4 +84,4 @@ public:
     virtual ~IEntity() = 0;
 };
 
-#endif //BIZARRETALE_IENTITY_HPP
+#endif //DEMIURGE_IENTITY_HPP

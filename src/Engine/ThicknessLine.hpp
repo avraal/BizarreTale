@@ -5,8 +5,8 @@
 // Created by Andrew Volski on 26.06.18.
 //
 
-#ifndef BIZARRETALE_THICKNESSLINE_HPP
-#define BIZARRETALE_THICKNESSLINE_HPP
+#ifndef DEMIURGE_THICKNESSLINE_HPP
+#define DEMIURGE_THICKNESSLINE_HPP
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -15,7 +15,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <iostream>
 #include <cmath>
-#include "CONST_DEFINITIONS.h"
+#include "CONST_DEFINITIONS.hpp"
 
 class ThicknessLine : public sf::Drawable
 {
@@ -70,4 +70,4 @@ private:
     float thickness;
 };
 
-#endif //BIZARRETALE_THICKNESSLINE_HPP
+#endif //DEMIURGE_THICKNESSLINE_HPP

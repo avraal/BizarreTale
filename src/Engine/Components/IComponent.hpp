@@ -6,12 +6,12 @@
 // Created by Andrew Volski on 10.07.18.
 //
 
-#ifndef BIZARRETALE_ICOMPONENT_HPP
-#define BIZARRETALE_ICOMPONENT_HPP
+#ifndef DEMIURGE_ICOMPONENT_HPP
+#define DEMIURGE_ICOMPONENT_HPP
 
 #include <string>
 #include <memory>
-#include "../CONST_DEFINITIONS.h"
+#include "../CONST_DEFINITIONS.hpp"
 
 class IEntity;
 class IComponent : public std::enable_shared_from_this<IComponent>
@@ -37,4 +37,4 @@ public:
     }
 };
 
-#endif //BIZARRETALE_ICOMPONENT_HPP
+#endif //DEMIURGE_ICOMPONENT_HPP

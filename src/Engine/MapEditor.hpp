@@ -5,10 +5,9 @@
 // Created by andrew on 03.04.18.
 //
 
-#ifndef BIZARRETALE_MAPEDITOR_H
-#define BIZARRETALE_MAPEDITOR_H
+#ifndef DEMIURGE_MAPEDITOR_HPP
+#define DEMIURGE_MAPEDITOR_HPP
 
-#include <string>
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
@@ -17,8 +16,8 @@
 #include <mutex>
 #include <set>
 #include <nfd.h>
-#include "Components/CTile.h"
-#include "CONST_DEFINITIONS.h"
+#include "Components/CTile.hpp"
+#include "CONST_DEFINITIONS.hpp"
 #include "Components/CPrimitiveQuad.hpp"
 #include "Level.hpp"
 #include "Systems/LevelManager.hpp"
@@ -62,7 +61,6 @@ private:
 
     bool showInfo;
     bool canScroll;
-    //TODO::Add functional for this variable
     bool canCreateOrEdit;
     float CameraSpeed;
 
@@ -72,21 +70,21 @@ private:
     EditorMode CurrentMode;
 
     std::mutex b_mutex;
-    std::shared_ptr<IEntity> SelectedEntity;
+//    std::shared_ptr<IEntity> SelectedEntity;
     std::map<us_int, std::shared_ptr<IEntity>> SelectedEntities;
 
 private:
     void drawTileMap(float size_x, float size_y);
-    bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
+//    bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     void SelectImage(const std::string &imagePath);
     void virtual MouseCallbacks(sf::RenderWindow &window, sf::Event &event);
     void virtual KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event);
     void ZoomViewAt(sf::RenderWindow &window, sf::Vector2i pixel, float zoom);
-    void releaseSelectEntity();
     void ClearObjectProperties();
     void addInfoToPropertiesPanel();
     void AddComponentToObject(std::shared_ptr<IEntity> e, int pos_x, int pos_y);
     void UpdateObjectFromProperties();
+    void AddToSelectedEntities(std::shared_ptr<IEntity> ie);
 
 protected:
     void virtual loadGui(sf::RenderWindow &window);
@@ -98,4 +96,4 @@ public:
 
     virtual bool prepareLevel(sf::RenderWindow &window) override;
 };
-#endif //BIZARRETALE_MAPEDITOR_H
+#endif //DEMIURGE_MAPEDITOR_HPP

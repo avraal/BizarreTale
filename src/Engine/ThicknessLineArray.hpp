@@ -5,8 +5,8 @@
 // Created by Andrew Volski on 26.06.18.
 //
 
-#ifndef BIZARRETALE_THICKNESSLINESTRIP_HPP
-#define BIZARRETALE_THICKNESSLINESTRIP_HPP
+#ifndef DEMIURGE_THICKNESSLINEARRAY_HPP
+#define DEMIURGE_THICKNESSLINEARRAY_HPP
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
@@ -35,4 +35,4 @@ public:
     virtual ~ThicknessLineArray() {}
 };
 
-#endif //BIZARRETALE_THICKNESSLINESTRIP_HPP
+#endif //DEMIURGE_THICKNESSLINEARRAY_HPP

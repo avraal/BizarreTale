@@ -5,8 +5,8 @@
 // Created by Andrew Volski on 14.09.18.
 //
 
-#ifndef BIZARRETALE_LABYRINTH_HPP
-#define BIZARRETALE_LABYRINTH_HPP
+#ifndef DEMIURGE_LABYRINTH_HPP
+#define DEMIURGE_LABYRINTH_HPP
 
 #include "../../Engine/Level.hpp"
 
@@ -61,4 +61,4 @@ public:
     void showMazeCoords(std::vector<us_int> coords);
 };
 
-#endif //BIZARRETALE_LABYRINTH_HPP
+#endif //DEMIURGE_LABYRINTH_HPP

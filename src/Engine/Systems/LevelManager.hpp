@@ -6,8 +6,8 @@
 // Created by Andrew Volski on 10.07.18.
 //
 
-#ifndef BIZARRETALE_LEVELMANAGER_HPP
-#define BIZARRETALE_LEVELMANAGER_HPP
+#ifndef DEMIURGE_LEVELMANAGER_HPP
+#define DEMIURGE_LEVELMANAGER_HPP
 
 #include <vector>
 #include <memory>
@@ -26,4 +26,4 @@ public:
     std::shared_ptr<Level> loadLevel(const std::string &name);
 };
 
-#endif //BIZARRETALE_LEVELMANAGER_HPP
+#endif //DEMIURGE_LEVELMANAGER_HPP

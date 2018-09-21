@@ -6,8 +6,8 @@
 // Created by Andrew Volski on 20.08.18.
 //
 
-#ifndef BIZARRETALE_GAME_HPP
-#define BIZARRETALE_GAME_HPP
+#ifndef DEMIURGE_GAME_HPP
+#define DEMIURGE_GAME_HPP
 
 #include <string>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -32,4 +32,4 @@ public:
 
 };
 
-#endif //BIZARRETALE_GAME_HPP
+#endif //DEMIURGE_GAME_HPP

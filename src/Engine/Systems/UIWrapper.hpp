@@ -6,8 +6,8 @@
 // Created by Andrew Volski on 25.07.18.
 //
 
-#ifndef BIZARRETALE_SUI_HPP
-#define BIZARRETALE_SUI_HPP
+#ifndef DEMIURGE_UIWRAPPER_HPP
+#define DEMIURGE_UIWRAPPER_HPP
 
 #include <TGUI/Gui.hpp>
 
@@ -20,4 +20,4 @@ public:
     virtual ~UIWrapper();
 };
 
-#endif //BIZARRETALE_SUI_HPP
+#endif //DEMIURGE_UIWRAPPER_HPP

@@ -10,23 +10,27 @@
 #include <cstring>
 #include <iostream>
 #include "Game.hpp"
-#include "../Engine/CONST_DEFINITIONS.h"
-#include "../Engine/MapEditor.h"
+#include "../Engine/CONST_DEFINITIONS.hpp"
+#include "../Engine/MapEditor.hpp"
+#include "Labyrinth/Labyrinth.hpp"
 Game::Game(const std::string &title)
 {
     this->Title = title;
     levelManager = std::make_unique<LevelManager>();
     auto editor = std::make_shared<MapEditor>("MapEditor");
+    auto labyrinth = std::make_shared<Labyrinth>("Labyrinth");
     levelManager->registerLevel(editor);
+    levelManager->registerLevel(labyrinth);
 }
 
 bool Game::start()
 {
     window.create(sf::VideoMode(WINDOW_SIZE_HD_WIDTH, WINDOW_SIZE_HD_HEIGHT), Title);
     MainCamera = window.getView();
-    MainCamera.setCenter(WINDOW_SIZE_HD_WIDTH * 0.35, WINDOW_SIZE_HD_HEIGHT * 0.45);
+    MainCamera.setCenter(WINDOW_SIZE_HD_WIDTH * 0.25, WINDOW_SIZE_HD_HEIGHT * 0.45);
 
-    CurrentLevel = levelManager->loadLevel("MapEditor");
+//    CurrentLevel = levelManager->loadLevel("MapEditor");
+    CurrentLevel = levelManager->loadLevel("Labyrinth");
     if (!CurrentLevel)
     {
         return false;

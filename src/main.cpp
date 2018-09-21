@@ -15,8 +15,8 @@
 #include <iostream>
 #include <TGUI/TGUI.hpp>
 #include "Game/Game.hpp"
-#include "Engine/Components/CTile.h"
-#include "Engine/MapEditor.h"
+#include "Engine/Components/CTile.hpp"
+#include "Engine/MapEditor.hpp"
 
 bool prepare();
 
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     Game game("Bizarre Tale");
     game.ImageDirectory.clear();
     game.ImageDirectory.append(argv[0]);
-    game.ImageDirectory = game.ImageDirectory.substr(0, game.ImageDirectory.size() - 11);
+    game.ImageDirectory = game.ImageDirectory.substr(0, game.ImageDirectory.size() - 8);
     game.ImageDirectory.append("Res/Images/");
     if (!game.start())
     {

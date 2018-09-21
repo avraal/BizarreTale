@@ -4,7 +4,7 @@
 //
 // Created by andrew on 02.04.18.
 //
-#include "CTile.h"
+#include "CTile.hpp"
 
 void CTile::LoadTexture(std::string ImagePath)
 {

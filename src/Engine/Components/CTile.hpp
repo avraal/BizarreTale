@@ -5,8 +5,8 @@
 // Created by andrew on 02.04.18.
 //
 
-#ifndef BIZARRETALE_MAPENTITY_H
-#define BIZARRETALE_MAPENTITY_H
+#ifndef DEMIURGE_CTILE_HPP
+#define DEMIURGE_CTILE_HPP
 
 #include <iostream>
 #include <SFML/Graphics/Drawable.hpp>
@@ -45,4 +45,4 @@ public:
     sf::Vector2f getSpriteScale() const;
 };
 
-#endif //BIZARRETALE_MAPENTITY_H
+#endif //DEMIURGE_CTILE_HPP

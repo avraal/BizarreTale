@@ -35,5 +35,6 @@ std::shared_ptr<Level> LevelManager::loadLevel(const std::string &name)
     {
         return nullptr;
     }
+    std::cout << "Load " << name << std::endl;
     return Levels.find(name)->second;
 }

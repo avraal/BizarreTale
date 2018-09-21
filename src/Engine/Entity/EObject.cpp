@@ -9,7 +9,7 @@
 #include "EObject.hpp"
 #include "../Components/CPrimitiveQuad.hpp"
 #include "../Level.hpp"
-#include "../Components/CTile.h"
+#include "../Components/CTile.hpp"
 #include "../Util/IDGenerator.hpp"
 
 EObject::~EObject()

@@ -6,8 +6,8 @@
 // Created by Andrew Volski on 07.08.18.
 //
 
-#ifndef BIZARRETALE_GEDITBOXANDLABEL_HPP
-#define BIZARRETALE_GEDITBOXANDLABEL_HPP
+#ifndef DEMIURGE_EDITBOXANDLABEL_HPP
+#define DEMIURGE_EDITBOXANDLABEL_HPP
 
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Label.hpp>
@@ -43,4 +43,4 @@ namespace tgui
         }
     };
 }
-#endif //BIZARRETALE_GEDITBOXANDLABEL_HPP
+#endif //DEMIURGE_EDITBOXANDLABEL_HPP

@@ -6,13 +6,15 @@
 // Created by Andrew Volski on 10.07.18.
 //
 
-#ifndef BIZARRETALE_LEVEL_HPP
-#define BIZARRETALE_LEVEL_HPP
+#ifndef DEMIURGE_LEVEL_HPP
+#define DEMIURGE_LEVEL_HPP
 
 #include <string>
+#include <string.h>
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <dirent.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Panel.hpp>
@@ -46,6 +48,7 @@ protected:
     sf::Color backGroundColor;
     void virtual loadGui(sf::RenderWindow &window);
     void initGui(sf::RenderWindow &window);
+    bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     std::unique_ptr<UIWrapper> UserInterface;
 
     static us_int currentId;
@@ -64,9 +67,9 @@ public:
     void addObject(std::shared_ptr<IEntity> ie);
     void sortedObjectsByIndex();
     void setCamera(sf::View &camera);
-    void virtual MouseCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
-    void virtual KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
-    void HandleGUIEvent(sf::Event &event);
+    virtual void MouseCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
+    virtual void KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
+    virtual void HandleGUIEvent(sf::Event &event);
     us_int getObjCount();
     std::shared_ptr<IEntity> getObject(us_int index);
     std::shared_ptr<IEntity> getObjectById(us_int id);
@@ -79,4 +82,4 @@ public:
 
 };
 
-#endif //BIZARRETALE_LEVEL_HPP
+#endif //DEMIURGE_LEVEL_HPP

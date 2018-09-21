@@ -6,11 +6,11 @@
 // Created by Andrew Volski on 13.08.18.
 //
 
-#ifndef BIZARRETALE_IDGENERATOR_HPP
-#define BIZARRETALE_IDGENERATOR_HPP
+#ifndef DEMIURGE_IDGENERATOR_HPP
+#define DEMIURGE_IDGENERATOR_HPP
 
 #include <iostream>
-#include "../CONST_DEFINITIONS.h"
+#include "../CONST_DEFINITIONS.hpp"
 
 class IDGenerator final
 {
@@ -27,4 +27,4 @@ public:
     static us_int getNextId();
 };
 
-#endif //BIZARRETALE_IDGENERATOR_HPP
+#endif //DEMIURGE_IDGENERATOR_HPP

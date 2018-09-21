@@ -6,8 +6,8 @@
 // Created by Andrew Volski on 12.07.18.
 //
 
-#ifndef BIZARRETALE_EOBJECT_HPP
-#define BIZARRETALE_EOBJECT_HPP
+#ifndef DEMIURGE_EOBJECT_HPP
+#define DEMIURGE_EOBJECT_HPP
 
 #include "IEntity.hpp"
 
@@ -27,4 +27,4 @@ public:
     virtual ~EObject();
 };
 
-#endif //BIZARRETALE_EOBJECT_HPP
+#endif //DEMIURGE_EOBJECT_HPP
