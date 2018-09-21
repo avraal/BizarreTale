@@ -269,11 +269,11 @@ int Labyrinth::getUnvisitedCount(MazeData maze)
     {
         for (us_int j = 0; j < height; j++)
         {
-            if (maze.data[i][j] != VISITED && maze.data[i][j] != WALL)
-            {
-                count++;
-            }
-//            count += maze.data[i][j] != VISITED;
+//            if (maze.data[i][j] != VISITED && maze.data[i][j] != WALL)
+//            {
+//                count++;
+//            }
+            count += maze.data[i][j] != VISITED && maze.data[i][j] != WALL;
         }
     }
     return count;
