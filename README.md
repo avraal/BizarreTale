@@ -1,157 +1,51 @@
-# BizarreTale (Deprecated)
-Simple constructor for gamedev
-Guide for using BizarreTale Editor v. 0.3
+# Demiurge Engine 0.4[pre](https://github.com/avraal/BizarreTale/blob/master/README.md#marks)1
 
-## How to create a Singleton object:
-```c++
-SingletonClass &obj = SingletonClass::Instance();
-```
-### Other information for Singleton:
-- Has private ctor and dtor
-- Copy and move ctors has specificator **delete**
+Simple engine for 2D games
+Guide for using.  
+Demiurge - it's Entity-Component-System (ECS) based engine.  
 
+## Entity and EntityManager
+Based unit of all game objects. Every entity has a list of unique identifiers components. You can't create entity without EntityManager, because constructor (ctor) and destructor (dtor) - has private access modifier.  
+EntityManager - it's class, which can create, delete, etc. entity.
 
-# IComponent
-### Pattern: Entity-Component-System, Command
-Base abstract class for all Components  
-Every Component has Name  
-Has only one field with setters and getters for him
- 
-
-# IEntity
-### Pattern: Entity-Component-System
-Base abstract class for all Entity in game.  
-Every Entity has a:
-* Array of Components;
-* World Position - position entity on level;
-* Unique ID - on level;
-* Unique Name - on level;
-* Body - empty CPrimitiveQuad.
-
-# ISystem
-### Pattern: Entity-Component-System
-Base behaviour for all System. 
-
-# LevelManager
-### Parent: ISystem
-Manage you levels, saved their by name in map.
-If you're going to use some level, you must register him.
 ```cpp
-levelManager->registerLevel(CurrentLevel);
-``` 
-
-# Level
-**Now, he haven't Parent**  
-This something, what have a game objects. Level can manipulate objects.  
-Every level have a unique name, collection with game objects and draw-method.  
-You can added new level like this:
-```cpp
-Level *CurrentLevel = new Level(0, "Test");
-CurrentLevel->initGui(window);
-...
-while(window.isOpen())
+IEntity *player = EntityManager::Create("Hero");
+if (!player)
 {
-    ...
-    CurrentLevel->draw(window);
-    ...
+    return 1;
 }
 ```
-**ToDo:** in future, maybe remove id system for level, because every level have unique name.
-If you want to create a new object:
+
+This code created a new entity - player with name "Hero". **Create** - is a static method of class EntityManager, which created new object of class IEntity, added to vector and returned him.  
+Every entity has a unique identifier. Id has generated on constructor call:
 ```cpp
-auto obj = new EObject(ImagePath);
-CurrentLevel->addObject(obj);
+IEntity *ie = new IEntity(getNextId(), name);
 ```
+**getNextId()** - private method for incremented static filed **currentId**
 
-After this, you can see you new object on display.
+List of EntityManager fields:
+- getEntity(int id) - find entity in vector by id, and returned him or nullptr;
+- Create(const std::string &name) - create new entity with name;
+- Destroy(int id) - destroyed entity by id;
+- ShowAll() - print id and name of all entities;
+- getCount() - return count of entity
 
-# EObject
-### Parent: IEntity
-Simple class for represent game objects.  
-You can create a body for him. Just add path to image in ctor.  
+## Component and ComponentManager
+Based thing for interaction entity with entity. Every component has a unique Id and Id of entity to which his attached. Like Entity objects, component may created only on ComponentManager:
 ```cpp
-EObject *obj = new EObject(""); //this object haven't image
-```
-or
-```cpp
-EObject *obj = new EObject("image.png");
-```
+if (!ComponentManager::Create(player->getId(), "Position"))
+{
+    return 1;
+}
+``` 
 
+Unlike Create method of EntityManager, ComponentManager returned bool variable. In this method ComponentManager find entity by id and attach id of component to him. If entity not found, returned false.  
+List of EntityManager fields:
+- getComponent(int id) - find component by id and returned him or nullptr;
+- Create(int entityId, const std::string &name) - create new component with name and attach to entity;
+- Destroy(int id) - destroyed component by id;
 
-# CTile
-## Pattern: Component  
-## Parent: CPrimitiveQuad
+<hr>
 
-Basic Component for render.
-
-# CPrimitiveQuad
-### Pattern: Component
-### Parents: sf::Drawable, sf::Transformable, IComponent
-
-Represents array of vertex `(sf::VertexArray)`.
-
-
-# MapEditor
-### Pattern: Singleton
-### Parent: none
-
-Simple editor for game maps
-
-Public fields:
-- [ImageDirectory]
-
-Public methods:
-- [initWindow]
-- [LoadFromFile] (unused)
-- [SaveToFile] (unused)
-
-#### ImageDirectory
-Identify of directory, where find images
-
-Init directories:
-```c++
-Editor.ImageDirectory.clear();
-Editor.ImageDirectory.append(argv[0]);
-Editor.ImageDirectory = Editor.ImageDirectory.substr(0, Editor.ImageDirectory.size() - 11);
-Editor.LuaDirectory = Editor.ImageDirectory;
-Editor.ImageDirectory.append("Res/Images/");
-Editor.LuaDirectory.append("Res/Lua/");
-```
-> argv[0] = "BizarreTale" (11 symbols)
-
-#### Start:
-After directories identified, editor might be started
-```c++
-Editor.initWindow();
-```
-#### [Unused]LoadFromFile:
-Has a two parameters:
-* `fileName` - where objects are load
-* `obj` - container in which objects are loaded
-
-This method start a new thread, which blocked other threads and call `LoadFromFile` from MapIO.
-
-#### [Unused]SaveToFile:
-Just like a `LoadFromFile` has a two parameters.
-
-This method start a new thread, which blocked other threads and call `SaveToFile` from MapIO.
-
-<br>
-
-# MapIO (unused)
-### Pattern: Singleton
-### Parent: none
-
-It's a class, who is writing and reading files.
-
-Use LoadFromFile and SaveToFile to using his scope.
-```c++
-obj.SaveToFile("filename.format", objectContainer);
-obj.LoadFromFile("filename.format", objectContainer);
-```
-<br>
-
-[ImageDirectory]: <https://github.com/avraal/BizarreTale/blob/master/README.md#imagedirectory>
-[initWindow]: <https://github.com/avraal/BizarreTale/blob/master/README.md#start>
-[LoadFromFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#loadfromfile>
-[SaveToFile]: <https://github.com/avraal/BizarreTale/blob/master/README.md#savetofile>
+# Marks  
+**pre** - it's a mark of prepare to deploy new system
