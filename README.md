@@ -1,5 +1,4 @@
-# Demiurge Engine 0.4[pre](https://github.com/avraal/BizarreTale/blob/master/README.md#marks)1
-
+# Demiurge Engine 0.4[pre](https://github.com/avraal/BizarreTale/blob/master/README.md#marks)1a  
 Simple engine for 2D games
 Guide for using.  
 Demiurge - it's Entity-Component-System (ECS) based engine.  
@@ -9,7 +8,7 @@ Based unit of all game objects. Every entity has a list of unique identifiers co
 EntityManager - it's class, which can create, delete, etc. entity.
 
 ```cpp
-IEntity *player = EntityManager::Create("Hero");
+auto player = static_cast<IEntity*>(EntityManager::Create("Hero"));
 if (!player)
 {
     return 1;
@@ -48,4 +47,4 @@ List of EntityManager fields:
 <hr>
 
 # Marks  
-**pre** - it's a mark of prepare to deploy new system
+**pre** - it's a mark of prepare to deploy new system  
