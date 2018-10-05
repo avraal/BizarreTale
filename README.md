@@ -16,7 +16,7 @@ if (!player)
 ```
 
 This code created a new entity - player with name "Hero". **Create** - is a static method of class EntityManager, which created new object of class IEntity, added to vector and returned him.  
-Every entity has a unique identifier. Id has generated on constructor call:
+Every entity has a unique identifier. id has generated on constructor call:
 ```cpp
 IEntity *ie = new IEntity(getNextId(), name);
 ```
@@ -30,7 +30,7 @@ List of EntityManager fields:
 - getCount() - return count of entity
 
 ## Component and ComponentManager
-Based thing for interaction entity with entity. Every component has a unique Id and Id of entity to which his attached. Like Entity objects, component may created only on ComponentManager:
+Based thing for interaction entity with entity. Every component has a unique id and id of entity to which his attached. Like Entity objects, component may created only on ComponentManager:
 ```cpp
 if (!ComponentManager::Create(player->getId(), "Position"))
 {
