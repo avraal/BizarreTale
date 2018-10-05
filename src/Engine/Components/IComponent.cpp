@@ -16,12 +16,12 @@ IComponent::IComponent()
 
 IComponent::IComponent(us_int id, const std::string &name)
 {
-    this->Name = name;
+    this->name = name;
     this->id = id;
 }
-std::string IComponent::getName() const noexcept
+const std::string & IComponent::getName() const noexcept
 {
-    return Name;
+    return name;
 }
 IComponent::~IComponent()
 {
@@ -38,4 +38,13 @@ void IComponent::Attach(std::shared_ptr<IEntity> entity)
 {
     this->entity = entity;
     entity->addComponent(shared_from_this());
+}
+std::ostream &operator<<(std::ostream &os, const IComponent &c)
+{
+    c.outputSerialize(os);
+    return os;
+}
+void IComponent::outputSerialize(std::ostream &os) const
+{
+    os << "Type: Component\nId: " << id << "\nName: " << name << std::endl;
 }
