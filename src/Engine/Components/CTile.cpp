@@ -19,13 +19,13 @@ CTile::CTile(us_int id, const std::string &Name, std::string ImagePath, sf::Vect
         : CPrimitiveQuad(id, Name)
 {
     this->ImagePath = ImagePath;
-    this->Name = Name;
+    this->name = Name;
     LoadTexture(ImagePath);
     this->index = index;
     setPosition(position.x, position.y);
 }
 
-CTile::CTile(const CTile &tile) : CTile(tile.id, tile.Name, tile.ImagePath, tile.getPosition(),
+CTile::CTile(const CTile &tile) : CTile(tile.id, tile.name, tile.ImagePath, tile.getPosition(),
                                         tile.index)
 {
     std::cout << "Copy ctor" << std::endl;
@@ -38,6 +38,8 @@ CTile::CTile(const CTile &&tile) : CTile(tile)
 
 void CTile::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+    states.transform *= getTransform();
+    states.texture = &texture;
     target.draw(sprite, states);
     target.draw(shape, states);
 }
@@ -70,7 +72,7 @@ CTile &CTile::operator=(CTile const &me)
     if (this != &me)
     {
         this->ImagePath = me.GetImagePath();
-        this->Name = me.Name;
+        this->name = me.name;
         setPosition(me.getPosition().x, me.getPosition().y);
         LoadTexture(ImagePath);
     }
@@ -79,6 +81,8 @@ CTile &CTile::operator=(CTile const &me)
 void CTile::setSize(sf::Vector2f s)
 {
     sprite.setScale(s.x / sprite.getLocalBounds().width, s.y / sprite.getLocalBounds().height);
+    CPrimitiveQuad::setSize(s);
+
     std::cout << sprite.getGlobalBounds().width << " " << sprite.getGlobalBounds().height << std::endl;
     ShowBounds ? drawBounds() : hideBounds();
 }
@@ -89,7 +93,7 @@ sf::Vector2f CTile::getSpriteScale() const
 }
 std::string CTile::GetName() const
 {
-    return Name;
+    return name;
 }
 void CTile::drawBounds()
 {
@@ -101,5 +105,18 @@ void CTile::drawBounds()
     shape.append({getPosition() + sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height),
                   sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
     shape.append({getPosition(), sf::Vector2f(getPosition().x, getPosition().y + sprite.getGlobalBounds().height)});
+}
+sf::Vector2u CTile::getTextureSize() const
+{
+    return texture.getSize();
+}
+void CTile::outputSerialize(std::ostream &os) const
+{
+    CPrimitiveQuad::outputSerialize(os);
+}
+std::ostream &operator<<(std::ostream &os, const CTile &ct)
+{
+    ct.outputSerialize(os);
+    return os;
 }
 

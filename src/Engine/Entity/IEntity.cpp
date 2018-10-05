@@ -13,14 +13,14 @@ us_int IEntity::currentId = 0;
 
 IEntity::IEntity()
 {
-    Id = IEntity::getNextId();
+    id = IEntity::getNextId();
     Position = {.0f, .0f};
-    Name = "def";
+    name = "def";
 }
 
-us_int IEntity::GetId() const noexcept
+us_int IEntity::getId() const noexcept
 {
-    return Id;
+    return id;
 }
 
 void IEntity::addComponent(std::shared_ptr<IComponent> component)
@@ -33,13 +33,13 @@ IEntity::~IEntity()
     Components.clear();
 }
 
-std::string IEntity::getName() const noexcept
+const std::string & IEntity::getName() const noexcept
 {
-    return Name;
+    return name;
 }
 void IEntity::setName(const std::string &name) noexcept
 {
-    this->Name = name;
+    this->name = name;
 }
 
 sf::Vector2f IEntity::getPosition() const
@@ -55,10 +55,8 @@ std::shared_ptr<IComponent> IEntity::getComponent(us_int id)
 {
     for (auto c : Components)
     {
-//        if (c.lock()->getId() == id)
         if (c->getId() == id)
         {
-//            return c.lock();
             return c;
         }
     }
@@ -69,10 +67,8 @@ std::shared_ptr<IComponent> IEntity::getComponent(const std::string &Name)
 {
     for (auto c : Components)
     {
-//        if (c.lock()->getName() == Name)
         if (c->getName() == Name)
         {
-//            return c.lock();
             return c;
         }
     }
@@ -83,7 +79,6 @@ std::vector<std::shared_ptr<CPrimitiveQuad>> IEntity::getDrawable()
     std::vector<std::shared_ptr<CPrimitiveQuad>> result;
     for (auto c : Components)
     {
-//        std::shared_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c.lock());
         std::shared_ptr<CPrimitiveQuad> p = std::dynamic_pointer_cast<CPrimitiveQuad>(c);
         if (p)
         {
@@ -94,20 +89,20 @@ std::vector<std::shared_ptr<CPrimitiveQuad>> IEntity::getDrawable()
 }
 IEntity::IEntity(const IEntity &rhs)
 {
-    this->Id = IEntity::getNextId();
+    this->id = IEntity::getNextId();
     this->Components.clear();
     std::copy(rhs.Components.begin(), rhs.Components.end(), std::back_inserter(Components));
-    this->Name = rhs.Name;
+    this->name = rhs.name;
     this->Position = rhs.Position;
 }
 IEntity &IEntity::operator=(const IEntity &rhs)
 {
     if(this != &rhs)
     {
-        this->Id = IEntity::getNextId();
+        this->id = IEntity::getNextId();
         this->Components.clear();
         std::copy(rhs.Components.begin(), rhs.Components.end(), std::back_inserter(Components));
-        this->Name = rhs.Name;
+        this->name = rhs.name;
         this->Position = rhs.Position;
     }
     return *this;
@@ -121,7 +116,6 @@ void IEntity::removeComponent(us_int compId)
             comp.lock()->release();
             return true;
         }
-
         return false;
     });
 
@@ -131,7 +125,6 @@ void IEntity::removeComponents()
 {
     for (const auto &component : Components)
     {
-//        component.lock()->release();
         component->release();
     }
     Components.clear();
