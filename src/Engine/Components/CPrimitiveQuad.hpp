@@ -32,7 +32,7 @@ public:
     CPrimitiveQuad(const CPrimitiveQuad &&);
     virtual ~CPrimitiveQuad();
 
-    sf::Vector2u getTextureSize()                                   const;
+    virtual sf::Vector2u getTextureSize()                           const;
     sf::Color getColor()                                            const;
 
     virtual std::string &getTexturePath();
@@ -45,15 +45,16 @@ public:
     virtual void setPosition(float x, float y);
     virtual void setPosition(const sf::Vector2f &Position);
     void setIndex(us_int index);
-
     const sf::Texture *getTexture()                                 const;
+
     us_int getIndex() const;
     bool ShowBounds;
-
     inline bool operator==(const CPrimitiveQuad &rhs)               const
     {
-        return this->id == rhs.id && this->Name == rhs.Name;
+        return this->id == rhs.id && this->name == rhs.name;
     }
+
+    friend std::ostream&operator<<(std::ostream &os, const CPrimitiveQuad &cp);
 
 protected:
     us_int index;
@@ -63,6 +64,7 @@ protected:
     sf::Image image;
     ThicknessLineArray shape;
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+    virtual void outputSerialize(std::ostream &os) const override;
 };
 
 #endif //DEMIURGE_CPRIMITIVEQUAD_HPP
