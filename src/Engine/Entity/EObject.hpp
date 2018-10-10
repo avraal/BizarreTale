@@ -11,20 +11,15 @@
 
 #include "IEntity.hpp"
 
-class CTile;
-class EObject : public IEntity
+class EObject : public IEntity, public ERegisterabe<EObject>
 {
-private:
+protected:
+    friend class ERegisterabe<EObject>;
+    EObject(us_int id, const std::string &name);
+    virtual ~EObject() override;
+
 public:
-    EObject();
-    EObject(const EObject&);
-    EObject(EObject &&eo);
-    EObject&operator=(const EObject&);
-
-    virtual void setPosition(float x, float y) override;
-    virtual void setPosition(const sf::Vector2f &position) override;
-
-    virtual ~EObject();
+    EObject() = delete;
 };
 
 #endif //DEMIURGE_EOBJECT_HPP
