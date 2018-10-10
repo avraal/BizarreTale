@@ -9,7 +9,9 @@
 #define DEMIURGE_ENTITYMANAGER_HPPclea
 
 #include <algorithm>
+#include <map>
 #include "../../Entity/IEntity.hpp"
+#include "../../Util/GetClassName.hpp"
 
 class EntityManager
 {
@@ -18,6 +20,7 @@ private:
     ~EntityManager() {}
 
     static std::vector<IEntity*> Entities;
+    static std::map<std::string, IEntity *(*)(us_int, const std::string&)> RegisteredMethods;
     static int currentId;
 
     static int getNextId();
@@ -28,7 +31,13 @@ public:
     EntityManager&operator=(EntityManager &&) = delete;
 
     static IEntity *getEntity(int id);
-    static IEntity *Create(const std::string &name);
+    static IEntity *Create(const std::string &TypeName, const std::string &objName);
+
+    template <typename ERegisterabe>
+    static void Register()
+    {
+        RegisteredMethods.insert({GetClassName::Get<ERegisterabe>(), &ERegisterabe::Create});
+    }
 
     static bool Destroy(int id);
 

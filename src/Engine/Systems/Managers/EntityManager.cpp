@@ -10,13 +10,20 @@
 #include "ComponentManager.hpp"
 
 std::vector<IEntity*> EntityManager::Entities;
+std::map<std::string, IEntity *(*)(int, const std::string&)> EntityManager::RegisteredMethods;
+
 int EntityManager::currentId = 0;
 
-IEntity * EntityManager::Create(const std::string &name)
+IEntity * EntityManager::Create(const std::string &TypeName, const std::string &objName)
 {
-    IEntity *ie = new IEntity(getNextId(), name);
-    EntityManager::Entities.push_back(ie);
-    return ie;
+    auto it = RegisteredMethods.find(TypeName);
+    if (it != RegisteredMethods.end())
+    {
+        auto ie = it->second(getNextId(), objName);
+        Entities.push_back(ie);
+        return ie;
+    }
+    return nullptr;
 }
 
 void EntityManager::ShowAll()
