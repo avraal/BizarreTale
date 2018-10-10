@@ -11,57 +11,41 @@
 
 #include <vector>
 #include <memory>
-#include <forward_list>
 #include <algorithm>
-#include "../Components/CPrimitiveQuad.hpp"
+#include "../CONST_DEFINITIONS.hpp"
 
-class Level;
-class IComponent;
-class CTile;
+class IEntity;
+
+template <typename T>
+class ERegisterabe
+{
+private:
+    friend class EntityManager;
+    static IEntity *Create(us_int id, const std::string &name)
+    {
+        return new T(id, name);
+    }
+};
+
 class IEntity
 {
+private:
+    friend class EntityManager;
 protected:
     IEntity(us_int id, const std::string &name);
-    virtual ~IEntity() {}
+    virtual ~IEntity() = 0;
 
     us_int id;
     std::string name;
 
-//    sf::Vector2f Position;
-
 public:
     IEntity() = delete;
-    friend class EntityManager;
 
     std::vector<us_int> ComponentsId;
 
-    virtual us_int getId()                               const noexcept final;
-    virtual void setName(const std::string &name)           noexcept final;
-    virtual const std::string & getName()                     const noexcept final;
-    virtual void setPosition(float x, float y) = 0;
-    virtual void setPosition(const sf::Vector2f &position) = 0;
-    sf::Vector2f getPosition() const;
-
-    inline bool operator==(const IEntity &rhs) const
-    {
-        return this->id == rhs.id;
-    }
-
-    inline bool operator!=(const IEntity &rhs) const
-    {
-        return this->id != rhs.id;
-    }
-
-    inline bool operator==(const IEntity *rhs) const
-    {
-        return this->id == rhs->id;
-    }
-
-    inline bool operator!=(const IEntity *rhs) const
-    {
-        return this->id != rhs->id;
-    }
-
+    virtual us_int getId() const noexcept final;
+    virtual void setName(const std::string &name) noexcept final;
+    virtual const std::string &getName() const noexcept final;
 };
 
 #endif //DEMIURGE_IENTITY_HPP
