@@ -11,18 +11,31 @@
 std::vector<IComponent*> ComponentManager::Components;
 int ComponentManager::currentId = 0;
 
-bool ComponentManager::Create(int entityId, const std::string &name)
+IComponent * ComponentManager::Create(const std::string &TypeName, int entityId, const std::string &objName)
 {
     auto target = EntityManager::getEntity(entityId);
-
     if (!target)
     {
-        return false;
+        return nullptr;
     }
-    IComponent *component = new IComponent(getNextId(), entityId, name);
-    target->ComponentsId.push_back(component->getId());
-    Components.push_back(component);
-    return true;
+    auto it = RegisteredMethods.find(TypeName);
+    if (it != RegisteredMethods.end())
+    {
+        auto c = it->second(getNextId(), entityId, objName);
+        Components.push_back(c);
+        return c;
+    }
+    return nullptr;
+//    auto target = EntityManager::getEntity(entityId);
+//
+//    if (!target)
+//    {
+//        return false;
+//    }
+//    IComponent *component = new IComponent(getNextId(), entityId, objName);
+//    target->ComponentsId.push_back(component->getId());
+//    Components.push_back(component);
+//    return true;
 }
 IComponent *ComponentManager::getComponent(int id)
 {

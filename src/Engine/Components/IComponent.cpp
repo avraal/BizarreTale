@@ -8,43 +8,27 @@
 
 #include "IComponent.hpp"
 #include "../Entity/IEntity.hpp"
-#include "../Util/IDGenerator.hpp"
-IComponent::IComponent()
-{
-    this->id = IDGenerator::getNextId();
-}
 
-IComponent::IComponent(us_int id, const std::string &name)
-{
-    this->name = name;
-    this->id = id;
-}
 const std::string & IComponent::getName() const noexcept
 {
     return name;
 }
-IComponent::~IComponent()
-{
-}
+
 us_int IComponent::getId() const noexcept
 {
     return id;
 }
-std::shared_ptr<IEntity> IComponent::getEntity()
+IComponent::IComponent(us_int id, us_int entityId, const std::string &name)
 {
-    return entity;
+    this->id = id;
+    this->entityId = entityId;
+    this->name = name;
 }
-void IComponent::Attach(std::shared_ptr<IEntity> entity)
+us_int IComponent::getEntityId() const noexcept
 {
-    this->entity = entity;
-    entity->addComponent(shared_from_this());
+    return entityId;
 }
-std::ostream &operator<<(std::ostream &os, const IComponent &c)
+
+IComponent::~IComponent()
 {
-    c.outputSerialize(os);
-    return os;
-}
-void IComponent::outputSerialize(std::ostream &os) const
-{
-    os << "Type: Component\nId: " << id << "\nName: " << name << std::endl;
 }
