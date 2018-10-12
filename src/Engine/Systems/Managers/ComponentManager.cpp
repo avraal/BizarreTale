@@ -26,16 +26,7 @@ IComponent * ComponentManager::Create(const std::string &TypeName, int entityId,
         return c;
     }
     return nullptr;
-//    auto target = EntityManager::getEntity(entityId);
-//
-//    if (!target)
-//    {
-//        return false;
-//    }
-//    IComponent *component = new IComponent(getNextId(), entityId, objName);
-//    target->ComponentsId.push_back(component->getId());
-//    Components.push_back(component);
-//    return true;
+
 }
 IComponent *ComponentManager::getComponent(int id)
 {
@@ -50,26 +41,26 @@ IComponent *ComponentManager::getComponent(int id)
     }
     return *target;
 }
-bool ComponentManager::Destroy(int compId)
+bool ComponentManager::Remove(us_int compId, us_int entityId)
 {
-    int beforeSize = Components.size();
+    us_int beforeSize = Components.size();
 
-    auto target = getComponent(compId);
-    if (!target)
+    for (auto it = Components.begin(); it != Components.end(); )
     {
-        std::cout << "Can\'t find object" << std::endl;
-        return false;
+        if ((*it)->id == compId && (*it)->entityId == entityId)
+        {
+            delete getComponent(compId);
+            it = Components.erase(it);
+            break;
+        } else
+        {
+            ++it;
+        }
     }
-    auto entity = EntityManager::getEntity(target->entityId);
-    if (!entity)
-    {
-        std::cout << "Can\'t find entity" << std::endl;
-        return false;
-    }
-    std::cout << "Release " << target->getName() << " component" << std::endl;
-    entity->ComponentsId.erase(std::remove(entity->ComponentsId.begin(), entity->ComponentsId.end(), compId), entity->ComponentsId.end());
-    Components.erase(std::remove(Components.begin(), Components.end(), target), Components.end());
-    delete target;
+
+    auto target = EntityManager::getEntity(entityId);
+    target->ComponentsId.erase(std::remove(target->ComponentsId.begin(), target->ComponentsId.end(), compId), target->ComponentsId.end());
+
     return beforeSize != Components.size();
 }
 int ComponentManager::getNextId()
@@ -81,5 +72,33 @@ void ComponentManager::ShowComponents()
     for (auto c : Components)
     {
         std::cout << "id: " << c->getId() << " name: " << c->getName() << std::endl;
+    }
+}
+void ComponentManager::DestroyAll()
+{
+    for (auto it = Components.begin(); it != Components.end(); )
+    {
+        auto comp = getComponent((*it)->id);
+        auto entity = EntityManager::getEntity(comp->entityId);
+        entity->ComponentsId.erase(std::remove(entity->ComponentsId.begin(), entity->ComponentsId.end(), comp->id), entity->ComponentsId.end());
+        delete comp;
+        it = Components.erase(it);
+    }
+}
+void ComponentManager::DestroyAllByEntityId(us_int entityId)
+{
+    auto target = EntityManager::getEntity(entityId);
+    for (auto it = Components.begin(); it != Components.end(); )
+    {
+        if ((*it)->entityId == entityId)
+        {
+            target->ComponentsId.erase(std::remove(target->ComponentsId.begin(), target->ComponentsId.end(), (*it)->id), target->ComponentsId.end());
+            delete getComponent((*it)->id);
+            it = Components.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
     }
 }

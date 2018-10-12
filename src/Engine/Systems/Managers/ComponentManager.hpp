@@ -32,7 +32,7 @@ public:
     ComponentManager&operator=(ComponentManager &&) = delete;
 
     static IComponent * Create(const std::string &TypeName, int entityId, const std::string &objName);
-    static bool Destroy(int compId);
+    static bool Remove(us_int compId, us_int entityId);
 
     template <typename CRegisterable>
     static void Register()
@@ -43,6 +43,8 @@ public:
     static IComponent *getComponent(int id);
 
     static void ShowComponents();
+    static void DestroyAll();
+    static void DestroyAllByEntityId(us_int entityId);
 };
 
 #endif //DEMIURGE_COMPONENTMANAGER_HPP
