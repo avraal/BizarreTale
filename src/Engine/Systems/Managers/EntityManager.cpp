@@ -45,14 +45,7 @@ bool EntityManager::Destroy(int id)
         return false;
     }
 
-    for (auto i : target->ComponentsId)
-    {
-        if (!ComponentManager::Destroy(i))
-        {
-            std::cout << "Can\'t destroy component" << std::endl;
-        }
-    }
-    target->ComponentsId.clear();
+    ComponentManager::DestroyAllByEntityId(id);
     Entities.erase(std::remove(Entities.begin(), Entities.end(), target), Entities.end());
     delete target;
     return beforeSize != Entities.size();
