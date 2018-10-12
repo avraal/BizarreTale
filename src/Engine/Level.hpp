@@ -22,6 +22,7 @@
 #include <forward_list>
 #include "Components/CPrimitiveQuad.hpp"
 #include "Systems/UIWrapper.hpp"
+#include "Components/CDrawable.hpp"
 
 class IEntity;
 class EObject;
@@ -38,16 +39,21 @@ struct ObjectsDetails
 class Level
 {
 protected:
-    size_t Id;
+    us_int Id;
     std::string Name;
-    std::vector<std::shared_ptr<IEntity>> ObjList;
-    std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
+//    std::vector<std::shared_ptr<IEntity>> ObjList;
+    std::vector<us_int> ObjectIds;
+//    std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
+    std::vector<us_int > DrawableComponentIds;
+    std::vector<CDrawable*> DrawableComponents;
     std::vector<tgui::Widget::Ptr> guiContainer;
+    std::vector<std::string> ImagesFormats; //all supported image formats
+    std::vector<std::string> PathToImages; //all images
     sf::Clock clock;
     sf::View *MainCamera;
     sf::Color backGroundColor;
-    void virtual loadGui(sf::RenderWindow &window);
-    void initGui(sf::RenderWindow &window);
+    virtual void loadGui(sf::RenderWindow &window);
+    virtual void initGui(sf::RenderWindow &window);
     bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
     std::unique_ptr<UIWrapper> UserInterface;
 
@@ -57,25 +63,22 @@ public:
     Level() = delete;
     Level(const std::string &Name);
     Level(const Level&)             = delete;
-    Level(const Level&&)            = delete;
+    Level(Level&&)                  = delete;
     Level&operator=(const Level&)   = delete;
+    Level&operator=(Level&&)        = delete;
     ~Level();
     virtual void draw(sf::RenderWindow &window);
 
-    bool DestroyEntity(us_int entityId);
     virtual bool prepareLevel(sf::RenderWindow &window);
-    void addObject(std::shared_ptr<IEntity> ie);
+    void addObject(us_int entityId);
     void sortedObjectsByIndex();
     void setCamera(sf::View &camera);
     virtual void MouseCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
     virtual void KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
     virtual void HandleGUIEvent(sf::Event &event);
     us_int getObjCount();
-    std::shared_ptr<IEntity> getObject(us_int index);
-    std::shared_ptr<IEntity> getObjectById(us_int id);
-    std::shared_ptr<IEntity> getObjectByName(const std::string &Name);
     std::unique_ptr<ObjectsDetails> objDetails;
-    std::vector<std::shared_ptr<IEntity>> &getAllObjects();
+    std::vector<us_int> &getAllObjectsIds();
     virtual std::string getName() const;
     std::string ImageDirectory;
     float fps;

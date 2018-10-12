@@ -8,7 +8,9 @@
 
 #include <SFML/Window/Event.hpp>
 #include "Level.hpp"
-#include "Entity/IEntity.hpp"
+#include "Systems/Managers/EntityManager.hpp"
+#include "Systems/Managers/ComponentManager.hpp"
+#include "Entity/EObject.hpp"
 
 us_int Level::currentId = 0;
 
@@ -16,64 +18,68 @@ Level::Level(const std::string &Name)
 {
     this->Id = Level::getNextId();
     this->Name = Name;
+    ImageDirectory = "";
+    ImagesFormats.push_back(".png");
+    ImagesFormats.push_back(".jpg");
     backGroundColor = sf::Color::Black;
     UserInterface = std::make_unique<UIWrapper>();
     objDetails = std::make_unique<ObjectsDetails>();
+
+    EntityManager::Register<EObject>();
+    ComponentManager::Register<CDrawable>();
+    ComponentManager::Register<CTransform>();
 }
-void Level::addObject(std::shared_ptr<IEntity> ie)
+void Level::addObject(us_int entityId)
 {
-    ObjList.push_back(ie);
+    ObjectIds.push_back(entityId);
     objDetails->objCount++;
-    ie->setName("def" + std::to_string(ObjList.size()));
-    for(auto d : ie->getDrawable())
+    EObject *target = static_cast<EObject *>(EntityManager::Create(GetClassName::Get<EObject>(), "Hero"));
+    target->setName("def" + std::to_string(ObjectIds.size()));
+    for (auto d : target->ComponentsId)
     {
-        DrawableComponents.push_back(d);
-        objDetails->drawableCount++;
+        DrawableComponentIds.push_back(d);
+        CDrawable *c = static_cast<CDrawable *>(ComponentManager::getComponent(d));
+        DrawableComponents.push_back(c);
     }
-    if(ObjList.size() > 1)
+    objDetails->drawableCount += target->ComponentsId.size();
+
+    if (ObjectIds.size() > 1)
     {
         us_int count = 0;
-        for(auto o : ObjList)
+        for (auto o : ObjectIds)
         {
-            auto body = o->getComponent<CPrimitiveQuad>("body");
-            if(o == ie)
-                continue;
-            if(body && ie->getComponent<CPrimitiveQuad>("body"))
+            if (o == target->getId())
             {
-                if(o->getPosition() == ie->getPosition())
+                continue;
+            }
+            if (target->getBody())
+            {
+                EObject *e = static_cast<EObject *>(EntityManager::getEntity(o));
+                if (e->getBody())
                 {
-                    count++;
+                    if (target->getTransform()->getPosition() == e->getTransform()->getPosition())
+                    {
+                        count++;
+                    }
                 }
             }
-            else
-            {
-                return;
-            }
         }
-        ie->getComponent<CPrimitiveQuad>("body")->setIndex(count);
+        target->getBody()->setIndex(count);
     }
+
 }
-std::shared_ptr<IEntity> Level::getObject(us_int index)
-{
-    if (!ObjList.empty())
-    {
-        return ObjList[index];
-    }
-    return nullptr;
-}
-std::vector<std::shared_ptr<IEntity>> &Level::getAllObjects()
-{
-    return ObjList;
-}
+
 us_int Level::getObjCount()
 {
-    return ObjList.size();
+    return ObjectIds.size();
 }
 
 Level::~Level()
 {
-    DrawableComponents.clear();
-    ObjList.clear();
+    for (auto id : ObjectIds)
+    {
+        EntityManager::Destroy(id);
+    }
 }
 void Level::draw(sf::RenderWindow &window)
 {
@@ -97,78 +103,29 @@ void Level::initGui(sf::RenderWindow &window)
 }
 void Level::sortedObjectsByIndex()
 {
-    std::sort(ObjList.begin(), ObjList.end(),
-            [](std::shared_ptr<IEntity> t1, std::shared_ptr<IEntity> t2)
+//    std::sort(DrawableComponents.begin(), DrawableComponents.end(),
+//            [](std::shared_ptr<CPrimitiveQuad> c1, std::shared_ptr<CPrimitiveQuad> c2)
+//            {
+//                return c1->getIndex() < c2->getIndex();
+//            });
+
+    std::sort(ObjectIds.begin(), ObjectIds.end(),
+            [](us_int o1, us_int o2)
             {
-                auto b1 = t1->getComponent<CPrimitiveQuad>("body");
-                auto b2 = t2->getComponent<CPrimitiveQuad>("body");
+                CDrawable *b1 = static_cast<EObject *>(EntityManager::getEntity(o1))->getBody();
+                CDrawable *b2 = static_cast<EObject *>(EntityManager::getEntity(o2))->getBody();
                 if (b1 && b2)
                 {
                     return b1->getIndex() < b2->getIndex();
                 }
                 return false;
             });
-    std::sort(DrawableComponents.begin(), DrawableComponents.end(),
-            [](std::shared_ptr<CPrimitiveQuad> c1, std::shared_ptr<CPrimitiveQuad> c2)
-            {
-                return c1->getIndex() < c2->getIndex();
-            });
 }
 void Level::loadGui(sf::RenderWindow &window)
 {
 
 }
-bool Level::DestroyEntity(us_int entityId)
-{
-    us_int beforeObjCount = ObjList.size();
-    us_int beforeDrawCount = DrawableComponents.size();
-    auto target = getObjectById(entityId);
-    if (!target)
-    {
-        return false;
-    }
-    std::cout << target->getComponent("body").use_count() << std::endl;
-    target->removeComponents();
 
-    for (auto it = DrawableComponents.begin(); it != DrawableComponents.end(); )
-    {
-        if ((*it)->getEntity() == target)
-        {
-            (*it)->release();
-            it = DrawableComponents.erase(it);
-            objDetails->drawableCount--;
-        } else
-        {
-            ++it;
-        }
-    }
-
-    ObjList.erase(std::remove(ObjList.begin(), ObjList.end(), getObjectById(entityId)), ObjList.end());
-    objDetails->objCount--;
-    return beforeObjCount != ObjList.size() && beforeDrawCount != DrawableComponents.size();
-}
-std::shared_ptr<IEntity> Level::getObjectById(us_int id)
-{
-    for(auto o : ObjList)
-    {
-        if (o->GetId() == id)
-        {
-            return o;
-        }
-    }
-    return nullptr;
-}
-std::shared_ptr<IEntity> Level::getObjectByName(const std::string &N)
-{
-    for (auto o : ObjList)
-    {
-        if (o->getName() == N)
-        {
-            return o;
-        }
-    }
-    return nullptr;
-}
 bool Level::prepareLevel(sf::RenderWindow &window)
 {
     bool result = true;
