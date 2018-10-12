@@ -9,6 +9,7 @@
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
 std::vector<IComponent*> ComponentManager::Components;
+
 int ComponentManager::currentId = 0;
 
 IComponent * ComponentManager::Create(const std::string &TypeName, int entityId, const std::string &objName)
@@ -23,6 +24,7 @@ IComponent * ComponentManager::Create(const std::string &TypeName, int entityId,
     {
         auto c = it->second(getNextId(), entityId, objName);
         Components.push_back(c);
+        target->ComponentsId.push_back(c->id);
         return c;
     }
     return nullptr;
