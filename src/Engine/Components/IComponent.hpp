@@ -18,7 +18,7 @@ class IComponent;
 template <typename T>
 class CRegisterable
 {
-private:
+protected:
     friend class ComponentManager;
     static IComponent *Create(us_int id, us_int entityId, const std::string &name)
     {
