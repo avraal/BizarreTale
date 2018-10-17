@@ -21,7 +21,7 @@ Level::Level(const std::string &Name)
     ImageDirectory = "";
     ImagesFormats.push_back(".png");
     ImagesFormats.push_back(".jpg");
-    backGroundColor = sf::Color::Black;
+    backgroundColor = sf::Color::Black;
     UserInterface = std::make_unique<UIWrapper>();
     objDetails = std::make_unique<ObjectsDetails>();
 
@@ -33,13 +33,16 @@ void Level::addObject(us_int entityId)
 {
     ObjectIds.push_back(entityId);
     objDetails->objCount++;
-    EObject *target = static_cast<EObject *>(EntityManager::Create(GetClassName::Get<EObject>(), "Hero"));
-    target->setName("def" + std::to_string(ObjectIds.size()));
+    EObject *target = static_cast<EObject *>(EntityManager::getEntity(entityId));
+    //setName
     for (auto d : target->ComponentsId)
     {
         DrawableComponentIds.push_back(d);
-        CDrawable *c = static_cast<CDrawable *>(ComponentManager::getComponent(d));
-        DrawableComponents.push_back(c);
+        CDrawable *c = dynamic_cast<CDrawable *>(ComponentManager::getComponent(d));
+        if (c)
+        {
+            DrawableComponents.push_back(c);
+        }
     }
     objDetails->drawableCount += target->ComponentsId.size();
 
@@ -128,9 +131,12 @@ void Level::loadGui(sf::RenderWindow &window)
 
 bool Level::prepareLevel(sf::RenderWindow &window)
 {
-    bool result = true;
+    if (!findAllFiles(PathToImages, ImagesFormats))
+    {
+        return false;
+    }
     initGui(window);
-    return result;
+    return true;
 }
 void Level::HandleGUIEvent(sf::Event &event)
 {

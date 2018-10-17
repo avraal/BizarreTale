@@ -41,17 +41,15 @@ class Level
 protected:
     us_int Id;
     std::string Name;
-//    std::vector<std::shared_ptr<IEntity>> ObjList;
     std::vector<us_int> ObjectIds;
-//    std::vector<std::shared_ptr<CPrimitiveQuad>> DrawableComponents;
     std::vector<us_int > DrawableComponentIds;
     std::vector<CDrawable*> DrawableComponents;
     std::vector<tgui::Widget::Ptr> guiContainer;
-    std::vector<std::string> ImagesFormats; //all supported image formats
-    std::vector<std::string> PathToImages; //all images
+    std::vector<std::string> ImagesFormats;
+    std::vector<std::string> PathToImages;
     sf::Clock clock;
     sf::View *MainCamera;
-    sf::Color backGroundColor;
+    sf::Color backgroundColor;
     virtual void loadGui(sf::RenderWindow &window);
     virtual void initGui(sf::RenderWindow &window);
     bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
@@ -70,19 +68,19 @@ public:
     virtual void draw(sf::RenderWindow &window);
 
     virtual bool prepareLevel(sf::RenderWindow &window);
-    void addObject(us_int entityId);
-    void sortedObjectsByIndex();
-    void setCamera(sf::View &camera);
     virtual void MouseCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
     virtual void KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
     virtual void HandleGUIEvent(sf::Event &event);
+    virtual std::string getName() const;
+
+    void addObject(us_int entityId);
+    void sortedObjectsByIndex();
+    void setCamera(sf::View &camera);
     us_int getObjCount();
     std::unique_ptr<ObjectsDetails> objDetails;
     std::vector<us_int> &getAllObjectsIds();
-    virtual std::string getName() const;
     std::string ImageDirectory;
     float fps;
-
 };
 
 #endif //DEMIURGE_LEVEL_HPP
