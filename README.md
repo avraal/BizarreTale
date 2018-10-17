@@ -1,4 +1,4 @@
-# Demiurge Engine 0.4.3
+# Demiurge Engine 0.4.4
 Simple engine for 2D games
 Guide for using.  
 Demiurge - it's Entity-Component-System (ECS) based engine.  
@@ -9,12 +9,8 @@ EntityManager - it's class, which can create, delete, etc. entity.
 
 ```cpp
 EObject *Wall = static_cast<EObject*>(EntityManager::Create(GetClassName::Get<EObject>(), "Wall0"));
-if (!Wall)
-{
-    //exit
-    return 1;
-}
 Wall->DoesSomeMethod();
+addObject(Wall->getId());
 ```
 
 This code created a new game object - wall with name "Wall0". **Create** - is a static method of class EntityManager, which created new object by class name, added to vector and returned him.
@@ -28,29 +24,97 @@ You can destroy any object by id:
 ```cpp
 EntityManager::Destroy(Wall->getId());
 ```
-This method released all components which linked with him
+This method released all components which linked with him.
 
-###### Deprecated:
-```
-List of EntityManager fields:
-- getEntity(int id) - find entity in vector by id, and returned him or nullptr;
-- Create(const std::string &name) - create new entity with name;
-- Clear(int id) - destroyed entity by id;
-- ShowAll() - print id and name of all entities;
-- getCount() - return count of entity
-```
-###### Deprecated:
 ## Component and ComponentManager
 Based thing for interaction entity with entity. Every component has a unique id and id of entity to which his attached. Like Entity objects, component may created only on ComponentManager:
 ```cpp
-if (!ComponentManager::Create(player->getId(), "Position"))
-{
-    return 1;
-}
+Wall->body = static_cast<CDrawable *>(ComponentManager::Create(GetClassName::Get<CDrawable>(), Wall->getId(), "body"));
+Wall->transform = static_cast<CTransform *>(ComponentManager::Create(GetClassName::Get<CTransform>(), Wall->getId(), "transform"));
 ``` 
 
-Unlike Create method of EntityManager, ComponentManager returned bool variable. In this method ComponentManager find entity by id and attach id of component to him. If entity not found, returned false.  
-List of EntityManager fields:
-- getComponent(int id) - find component by id and returned him or nullptr;
-- Create(int entityId, const std::string &name) - create new component with name and attach to entity;
-- Clear(int id) - destroyed component by id;
+In Create-method ComponentManager find entity by id and attach id of component to him. If entity not found, returned nullptr.  
+
+## Level-based system
+Every entity may have drawable components. For draw you may used draw-method. This method definition in every level. 
+Life-cycle every level:
+1. Register level in LevelManager
+2. Load level  
+2.1 Init ImageDirectory  
+2.2 Init camera
+3. Main loop (every frame)  
+3.1 Handle event callbacks  
+3.2 Draw
+
+How you can create level? It's easy: create class and inherit from abstract class **Level**.
+```cpp
+class LTest : public Level
+{
+public:
+    LTest(const std::string &name);
+    virtual ~LTest() {}
+    virtual bool prepareLevel(sf::RenderWindow &window) override;
+    virtual void draw(sf::RenderWindow &window) override;
+    virtual void MouseCallbacks(sf::RenderWindow &window, sf::Event &event) override;
+    virtual void KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) override;
+};
+```
+You can stay ctor empty, like this:
+```cpp
+TestECS::TestECS(const std::string &name) : Level(name)
+{
+}
+```
+But you must know, in ctor of Level-class init base fields:
+```
+- Id - unique integer identifier. Generated automatically (Level::getNextId());
+- Name - set from ctor parameter;
+- ImageDirectory - empty by default. Path for folder with images;
+- ImagesFromats - vector, which contained file formats when searched. By default added .png and .jpg formats;
+- backgroundColor - color for background. By default is sf::Color::Black;
+- UserInterface - wrapper for work with UI. Just init;
+- objDetails - object, which collect information of all object's in level;
+```
+
+And register classes for EntityManager and ComponentManager:
+```cpp
+EntityManager::Register<EObject>();
+ComponentManager::Register<CDrawable>();
+ComponentManager::Register<CTransform>();
+```
+
+If you want register you class, ctor of you level-class - best idea.  
+**prepareLevel** - method for prepared you components and objects in level
+
+#### Registered level
+```cpp
+auto ltest = std::make_shared<LTest>("test-level");
+levelManager->registerLevel(ltest);
+```
+
+#### Load level
+```cpp
+CurrentLevel = levelManager->loadLevel("test-level");
+```
+
+#### Init ImageDirectory
+```cpp
+CurrentLevel->ImageDirectory = this->ImageDirectory;
+```
+
+#### Init Camera
+```cpp
+CurrentLevel->setCamera(MainCamera);
+```
+
+#### Handle event callbacks
+```cpp
+CurrentLevel->MouseCallbacks(window, event);
+CurrentLevel->KeyBoardCallbacks(window, event);
+CurrentLevel->HandleGUIEvent(event);
+```
+
+#### Draw level
+```cpp
+CurrentLevel->draw(window);
+```
