@@ -14,32 +14,44 @@
 #include <SFML/Graphics/Texture.hpp>
 #include "IComponent.hpp"
 #include "../ThicknessLineArray.hpp"
+#include "../CONST_DEFINITIONS.hpp"
+
+#define TDS TILE_SIZE_DEFAULT
 
 class CDrawable : public IComponent, public sf::Drawable, public CRegisterable<CDrawable>
 {
 protected:
-    CDrawable(us_int id, us_int entityId, const std::string &name, const std::string &ImagePath,
+    CDrawable(us_int id, us_int entityId, const std::string &name, const std::string &ImagePath = "",
                   sf::Color c = sf::Color(91, 97, 91), us_int index = 0);
 
+    virtual ~CDrawable() {}
+    friend class CRegisterable<CDrawable>;
+
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+    virtual void bodyBuild();
+
+    virtual void drawBounds();
+    void bodyInit(sf::PrimitiveType type, us_int vertexCount);
+    void hideBounds();
 
     us_int index;
+    bool showBounds;
     std::string ImagePath;
     sf::VertexArray body;
     sf::Texture texture;
-    ThicknessLineArray bounds;
-private:
-    friend class CRegisterable<CDrawable>;
-    virtual ~CDrawable() {}
     sf::Color color;
+    ThicknessLineArray bounds;
 
 public:
     const sf::Color &getColor() const;
     us_int getIndex() const;
     const std::string &getImagePath() const;
     const sf::Texture &getTexture() const;
-    virtual void setPosition(sf::Vector2f p);
-    virtual void initBounds();
+    virtual void setPosition(const sf::Vector2f &p);
+    void setShowBounds(bool showBounds);
+    void setIndex(us_int index);
+    void setColor(const sf::Color &color);
+    bool isShowBounds() const;
 };
 
 #endif //DEMIURGE_CDRAWABLE_HPP
