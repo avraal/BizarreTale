@@ -19,7 +19,7 @@ class IEntity;
 template <typename T>
 class ERegisterabe
 {
-private:
+protected:
     friend class EntityManager;
     static IEntity *Create(us_int id, const std::string &name)
     {
@@ -43,9 +43,9 @@ public:
 
     std::vector<us_int> ComponentsId;
 
-    virtual us_int getId() const noexcept final;
-    virtual void setName(const std::string &name) noexcept final;
-    virtual const std::string &getName() const noexcept final;
+    us_int getId() const;
+    void setName(const std::string &name);
+    const std::string &getName() const;
 };
 
 #endif //DEMIURGE_IENTITY_HPP

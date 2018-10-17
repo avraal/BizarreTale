@@ -9,16 +9,16 @@
 #include "IEntity.hpp"
 #include "../Level.hpp"
 
-us_int IEntity::getId() const noexcept
+us_int IEntity::getId() const
 {
     return id;
 }
 
-const std::string & IEntity::getName() const noexcept
+const std::string & IEntity::getName() const
 {
     return name;
 }
-void IEntity::setName(const std::string &name) noexcept
+void IEntity::setName(const std::string &name)
 {
     this->name = name;
 }
