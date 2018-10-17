@@ -9,6 +9,7 @@
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
 std::vector<IComponent*> ComponentManager::Components;
+std::map<std::string, IComponent *(*)(us_int, us_int, const std::string&)> ComponentManager::RegisteredMethods;
 
 int ComponentManager::currentId = 0;
 
@@ -28,7 +29,6 @@ IComponent * ComponentManager::Create(const std::string &TypeName, int entityId,
         return c;
     }
     return nullptr;
-
 }
 IComponent *ComponentManager::getComponent(int id)
 {
