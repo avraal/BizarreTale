@@ -7,11 +7,30 @@
 //
 
 #include "EObject.hpp"
+#include "../Systems/Managers/ComponentManager.hpp"
 
 EObject::~EObject()
 {
 }
 EObject::EObject(us_int id, const std::string &name) : IEntity(id, name)
 {
-
+    body = nullptr;
+    transform = nullptr;
+}
+CDrawable *EObject::getBody() const
+{
+    return body;
+}
+CTransform *EObject::getTransform() const
+{
+    return transform;
+}
+void EObject::setPosition(const sf::Vector2f &pos)
+{
+    transform->setPosition(pos);
+    body->setPosition(pos);
+}
+void EObject::setPosition(const sf::Vector2i &pos)
+{
+    setPosition(sf::Vector2f(pos));
 }
