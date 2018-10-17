@@ -10,9 +10,9 @@
 #include "ComponentManager.hpp"
 
 std::vector<IEntity*> EntityManager::Entities;
-std::map<std::string, IEntity *(*)(int, const std::string&)> EntityManager::RegisteredMethods;
+std::map<std::string, IEntity *(*)(us_int, const std::string&)> EntityManager::RegisteredMethods;
 
-int EntityManager::currentId = 0;
+us_int EntityManager::currentId = 0;
 
 IEntity * EntityManager::Create(const std::string &TypeName, const std::string &objName)
 {
@@ -52,22 +52,21 @@ bool EntityManager::Destroy(int id)
 }
 IEntity *EntityManager::getEntity(int id)
 {
-    auto target = std::find_if(Entities.begin(), Entities.end(), [id](IEntity *ie)
+    for (auto e : Entities)
     {
-        return ie->id == id;
-    });
-    if (!*target || (*target)->getId() != id)
-    {
-        std::cout << "Can\'t find object" << std::endl;
-        return nullptr;
+        if (e->getId() == id)
+        {
+            return e;
+        }
     }
-    return *target;
+    std::cout << "EntityManager returned nullptr" << std::endl;
+    return nullptr;
 }
 int EntityManager::getCount()
 {
     return Entities.size();
 }
-int EntityManager::getNextId()
+us_int EntityManager::getNextId()
 {
     return currentId++;
 }

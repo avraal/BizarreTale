@@ -21,9 +21,9 @@ private:
 
     static std::vector<IEntity*> Entities;
     static std::map<std::string, IEntity *(*)(us_int, const std::string&)> RegisteredMethods;
-    static int currentId;
+    static us_int currentId;
 
-    static int getNextId();
+    static us_int getNextId();
 public:
     EntityManager(const EntityManager &) = delete;
     EntityManager(EntityManager &&) = delete;
