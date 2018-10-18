@@ -37,11 +37,11 @@ void Level::addObject(us_int entityId)
     //setName
     for (auto d : target->ComponentsId)
     {
-        DrawableComponentIds.push_back(d);
         CDrawable *c = dynamic_cast<CDrawable *>(ComponentManager::getComponent(d));
         if (c)
         {
-            DrawableComponents.push_back(c);
+            DrawableComponentIds.push_back(d);
+//            DrawableComponents.push_back(c);
         }
     }
     objDetails->drawableCount += target->ComponentsId.size();
@@ -88,9 +88,18 @@ void Level::draw(sf::RenderWindow &window)
 {
     float currentTime = clock.restart().asSeconds();
     fps = 1.f / currentTime;
-    for(auto d : DrawableComponents)
+
+    for (auto it = DrawableComponentIds.begin(); it != DrawableComponentIds.end(); )
     {
-        window.draw(*d);
+        CDrawable *drawable = static_cast<CDrawable *>(ComponentManager::getComponent(*it));
+        if (drawable)
+        {
+            window.draw(*drawable);
+            ++it;
+        } else
+        {
+            it = DrawableComponentIds.erase(it);
+        }
     }
 
     UserInterface->Execute();
