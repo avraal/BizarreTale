@@ -17,8 +17,8 @@ bool TestECS::prepareLevel(sf::RenderWindow &window)
 {
     Level::prepareLevel(window);
 
-    tileSizeX = 10;
-    tileSizeY = 10;
+    tileSizeX = 11;
+    tileSizeY = 11;
 
     TilesIds = new us_int *[tileSizeX];
     for (us_int i = 0; i < tileSizeX; i++)
@@ -43,15 +43,32 @@ bool TestECS::prepareLevel(sf::RenderWindow &window)
             TilesIds[i][j] = tile->getId();
         }
     }
+    //horizontal lines
+    for (us_int j = 0; j < tileSizeY; j++)
+    {
+        EObject *tileStart = static_cast<EObject *>(EntityManager::getEntity(TilesIds[0][j]));
+        EObject *tileEnd = static_cast<EObject *>(EntityManager::getEntity(TilesIds[tileSizeX - 1][tileSizeY - 1]));
+        sf::Vertex line[] =
+                {
+                        sf::Vertex({tileStart->transform->getPosition().x, tileStart->transform->getPosition().y},
+                                   sf::Color(42, 76, 61)),
+                        sf::Vertex({tileEnd->transform->getPosition().x + TILE_SIZE_DEFAULT,
+                                    tileStart->transform->getPosition().y}, sf::Color(42, 76, 61))
+                };
+        LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
+    }
+
     //vertical lines
     for (us_int i = 0; i < tileSizeX; i++)
     {
         EObject *tileStart = static_cast<EObject *>(EntityManager::getEntity(TilesIds[i][0]));
-        EObject *tileEnd = static_cast<EObject *>(EntityManager::getEntity(TilesIds[tileSizeX-1][tileSizeY-1]));
-        sf::Vertex line [] =
+        EObject *tileEnd = static_cast<EObject *>(EntityManager::getEntity(TilesIds[tileSizeX - 1][tileSizeY - 1]));
+        sf::Vertex line[] =
                 {
-                    sf::Vertex({tileStart->transform->getPosition().x, tileStart->transform->getPosition().y}, sf::Color(42, 76, 61)),
-                    sf::Vertex({tileStart->transform->getPosition().x, tileEnd->transform->getPosition().y + TILE_SIZE_DEFAULT}, sf::Color(42, 76, 61))
+                        sf::Vertex({tileStart->transform->getPosition().x, tileStart->transform->getPosition().y},
+                                   sf::Color(42, 76, 61)),
+                        sf::Vertex({tileStart->transform->getPosition().x,
+                                    tileEnd->transform->getPosition().y + TILE_SIZE_DEFAULT}, sf::Color(42, 76, 61))
                 };
         LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
