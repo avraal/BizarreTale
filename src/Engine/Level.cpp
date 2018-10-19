@@ -23,7 +23,6 @@ Level::Level(const std::string &Name)
     ImagesFormats.push_back(".jpg");
     backgroundColor = sf::Color::Black;
     UserInterface = std::make_unique<UIWrapper>();
-    objDetails = std::make_unique<ObjectsDetails>();
 
     EntityManager::Register<EObject>();
     ComponentManager::Register<CDrawable>();
@@ -32,7 +31,6 @@ Level::Level(const std::string &Name)
 void Level::addObject(us_int entityId)
 {
     ObjectIds.push_back(entityId);
-    objDetails->objCount++;
     EObject *target = static_cast<EObject *>(EntityManager::getEntity(entityId));
     //setName
     for (auto d : target->ComponentsId)
@@ -41,10 +39,9 @@ void Level::addObject(us_int entityId)
         if (c)
         {
             DrawableComponentIds.push_back(d);
-//            DrawableComponents.push_back(c);
+            DrawableComponents.push_back(c);
         }
     }
-    objDetails->drawableCount += target->ComponentsId.size();
 
     if (ObjectIds.size() > 1)
     {
@@ -89,16 +86,11 @@ void Level::draw(sf::RenderWindow &window)
     float currentTime = clock.restart().asSeconds();
     fps = 1.f / currentTime;
 
-    for (auto it = DrawableComponentIds.begin(); it != DrawableComponentIds.end(); )
+    for (auto d : DrawableComponents)
     {
-        CDrawable *drawable = static_cast<CDrawable *>(ComponentManager::getComponent(*it));
-        if (drawable)
+        if (d)
         {
-            window.draw(*drawable);
-            ++it;
-        } else
-        {
-            it = DrawableComponentIds.erase(it);
+            window.draw(*d);
         }
     }
 

@@ -27,22 +27,13 @@
 class IEntity;
 class EObject;
 
-struct ObjectsDetails
-{
-    ObjectsDetails() : objReferenceCount{0}, drawableReferenceCount{0}, objCount{0}, drawableCount{0} {}
-    us_int objReferenceCount;
-    us_int drawableReferenceCount;
-    us_int objCount;
-    us_int drawableCount;
-};
-
 class Level
 {
 protected:
     us_int Id;
     std::string Name;
     std::vector<us_int> ObjectIds;
-    std::vector<us_int > DrawableComponentIds;
+    std::vector<int> DrawableComponentIds;
     std::vector<CDrawable*> DrawableComponents;
     std::vector<tgui::Widget::Ptr> guiContainer;
     std::vector<std::string> ImagesFormats;
@@ -77,7 +68,6 @@ public:
     void sortedObjectsByIndex();
     void setCamera(sf::View &camera);
     us_int getObjCount();
-    std::unique_ptr<ObjectsDetails> objDetails;
     std::vector<us_int> &getAllObjectsIds();
     std::string ImageDirectory;
     float fps;
