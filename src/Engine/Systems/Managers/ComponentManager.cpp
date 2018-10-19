@@ -38,12 +38,18 @@ IComponent *ComponentManager::getComponent(int id)
     });
     if (!*target || (*target)->getId() != id)
     {
-        std::cout << "Can\'t find component" << std::endl;
+//        std::cout << "Can\'t find component" << std::endl;
         return nullptr;
     }
     return *target;
 }
-bool ComponentManager::Remove(us_int compId, us_int entityId)
+bool ComponentManager::Destroy(us_int compId)
+{
+    us_int entityId = getComponent(compId)->entityId;
+    return Destroy(compId, entityId);
+}
+
+bool ComponentManager::Destroy(us_int compId, us_int entityId)
 {
     us_int beforeSize = Components.size();
 
@@ -104,3 +110,4 @@ void ComponentManager::DestroyAllByEntityId(us_int entityId)
         }
     }
 }
+

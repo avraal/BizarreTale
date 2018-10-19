@@ -32,7 +32,8 @@ public:
     ComponentManager&operator=(ComponentManager &&) = delete;
 
     static IComponent * Create(const std::string &TypeName, int entityId, const std::string &objName);
-    static bool Remove(us_int compId, us_int entityId);
+    static bool Destroy(us_int compId, us_int entityId);
+    static bool Destroy(us_int compId);
 
     template <typename CRegisterable>
     static void Register()
