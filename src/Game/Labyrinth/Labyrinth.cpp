@@ -8,106 +8,147 @@
 #include <zconf.h>
 #include <stack>
 #include "Labyrinth.hpp"
+#include "../../Engine/Systems/Managers/EntityManager.hpp"
+#include "../../Engine/Systems/Managers/ComponentManager.hpp"
+#include "../../Engine/Util/GetClassName.hpp"
+#include "../../Engine/Entity/EObject.hpp"
+#include <thread>
+#include <SFML/System/Thread.hpp>
 Labyrinth::Labyrinth(const std::string &Name) : Level(Name)
 {
-    height = 19;
-    width = 23;
-    ImageDirectory = "";
-    CurrentPathFile = "";
-    ImagesFormats.push_back(".png");
-    ImagesFormats.push_back(".jpg");
+    tileSizeY = 59;
+    tileSizeX = 33;
     CameraSpeed = 4.0f;
     showInfo = true;
-    backGroundColor = sf::Color(42, 76, 61);
 }
 bool Labyrinth::prepareLevel(sf::RenderWindow &window)
 {
-    if (!findAllFiles(PathToImages, ImagesFormats))
+    std::cout << getName() << " prepare method" << std::endl;
+    if (!Level::prepareLevel(window))
     {
         return false;
     }
-    Level::prepareLevel(window);
-    drawTileMap();
+    UserInterface->gui->add(infoPanel);
+
+//    drawTileMap();
+
+    std::thread LaunchDraw(&Labyrinth::drawTileMap, this);
+    LaunchDraw.detach();
+
     return true;
 }
 void Labyrinth::drawTileMap()
 {
-    std::vector<std::string> Tiles;
-    std::vector<std::string> Formats;
-    Formats.emplace_back(".png");
-    findAllFiles(Tiles, Formats);
-    for (us_int i = 0; i < height * width; i++)
+    TilesIds = new us_int *[tileSizeX];
+    for (us_int i = 0; i < tileSizeX; i++)
     {
-        TileMap.push_back(new CPrimitiveQuad());
-    }
-    us_int x = 0, y = 0;
-    for (auto t : TileMap)
-    {
-        t->setPosition(x * 64, y  * 64);
-        x++;
-        if (x == width)
-        {
-            y++;
-            x = 0;
-        }
+        TilesIds[i] = new us_int[tileSizeY];
     }
 
-    //draw horizontal lines
-    for (us_int i = 0; i < height; i++)
+    for (us_int i = 0; i < tileSizeX; i++)
     {
+        for (us_int j = 0; j < tileSizeY; j++)
+        {
+            EObject *tile = static_cast<EObject *>(EntityManager::Create(GetClassName::Get<EObject>(),
+                                                                         "tile" + std::to_string(getObjCount())));
+            tile->transform =
+                    static_cast<CTransform *>(ComponentManager::Create(GetClassName::Get<CTransform>(), tile->getId(),
+                                                                       "transform"));
+            tile->body =
+                    static_cast<CDrawable *>(ComponentManager::Create(GetClassName::Get<CDrawable>(), tile->getId(),
+                                                                      "body"));
+            tile->setPosition(sf::Vector2i(i * TILE_SIZE_DEFAULT, j * TILE_SIZE_DEFAULT));
+            addObject(tile->getId());
+            TilesIds[i][j] = tile->getId();
+        }
+    }
+    //horizontal lines
+    for (us_int j = 0; j < tileSizeY; j++)
+    {
+        EObject *tileStart = static_cast<EObject *>(EntityManager::getEntity(TilesIds[0][j]));
+        EObject *tileEnd = static_cast<EObject *>(EntityManager::getEntity(TilesIds[tileSizeX - 1][tileSizeY - 1]));
         sf::Vertex line[] =
                 {
-                        sf::Vertex({TileMap[i * width]->getPosition().x, TileMap[i * width]->getPosition().y},
+                        sf::Vertex({tileStart->transform->getPosition().x, tileStart->transform->getPosition().y},
                                    sf::Color(42, 76, 61)),
-                        sf::Vertex({TileMap[width - 1]->getPosition().x + TILE_SIZE_DEFAULT,
-                                    TileMap[i * width]->getPosition().y}, sf::Color(42, 76, 61))
+                        sf::Vertex({tileEnd->transform->getPosition().x + TILE_SIZE_DEFAULT,
+                                    tileStart->transform->getPosition().y}, sf::Color(42, 76, 61))
                 };
         LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
-    //draw vertical lines
-    for (us_int i = 0; i < width; i++)
+
+    //vertical lines
+    for (us_int i = 0; i < tileSizeX; i++)
     {
+        EObject *tileStart = static_cast<EObject *>(EntityManager::getEntity(TilesIds[i][0]));
+        EObject *tileEnd = static_cast<EObject *>(EntityManager::getEntity(TilesIds[tileSizeX - 1][tileSizeY - 1]));
         sf::Vertex line[] =
                 {
-                        sf::Vertex({TileMap[i]->getPosition().x, TileMap[i]->getPosition().y}, sf::Color(42, 76, 61)),
-                        sf::Vertex({TileMap[i]->getPosition().x,
-                                    TileMap[width * height - 1]->getPosition().y + TILE_SIZE_DEFAULT},
-                                   sf::Color(42, 76, 61))
+                        sf::Vertex({tileStart->transform->getPosition().x, tileStart->transform->getPosition().y},
+                                   sf::Color(42, 76, 61)),
+                        sf::Vertex({tileStart->transform->getPosition().x,
+                                    tileEnd->transform->getPosition().y + TILE_SIZE_DEFAULT}, sf::Color(42, 76, 61))
                 };
         LineGrid.emplace_back(std::pair<sf::Vertex, sf::Vertex>(line[0], line[1]));
     }
-    auto walls = mazeGenerate();
+    us_int **walls = mazeGenerate();
 
-    for (us_int i = 0; i < TileMap.size(); i++)
+    std::cout << "-----------" << std::endl;
+
+    /*for (us_int i = 0; i < tileSizeX; i++)
     {
-        if (walls[i] == VISITED)
+        for (us_int j = 0; j < tileSizeY; j++)
         {
-            TileMap[i]->setIndex(VISITED);
-        } else
-        {
-            TileMap[i]->setIndex(WALL);
+            if (walls[i][j] == VISITED)
+            {
+                for (auto it = DrawableComponentIds.begin(); it != DrawableComponentIds.end(); )
+                {
+                    CDrawable *comp = dynamic_cast<CDrawable *>(ComponentManager::getComponent(*it));
+                    if (comp)
+                    {
+                        if (comp->getEntityId() == TilesIds[i][j])
+                        {
+                            ComponentManager::Destroy(comp->getId(), comp->getEntityId());
+                            it = DrawableComponentIds.erase(it);
+                        } else
+                        {
+                            ++it;
+                        }
+                    }
+                }
+                EntityManager::Destroy(TilesIds[i][j]);
+                TilesIds[i][j] = NULL;
+            }
         }
-//        if (i % height == 0)
-        {
-//            std::cout << "" << std::endl;
-        }
-//        std::cout << TileMap[i]->getIndex() << " ";
-    }
-//    std::cout << "Width: " << width << std::endl;
-//    std::cout << "Height: " << height << std::endl;
-    for (us_int i = 0; i < TileMap.size(); i++)
+    }*/
+
+    for (us_int i = 0; i < tileSizeX; i++)
     {
-        if (TileMap[i]->getIndex() == VISITED)
+        for (us_int j = 0; j < tileSizeY; j++)
         {
-//            TileMap[i]->setPosition(-1000.f, -1000.f);
+            if (walls[i][j] == VISITED)
+            {
+
+//                EntityManager::Destroy(TilesIds[i][j]);
+//                TilesIds[i][j] = NULL;
+            }
+            std::cout << TilesIds[i][j] << " ";
         }
+        std::cout << "" << std::endl;
     }
+
+    for (us_int i = 0; i < tileSizeX; i++)
+    {
+        delete[] walls[i];
+    }
+    delete[] walls;
 }
 void Labyrinth::MouseCallbacks(sf::RenderWindow &window, sf::Event &event)
 {
     if (event.type == sf::Event::MouseWheelScrolled)
     {
-        ZoomViewAt(window, {event.mouseWheelScroll.x, event.mouseWheelScroll.y}, event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
+        ZoomViewAt(window, {event.mouseWheelScroll.x, event.mouseWheelScroll.y},
+                   event.mouseWheelScroll.delta > 0 ? (1.0f / 1.1f) : 1.1f);
     }
 }
 void Labyrinth::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
@@ -146,14 +187,11 @@ void Labyrinth::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
 }
 void Labyrinth::HandleGUIEvent(sf::Event &event)
 {
+    Level::HandleGUIEvent(event);
 }
 void Labyrinth::draw(sf::RenderWindow &window)
 {
-    for (auto t : TileMap)
-    {
-        window.draw(*t);
-    }
-
+    Level::draw(window);
     for (auto g : LineGrid)
     {
         sf::Vertex line[] =
@@ -163,26 +201,28 @@ void Labyrinth::draw(sf::RenderWindow &window)
                 };
         window.draw(line, 2, sf::Lines);
     }
-    Level::draw(window);
+    infoFPSLabel->setText("FPS: " + std::to_string((us_int) fps));
+    infoObjCount->setText("ObjCount: " + std::to_string(ObjectIds.size()));
+    infoDrawableComponentCount->setText("DrawableComponentCount: " + std::to_string(DrawableComponentIds.size()));
 }
-std::vector<us_int> Labyrinth::mazeGenerate()
+
+us_int **Labyrinth::mazeGenerate()
 {
     MazeData maze;
-    maze.data = new us_int*[width];
-    for (us_int i = 0; i < width; i++)
+    maze.data = new us_int *[tileSizeX];
+    for (us_int i = 0; i < tileSizeX; i++)
     {
-        maze.data[i] = new us_int[height];
+        maze.data[i] = new us_int[tileSizeY];
     }
 
-    for (us_int i = 0; i < width; i++)
+    for (us_int i = 0; i < tileSizeX; i++)
     {
-        for (us_int j = 0; j < height; j++)
+        for (us_int j = 0; j < tileSizeY; j++)
         {
-            if (i % 2 != 0 && j % 2 != 0 && (i < width - 1 && j < height - 1))
+            if (i % 2 != 0 && j % 2 != 0 && (i < tileSizeX - 1 && j < tileSizeY - 1))
             {
                 maze.data[i][j] = CELL;
-            }
-            else
+            } else
             {
                 maze.data[i][j] = WALL;
             }
@@ -190,7 +230,7 @@ std::vector<us_int> Labyrinth::mazeGenerate()
     }
 
     std::stack<Point> path;
-    Point startPoint {1, 1};
+    Point startPoint{1, 1};
     Point currentPoint = startPoint;
     path.push(currentPoint);
     maze.data[currentPoint.x][currentPoint.y] = VISITED;
@@ -199,10 +239,7 @@ std::vector<us_int> Labyrinth::mazeGenerate()
     do
     {
         std::vector<Point> unvisitedNeighbor = getUnvisitedNeighbor(maze, currentPoint);
-//        for (auto u : unvisitedNeighbor)
-//        {
-//            std::cout << u.x << " | " << u.y << std::endl;
-//        }
+
         if (!unvisitedNeighbor.empty())
         {
             randomRange = rand() % unvisitedNeighbor.size();
@@ -212,16 +249,15 @@ std::vector<us_int> Labyrinth::mazeGenerate()
             path.push(nextCell);
             maze.data[currentPoint.x][currentPoint.y] = VISITED;
             unvisitedNeighbor.clear();
-        }
-        else if (!path.empty())
+        } else if (!path.empty())
         {
-//            std::cout << "Go back (" << path.size() << ")" << std::endl;
+            //            std::cout << "Go back (" << path.size() << ")" << std::endl;
             currentPoint = path.top();
             path.pop();
         } else
         {
-//            std::cout << "Find random unvisited" << std::endl;
-            std::vector<Point> unvisitedCells = getUnvisitedCells(width, height, maze);
+            //            std::cout << "Find random unvisited" << std::endl;
+            std::vector<Point> unvisitedCells = getUnvisitedCells(tileSizeX, tileSizeY, maze);
             if (!unvisitedCells.empty())
             {
                 randomRange = rand() % unvisitedCells.size();
@@ -229,33 +265,19 @@ std::vector<us_int> Labyrinth::mazeGenerate()
                 unvisitedCells.clear();
             }
         }
-//        std::cout << "" << std::endl;
-//        sleep(3);
-    }while(getUnvisitedCount(maze) > 0);
+        //        std::cout << "" << std::endl;
+        //        sleep(3);
+    } while (getUnvisitedCount(maze) > 0);
     showMaze(&maze);
-    std::vector<us_int> Maze;
-    for (us_int i = 0; i < width; i++)
-    {
-        for (us_int j = 0; j < height; j++)
-        {
-            Maze.push_back(maze.data[i][j]);
-        }
-
-    }
-    for (us_int i = 0; i < width; i++)
-    {
-        delete [] maze.data[i];
-    }
-    delete [] maze.data;
-    return Maze;
+    return maze.data;
 }
 void Labyrinth::showMaze(MazeData *maze)
 {
-    std::cout << "Width: " << width << std::endl;
-    std::cout << "Height: " << height << std::endl;
-    for (us_int i = 0; i < width; i++)
+    std::cout << "Width: " << tileSizeX << std::endl;
+    std::cout << "Height: " << tileSizeY << std::endl;
+    for (us_int i = 0; i < tileSizeX; i++)
     {
-        for (us_int j = 0; j < height; j++)
+        for (us_int j = 0; j < tileSizeY; j++)
         {
             std::cout << maze->data[i][j] << " ";
         }
@@ -265,14 +287,10 @@ void Labyrinth::showMaze(MazeData *maze)
 int Labyrinth::getUnvisitedCount(MazeData maze)
 {
     us_int count = 0;
-    for (us_int i = 0; i < width; i++)
+    for (us_int i = 0; i < tileSizeX; i++)
     {
-        for (us_int j = 0; j < height; j++)
+        for (us_int j = 0; j < tileSizeY; j++)
         {
-//            if (maze.data[i][j] != VISITED && maze.data[i][j] != WALL)
-//            {
-//                count++;
-//            }
             count += maze.data[i][j] != VISITED && maze.data[i][j] != WALL;
         }
     }
@@ -286,11 +304,10 @@ std::vector<Labyrinth::Point> Labyrinth::getUnvisitedNeighbor(Labyrinth::MazeDat
     Point lt = {p.x - 2, p.y};
 
     Point d[4] = {dw, rt, up, lt};
-//    Point *result = new Point[4];
     std::vector<Point> result;
     for (us_int i = 0; i < 4; i++)
     {
-        if (d[i].x > 0 && d[i].x < width - 1 && d[i].y > 0 && d[i].y < height - 1)
+        if (d[i].x > 0 && d[i].x < tileSizeX - 1 && d[i].y > 0 && d[i].y < tileSizeY - 1)
         {
             us_int currentCell = maze.data[d[i].x][d[i].y];
             Point currentPoint = d[i];
@@ -301,7 +318,6 @@ std::vector<Labyrinth::Point> Labyrinth::getUnvisitedNeighbor(Labyrinth::MazeDat
         }
     }
 
-//    std::cout << "Size: " << result.size() << std::endl;
     return result;
 }
 us_int **Labyrinth::removeWall(Labyrinth::Point currentPoint, Labyrinth::Point nextCell, us_int **pInt)
@@ -335,7 +351,6 @@ std::vector<Labyrinth::Point> Labyrinth::getUnvisitedCells(us_int width, us_int 
             }
         }
     }
-//    std::cout << "Size: " << result.size() << std::endl;
     return result;
 }
 
@@ -346,5 +361,34 @@ void Labyrinth::ZoomViewAt(sf::RenderWindow &window, sf::Vector2i pixel, float z
     const sf::Vector2f afterCoord{window.mapPixelToCoords(pixel)};
     const sf::Vector2f offsetCoord{beforeCoord - afterCoord};
     MainCamera->move(offsetCoord);
+}
+void Labyrinth::loadGui(sf::RenderWindow &window)
+{
+    infoFPSLabel = tgui::Label::create();
+    infoFPSLabel->getRenderer()->setTextColor(sf::Color::White);
+    infoFPSLabel->setTextSize(INFO_PANEL_TEXT_SIZE);
+
+    infoObjCount = tgui::Label::copy(infoFPSLabel);
+    infoObjCount->setPosition(infoFPSLabel->getPosition().x, infoFPSLabel->getPosition().y + INFO_PANEL_TEXT_SIZE + 2);
+
+    infoDrawableComponentCount = tgui::Label::copy(infoFPSLabel);
+    infoDrawableComponentCount->setPosition(infoObjCount->getPosition().x,
+                                            infoObjCount->getPosition().y + INFO_PANEL_TEXT_SIZE + 2);
+
+    infoPanel = tgui::Panel::create({200, 100});
+    infoPanel->setPosition(window.getSize().x - infoPanel->getSize().x, 0);
+    infoPanel->getRenderer()->setBackgroundColor(sf::Color(0, 0, 0, 128));
+
+    infoPanel->add(infoFPSLabel);
+    infoPanel->add(infoObjCount);
+    infoPanel->add(infoDrawableComponentCount);
+}
+Labyrinth::~Labyrinth()
+{
+    for (us_int i = 0; i < tileSizeX; i++)
+    {
+        delete[] TilesIds[i];
+    }
+    delete[] TilesIds;
 }
 

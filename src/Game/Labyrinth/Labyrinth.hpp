@@ -8,16 +8,23 @@
 #ifndef DEMIURGE_LABYRINTH_HPP
 #define DEMIURGE_LABYRINTH_HPP
 
+#include <mutex>
 #include "../../Engine/Level.hpp"
 
 class Labyrinth : public Level
 {
 private:
+    tgui::Label::Ptr infoFPSLabel;
+    tgui::Label::Ptr infoObjCount;
+    tgui::Label::Ptr infoDrawableComponentCount;
+    tgui::Panel::Ptr infoPanel;
+
+    std::mutex guard;
 
     struct Point
     {
-        us_int x;
-        us_int y;
+        int x;
+        int y;
     };
 
     struct MazeData
@@ -30,23 +37,20 @@ private:
     bool showInfo;
     float CameraSpeed;
 
-    std::vector<std::string> ImagesFormats;                         //all supported image formats
-    std::vector<std::string> PathToImages;                          //all images
-    std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;        //grid of lines
+    std::vector<std::pair<sf::Vertex, sf::Vertex>> LineGrid;
 
     void drawTileMap();
-    std::vector<us_int> mazeGenerate();
+    us_int ** mazeGenerate();
     void showMaze(MazeData *maze);
-    std::string CurrentPathFile;                                    //path to image, which added to map
 
-    us_int width;
-    us_int height;
+    us_int tileSizeX;
+    us_int tileSizeY;
 
-    std::vector<CPrimitiveQuad*> TileMap;                           //draw grid for add new objects
+    us_int **TilesIds;
 
 public:
     Labyrinth(const std::string &Name);
-    virtual ~Labyrinth() {}
+    virtual ~Labyrinth();
 
     virtual bool prepareLevel(sf::RenderWindow &window) override;
     virtual void MouseCallbacks(sf::RenderWindow &window, sf::Event &event) override;
@@ -59,6 +63,8 @@ public:
     us_int **removeWall(Point currentPoint, Point nextCell, us_int **pInt);
     std::vector<Point> getUnvisitedCells(us_int width, us_int height, MazeData maze);
     void showMazeCoords(std::vector<us_int> coords);
+protected:
+    virtual void loadGui(sf::RenderWindow &window) override;
 };
 
 #endif //DEMIURGE_LABYRINTH_HPP
