@@ -22,9 +22,8 @@ public:
     ThicknessLineArray(){}
     void append(const ThicknessLine &line);
     void resize(us_int lineCount);
-    void Hide();
+    void Clear();
     void ChangeColor(sf::Color c);
-    void clear();
     us_int getLineCount();
 
     ThicknessLine &operator[](us_int index);

@@ -34,7 +34,7 @@ void ThicknessLineArray::draw(sf::RenderTarget &target, sf::RenderStates states)
         target.draw(l, states);
     }
 }
-void ThicknessLineArray::Hide()
+void ThicknessLineArray::Clear()
 {
     lines.clear();
 }
@@ -44,8 +44,4 @@ void ThicknessLineArray::ChangeColor(sf::Color c)
     {
         l.ChangeColor(c);
     }
-}
-void ThicknessLineArray::clear()
-{
-    lines.clear();
 }
