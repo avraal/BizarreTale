@@ -5,7 +5,7 @@
 // Created by Andrew Volski on 14.09.18.
 //
 
-#include <zconf.h>
+//#include <zconf.h>
 #include <stack>
 #include "Labyrinth.hpp"
 #include "../../Engine/Systems/Managers/EntityManager.hpp"
