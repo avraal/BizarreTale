@@ -20,7 +20,6 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <forward_list>
-#include "Components/CPrimitiveQuad.hpp"
 #include "Systems/UIWrapper.hpp"
 #include "Components/CDrawable.hpp"
 
