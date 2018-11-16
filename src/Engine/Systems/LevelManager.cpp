@@ -21,14 +21,6 @@ LevelManager::LevelManager()
 {
 
 }
-std::shared_ptr<Level> LevelManager::changeLevelByName(const std::string &name)
-{
-    if(Levels.find(name) != Levels.end())
-    {
-        return Levels[name];
-    }
-    return nullptr;
-}
 std::shared_ptr<Level> LevelManager::loadLevel(const std::string &name)
 {
     if (Levels.find(name) == Levels.end())

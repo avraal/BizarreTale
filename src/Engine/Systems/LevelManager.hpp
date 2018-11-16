@@ -22,7 +22,6 @@ public:
     LevelManager();
     ~LevelManager();
     void registerLevel(std::shared_ptr<Level> l);
-    std::shared_ptr<Level> changeLevelByName(const std::string &name);
     std::shared_ptr<Level> loadLevel(const std::string &name);
 };
 
