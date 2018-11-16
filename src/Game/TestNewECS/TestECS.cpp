@@ -15,7 +15,10 @@ TestECS::TestECS(const std::string &name) : Level(name)
 }
 bool TestECS::prepareLevel(sf::RenderWindow &window)
 {
-    Level::prepareLevel(window);
+    if (!Level::prepareLevel(window))
+    {
+        return false;
+    }
 
     tileSizeX = 11;
     tileSizeY = 11;
