@@ -1,4 +1,4 @@
-# Demiurge Engine 0.4.4
+# Demiurge Engine 0.4.5a
 Simple engine for 2D games
 Guide for using.  
 Demiurge - it's Entity-Component-System (ECS) based engine.  
@@ -61,7 +61,7 @@ public:
 ```
 You can stay ctor empty, like this:
 ```cpp
-TestECS::TestECS(const std::string &name) : Level(name)
+LTest::LTest(const std::string &name) : Level(name)
 {
 }
 ```
@@ -73,7 +73,6 @@ But you must know, in ctor of Level-class init base fields:
 - ImagesFromats - vector, which contained file formats when searched. By default added .png and .jpg formats;
 - backgroundColor - color for background. By default is sf::Color::Black;
 - UserInterface - wrapper for work with UI. Just init;
-- objDetails - object, which collect information of all object's in level;
 ```
 
 And register classes for EntityManager and ComponentManager:
