@@ -10,6 +10,7 @@
 
 #include <stack>
 #include <vector>
+#include <functional>
 #include <map>
 #include "../../Components/IComponent.hpp"
 #include "../../Util/GetClassName.hpp"
@@ -20,8 +21,8 @@ private:
     ComponentManager() {}
     ~ComponentManager() {}
 
-    static std::vector<IComponent*> Components;
-    static std::map<std::string, IComponent *(*)(us_int id, us_int, const std::string&)> RegisteredMethods;
+    static std::vector<std::shared_ptr<IComponent>> Components;
+    static std::map<std::string, std::function<std::shared_ptr<IComponent>(us_int id, us_int, const std::string&)>> RegisteredMethods;
     static int currentId;
     static int getNextId();
 
@@ -31,7 +32,7 @@ public:
     ComponentManager&operator=(const ComponentManager &) = delete;
     ComponentManager&operator=(ComponentManager &&) = delete;
 
-    static IComponent * Create(const std::string &TypeName, int entityId, const std::string &objName);
+    static std::shared_ptr<IComponent> Create(const std::string &TypeName, int entityId, const std::string &objName);
     static bool Destroy(us_int compId, us_int entityId);
     static bool Destroy(us_int compId);
 
@@ -41,7 +42,7 @@ public:
         RegisteredMethods.insert({GetClassName::Get<CRegisterable>(), &CRegisterable::Create});
     }
 
-    static IComponent *getComponent(int id);
+    static std::shared_ptr<IComponent> getComponent(us_int id);
 
     static void ShowComponents();
     static void DestroyAll();

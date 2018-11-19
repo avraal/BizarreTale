@@ -9,17 +9,18 @@
 #include "EntityManager.hpp"
 #include "ComponentManager.hpp"
 
-std::vector<IEntity*> EntityManager::Entities;
-std::map<std::string, IEntity *(*)(us_int, const std::string&)> EntityManager::RegisteredMethods;
+std::vector<std::shared_ptr<IEntity>> EntityManager::Entities;
+std::map<std::string, std::function<std::shared_ptr<IEntity>(us_int, const std::string&)>> EntityManager::RegisteredMethods;
 
 us_int EntityManager::currentId = 0;
 
-IEntity * EntityManager::Create(const std::string &TypeName, const std::string &objName)
+std::shared_ptr<IEntity> EntityManager::Create(const std::string &TypeName, const std::string &objName)
 {
     auto it = RegisteredMethods.find(TypeName);
     if (it != RegisteredMethods.end())
     {
         auto ie = it->second(getNextId(), objName);
+        //        std::cout << "New id: " << ie->getId() << std::endl;
         Entities.push_back(ie);
         return ie;
     }
@@ -28,7 +29,7 @@ IEntity * EntityManager::Create(const std::string &TypeName, const std::string &
 
 void EntityManager::ShowAll()
 {
-    for (auto e : Entities)
+    for (const auto &e : Entities)
     {
         std::cout << "id: " << e->getId() << " name: " << e->getName() << std::endl;
     }
@@ -47,12 +48,13 @@ bool EntityManager::Destroy(int id)
 
     ComponentManager::DestroyAllByEntityId(id);
     Entities.erase(std::remove(Entities.begin(), Entities.end(), target), Entities.end());
-    delete target;
+    target.reset();
     return beforeSize != Entities.size();
 }
-IEntity *EntityManager::getEntity(int id)
+
+std::shared_ptr<IEntity> EntityManager::getEntity(us_int id)
 {
-    for (auto e : Entities)
+    for (auto &e : Entities)
     {
         if (e->getId() == id)
         {
@@ -62,6 +64,7 @@ IEntity *EntityManager::getEntity(int id)
     std::cout << "EntityManager returned nullptr" << std::endl;
     return nullptr;
 }
+
 int EntityManager::getCount()
 {
     return Entities.size();

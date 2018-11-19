@@ -6,10 +6,11 @@
 //
 
 #ifndef DEMIURGE_ENTITYMANAGER_HPP
-#define DEMIURGE_ENTITYMANAGER_HPPclea
+#define DEMIURGE_ENTITYMANAGER_HPP
 
 #include <algorithm>
 #include <map>
+#include <functional>
 #include "../../Entity/IEntity.hpp"
 #include "../../Util/GetClassName.hpp"
 
@@ -19,27 +20,30 @@ private:
     EntityManager() {}
     ~EntityManager() {}
 
-    static std::vector<IEntity*> Entities;
-    static std::map<std::string, IEntity *(*)(us_int, const std::string&)> RegisteredMethods;
+    friend class Level;
+
+    static std::vector<std::shared_ptr<IEntity>> Entities;
+    static std::map<std::string, std::function<std::shared_ptr<IEntity>(us_int, const std::string&)>> RegisteredMethods;
     static us_int currentId;
 
     static us_int getNextId();
+    static bool Destroy(int id);
+
 public:
     EntityManager(const EntityManager &) = delete;
     EntityManager(EntityManager &&) = delete;
     EntityManager&operator=(const EntityManager &) = delete;
     EntityManager&operator=(EntityManager &&) = delete;
 
-    static IEntity *getEntity(int id);
-    static IEntity *Create(const std::string &TypeName, const std::string &objName);
+    static std::shared_ptr<IEntity> getEntity(us_int id);
+    static std::shared_ptr<IEntity> Create(const std::string &TypeName, const std::string &objName);
 
-    template <typename ERegisterabe>
+    template <typename ERegisterable>
     static void Register()
     {
-        RegisteredMethods.insert({GetClassName::Get<ERegisterabe>(), &ERegisterabe::Create});
+        RegisteredMethods.insert({GetClassName::Get<ERegisterable>(), &ERegisterable::Create});
     }
 
-    static bool Destroy(int id);
 
     static void ShowAll();
 

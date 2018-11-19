@@ -8,12 +8,12 @@
 #include <iostream>
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
-std::vector<IComponent*> ComponentManager::Components;
-std::map<std::string, IComponent *(*)(us_int, us_int, const std::string&)> ComponentManager::RegisteredMethods;
+std::vector<std::shared_ptr<IComponent>> ComponentManager::Components;
+std::map<std::string, std::function<std::shared_ptr<IComponent>(us_int id, us_int, const std::string&)>> ComponentManager::RegisteredMethods;
 
 int ComponentManager::currentId = 0;
 
-IComponent * ComponentManager::Create(const std::string &TypeName, int entityId, const std::string &objName)
+std::shared_ptr<IComponent> ComponentManager::Create(const std::string &TypeName, int entityId, const std::string &objName)
 {
     auto target = EntityManager::getEntity(entityId);
     if (!target)
@@ -30,19 +30,22 @@ IComponent * ComponentManager::Create(const std::string &TypeName, int entityId,
     }
     return nullptr;
 }
-IComponent *ComponentManager::getComponent(int id)
+
+std::shared_ptr<IComponent> ComponentManager::getComponent(us_int id)
 {
-    auto target = std::find_if(Components.begin(), Components.end(), [id](IComponent *ie)
+    for (auto &c : Components)
     {
-        return ie->id == id;
-    });
-    if (!*target || (*target)->getId() != id)
-    {
-//        std::cout << "Can\'t find component" << std::endl;
-        return nullptr;
+        if (c->getId() == id)
+        {
+            return c;
+        }
     }
-    return *target;
+    std::cout << "Can\'t find component" << std::endl;
+    return nullptr;
 }
+
+
+
 bool ComponentManager::Destroy(us_int compId)
 {
     us_int entityId = getComponent(compId)->entityId;
@@ -57,7 +60,7 @@ bool ComponentManager::Destroy(us_int compId, us_int entityId)
     {
         if ((*it)->id == compId && (*it)->entityId == entityId)
         {
-            delete getComponent(compId);
+            getComponent(compId).reset();
             it = Components.erase(it);
             break;
         } else
@@ -89,7 +92,7 @@ void ComponentManager::DestroyAll()
         auto comp = getComponent((*it)->id);
         auto entity = EntityManager::getEntity(comp->entityId);
         entity->ComponentsId.erase(std::remove(entity->ComponentsId.begin(), entity->ComponentsId.end(), comp->id), entity->ComponentsId.end());
-        delete comp;
+        comp.reset();
         it = Components.erase(it);
     }
 }
@@ -101,7 +104,7 @@ void ComponentManager::DestroyAllByEntityId(us_int entityId)
         if ((*it)->entityId == entityId)
         {
             target->ComponentsId.erase(std::remove(target->ComponentsId.begin(), target->ComponentsId.end(), (*it)->id), target->ComponentsId.end());
-            delete getComponent((*it)->id);
+            getComponent((*it)->id).reset();
             it = Components.erase(it);
         }
         else
@@ -110,4 +113,3 @@ void ComponentManager::DestroyAllByEntityId(us_int entityId)
         }
     }
 }
-
