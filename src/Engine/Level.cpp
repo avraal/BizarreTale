@@ -7,6 +7,7 @@
 //
 
 #include <SFML/Window/Event.hpp>
+#include <thread>
 #include "Level.hpp"
 #include "Systems/Managers/EntityManager.hpp"
 #include "Systems/Managers/ComponentManager.hpp"
@@ -28,44 +29,72 @@ Level::Level(const std::string &Name)
     ComponentManager::Register<CDrawable>();
     ComponentManager::Register<CTransform>();
 }
+
+bool Level::DestroyEntity(us_int entityId)
+{
+    bool result = false;
+    for (auto it = ObjectIds.begin(); it != ObjectIds.end();)
+    {
+        if (*it == entityId)
+        {
+            ComponentManager::DestroyAllByEntityId(entityId);
+            for (auto compIt = DrawableComponents.begin(); compIt != DrawableComponents.end();)
+            {
+                if ((*compIt)->getEntityId() == entityId)
+                {
+                    compIt = DrawableComponents.erase(compIt);
+                } else
+                {
+                    ++compIt;
+                }
+            }
+            result = EntityManager::Destroy(entityId);
+            it = ObjectIds.erase(it);
+        } else
+        {
+            ++it;
+        }
+    }
+    return result;
+}
+
 void Level::addObject(us_int entityId)
 {
     ObjectIds.push_back(entityId);
-    EObject *target = static_cast<EObject *>(EntityManager::getEntity(entityId));
-    //setName
+    std::shared_ptr<EObject> target = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
+
     for (auto d : target->ComponentsId)
     {
-        CDrawable *c = dynamic_cast<CDrawable *>(ComponentManager::getComponent(d));
+        std::shared_ptr<CDrawable> c = std::dynamic_pointer_cast<CDrawable>(ComponentManager::getComponent(d));
         if (c)
         {
-            DrawableComponentIds.push_back(d);
             DrawableComponents.push_back(c);
         }
     }
-
-    if (ObjectIds.size() > 1)
-    {
-        us_int count = 0;
-        for (auto o : ObjectIds)
-        {
-            if (o == target->getId())
-            {
-                continue;
-            }
-            if (target->getBody())
-            {
-                EObject *e = static_cast<EObject *>(EntityManager::getEntity(o));
-                if (e->getBody())
-                {
-                    if (target->getTransform()->getPosition() == e->getTransform()->getPosition())
-                    {
-                        count++;
-                    }
-                }
-            }
-        }
-        target->getBody()->setIndex(count);
-    }
+    //
+    //    if (ObjectIds.size() > 1)
+    //    {
+    //        us_int count = 0;
+    //        for (auto o : ObjectIds)
+    //        {
+    //            if (o == target->getId())
+    //            {
+    //                continue;
+    //            }
+    //            if (target->getBody())
+    //            {
+    //                EObject *e = static_cast<EObject *>(EntityManager::getEntity(o));
+    //                if (e->getBody())
+    //                {
+    //                    if (target->getTransform()->getPosition() == e->getTransform()->getPosition())
+    //                    {
+    //                        count++;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        target->getBody()->setIndex(count);
+    //    }
 
 }
 
@@ -86,11 +115,15 @@ void Level::draw(sf::RenderWindow &window)
     float currentTime = clock.restart().asSeconds();
     fps = 1.f / currentTime;
 
-    for (auto d : DrawableComponents)
+    for (auto &d : DrawableComponents)
     {
-        if (d)
+        if (guard.try_lock())
         {
-            window.draw(*d);
+            if (d)
+            {
+                window.draw(*d);
+            }
+            guard.unlock();
         }
     }
 
@@ -107,23 +140,23 @@ void Level::initGui(sf::RenderWindow &window)
 }
 void Level::sortedObjectsByIndex()
 {
-//    std::sort(DrawableComponents.begin(), DrawableComponents.end(),
-//            [](std::shared_ptr<CPrimitiveQuad> c1, std::shared_ptr<CPrimitiveQuad> c2)
-//            {
-//                return c1->getIndex() < c2->getIndex();
-//            });
+    //    std::sort(DrawableComponents.begin(), DrawableComponents.end(),
+    //            [](std::shared_ptr<CPrimitiveQuad> c1, std::shared_ptr<CPrimitiveQuad> c2)
+    //            {
+    //                return c1->getIndex() < c2->getIndex();
+    //            });
 
-    std::sort(ObjectIds.begin(), ObjectIds.end(),
-            [](us_int o1, us_int o2)
-            {
-                CDrawable *b1 = static_cast<EObject *>(EntityManager::getEntity(o1))->getBody();
-                CDrawable *b2 = static_cast<EObject *>(EntityManager::getEntity(o2))->getBody();
-                if (b1 && b2)
-                {
-                    return b1->getIndex() < b2->getIndex();
-                }
-                return false;
-            });
+    //    std::sort(ObjectIds.begin(), ObjectIds.end(),
+    //            [](us_int o1, us_int o2)
+    //            {
+    //                CDrawable *b1 = static_cast<EObject *>(EntityManager::getEntity(o1))->getBody();
+    //                CDrawable *b2 = static_cast<EObject *>(EntityManager::getEntity(o2))->getBody();
+    //                if (b1 && b2)
+    //                {
+    //                    return b1->getIndex() < b2->getIndex();
+    //                }
+    //                return false;
+    //            });
 }
 void Level::loadGui(sf::RenderWindow &window)
 {
@@ -185,6 +218,6 @@ bool Level::findAllFiles(std::vector<std::string> &Container, std::vector<std::s
         std::cerr << "Can't open a dir" << std::endl;
         result = false;
     }
-    return result;
+    //    return result;
+    return true;
 }
-

@@ -5,6 +5,7 @@
 // Created by Andrew Volski on 08.10.18.
 //
 
+#include <SFML/Graphics/RectangleShape.hpp>
 #include "CDrawable.hpp"
 CDrawable::CDrawable(us_int id, us_int entityId, const std::string &name, const std::string &ImagePath, sf::Color c,
                      us_int index) : IComponent(id, entityId, name)
@@ -72,7 +73,7 @@ const sf::Texture &CDrawable::getTexture() const
 }
 void CDrawable::drawBounds()
 {
-    bounds.Clear();
+    bounds.clear();
     bounds.append({body[0].position, body[1].position});
     bounds.append({body[1].position, body[2].position});
     bounds.append({body[2].position, body[3].position});
@@ -88,10 +89,14 @@ void CDrawable::setShowBounds(bool showBounds)
 }
 void CDrawable::hideBounds()
 {
-    bounds.Clear();
+    bounds.clear();
     showBounds = false;
 }
 void CDrawable::setIndex(us_int index)
 {
     this->index = index;
+}
+const sf::VertexArray &CDrawable::getBody() const
+{
+    return body;
 }

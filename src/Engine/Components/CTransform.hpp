@@ -13,7 +13,7 @@
 
 class CTransform :public IComponent, public CRegisterable<CTransform>, public sf::Transformable
 {
-protected:
+public:
     CTransform(us_int id, us_int entityId, const std::string &name, const sf::Vector2f &pos = {0, 0});
     virtual ~CTransform() {}
     friend class CRegisterable<CTransform>;

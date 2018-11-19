@@ -19,8 +19,6 @@ private:
     tgui::Label::Ptr infoDrawableComponentCount;
     tgui::Panel::Ptr infoPanel;
 
-    std::mutex guard;
-
     struct Point
     {
         int x;

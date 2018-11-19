@@ -13,19 +13,19 @@
 #include "../Components/CDrawable.hpp"
 #include "../Components/CTransform.hpp"
 
-class EObject : public IEntity, public ERegisterabe<EObject>
+class EObject : public IEntity, public ERegisterable<EObject>
 {
-protected:
-    friend class ERegisterabe<EObject>;
+    //TODO: Make this protected
+public:
+    friend class ERegisterable<EObject>;
     EObject(us_int id, const std::string &name);
     virtual ~EObject();
 public:
-
-    CDrawable *body;
-    CTransform *transform;
+    std::shared_ptr<CDrawable> body;
+    std::shared_ptr<CTransform> transform;
     EObject() = delete;
-    CDrawable *getBody() const;
-    CTransform *getTransform() const;
+    //    CDrawable *getBody() const;
+    //    CTransform *getTransform() const;
     void setPosition(const sf::Vector2f &pos);
     void setPosition(const sf::Vector2i &pos);
 };

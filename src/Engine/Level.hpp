@@ -20,6 +20,7 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <forward_list>
+#include <mutex>
 #include "Systems/UIWrapper.hpp"
 #include "Components/CDrawable.hpp"
 
@@ -29,11 +30,13 @@ class EObject;
 class Level
 {
 protected:
+    std::mutex guard;
+
     us_int Id;
     std::string Name;
     std::vector<us_int> ObjectIds;
-    std::vector<int> DrawableComponentIds;
-    std::vector<CDrawable*> DrawableComponents;
+    //    std::vector<int> DrawableComponentIds;
+    std::vector<std::shared_ptr<CDrawable>> DrawableComponents;
     std::vector<tgui::Widget::Ptr> guiContainer;
     std::vector<std::string> ImagesFormats;
     std::vector<std::string> PathToImages;
@@ -62,6 +65,8 @@ public:
     virtual void KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event) = 0;
     virtual void HandleGUIEvent(sf::Event &event);
     virtual std::string getName() const;
+
+    bool DestroyEntity(us_int entityId);
 
     void addObject(us_int entityId);
     void sortedObjectsByIndex();

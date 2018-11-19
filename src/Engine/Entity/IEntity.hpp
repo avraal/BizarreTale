@@ -17,13 +17,14 @@
 class IEntity;
 
 template <typename T>
-class ERegisterabe
+class ERegisterable
 {
 protected:
     friend class EntityManager;
-    static IEntity *Create(us_int id, const std::string &name)
+
+    static std::shared_ptr<T> Create(us_int id, const std::string &name)
     {
-        return new T(id, name);
+        return std::make_shared<T>(id, name);
     }
 };
 

@@ -20,9 +20,9 @@
 
 class CDrawable : public IComponent, public sf::Drawable, public CRegisterable<CDrawable>
 {
-protected:
+public:
     CDrawable(us_int id, us_int entityId, const std::string &name, const std::string &ImagePath = "",
-                  sf::Color c = sf::Color(91, 97, 91), us_int index = 0);
+              sf::Color c = sf::Color(91, 97, 91), us_int index = 0);
 
     virtual ~CDrawable() {}
     friend class CRegisterable<CDrawable>;
@@ -38,6 +38,10 @@ protected:
     bool showBounds;
     std::string ImagePath;
     sf::VertexArray body;
+
+public:
+    const sf::VertexArray &getBody() const;
+protected:
     sf::Texture texture;
     sf::Color color;
     ThicknessLineArray bounds;

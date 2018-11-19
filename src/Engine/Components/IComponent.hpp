@@ -20,9 +20,14 @@ class CRegisterable
 {
 protected:
     friend class ComponentManager;
-    static IComponent *Create(us_int id, us_int entityId, const std::string &name)
+    //    static IComponent *Create(us_int id, us_int entityId, const std::string &name)
+    //    {
+    //        return new T(id, entityId, name);
+    //    }
+
+    static std::shared_ptr<T> Create(us_int id, us_int entityId, const std::string &name)
     {
-        return new T(id, entityId, name);
+        return std::make_shared<T>(id, entityId, name);
     }
 };
 
