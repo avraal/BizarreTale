@@ -39,12 +39,13 @@ public:
     std::string ImagePath;
     sf::VertexArray body;
 
-public:
     const sf::VertexArray &getBody() const;
+
 protected:
     sf::Texture texture;
     sf::Color color;
     ThicknessLineArray bounds;
+    bool canDraw;
 
 public:
     const sf::Color &getColor() const;
@@ -55,6 +56,8 @@ public:
     void setShowBounds(bool showBounds);
     void setIndex(us_int index);
     void setColor(const sf::Color &color);
+    void setCanDraw(bool isDraw);
+    bool isCanDraw() const;
     bool isShowBounds() const;
 };
 

@@ -15,6 +15,7 @@ CDrawable::CDrawable(us_int id, us_int entityId, const std::string &name, const 
     this->ImagePath = ImagePath;
     showBounds = false;
     bodyInit(sf::PrimitiveType::Quads, 4);
+    canDraw = false;
 }
 
 void CDrawable::bodyBuild()
@@ -64,8 +65,11 @@ const std::string &CDrawable::getImagePath() const
 }
 void CDrawable::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    target.draw(body, states);
-    target.draw(bounds, states);
+    if (canDraw)
+    {
+        target.draw(body, states);
+        target.draw(bounds, states);
+    }
 }
 const sf::Texture &CDrawable::getTexture() const
 {
@@ -99,4 +103,12 @@ void CDrawable::setIndex(us_int index)
 const sf::VertexArray &CDrawable::getBody() const
 {
     return body;
+}
+bool CDrawable::isCanDraw() const
+{
+    return canDraw;
+}
+void CDrawable::setCanDraw(bool isDraw)
+{
+    this->canDraw = isDraw;
 }
