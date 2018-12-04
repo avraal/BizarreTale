@@ -54,7 +54,7 @@ bool ComponentManager::Destroy(us_int compId)
 
 bool ComponentManager::Destroy(us_int compId, us_int entityId)
 {
-    us_int beforeSize = Components.size();
+    auto beforeSize = Components.size();
 
     for (auto it = Components.begin(); it != Components.end(); )
     {
