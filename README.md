@@ -1,14 +1,14 @@
-# Demiurge Engine 0.4.5
+# Demiurge Engine 0.4.6
 Simple engine for 2D games
 Guide for using.  
-Demiurge - it's Entity-Component-System (ECS) based engine.  
+Demiurge - it's Entity-Component-System (ECS) based constructor.  
 
 ## Entity and EntityManager
 Based unit of all game objects. Every entity has a list of unique identifiers components. You can't create entity without EntityManager, because constructor (ctor) and destructor (dtor) - has private access modifier.  
 EntityManager - it's class, which can create, delete, etc. entity.
 
 ```cpp
-auto Wall = static_pointer_cast<EObject*>(EntityManager::Create(GetClassName::Get<EObject>(), "Wall0"));
+auto Wall = std::static_pointer_cast<EObject>(EntityManager::Create(GetClassName::Get<EObject>(), "Wall0"));
 Wall->DoesSomeMethod();
 addObject(Wall->getId());
 ```
@@ -29,8 +29,8 @@ This method released all components which linked with him.
 ## Component and ComponentManager
 Based thing for interaction entity with entity. Every component has a unique id and id of entity to which his attached. Like Entity objects, component may created only on ComponentManager:
 ```cpp
-Wall->body = static_pointer_cast<CDrawable *>(ComponentManager::Create(GetClassName::Get<CDrawable>(), Wall->getId(), "body"));
-Wall->transform = static_pointer_cast<CTransform *>(ComponentManager::Create(GetClassName::Get<CTransform>(), Wall->getId(), "transform"));
+Wall->body = std::static_pointer_cast<CDrawable>(ComponentManager::Create(GetClassName::Get<CDrawable>(), Wall->getId(), "body"));
+Wall->transform = std::static_pointer_cast<CTransform>(ComponentManager::Create(GetClassName::Get<CTransform>(), Wall->getId(), "transform"));
 ``` 
 
 In Create-method ComponentManager find entity by id and attach id of component to him. If entity not found, returned nullptr.  
