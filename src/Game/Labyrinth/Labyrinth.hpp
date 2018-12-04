@@ -44,8 +44,8 @@ private:
     us_int tileSizeX;
     us_int tileSizeY;
 
-    us_int **TilesIds;
-
+//    us_int **TilesIds;
+    std::vector<us_int> TileIds;
 public:
     Labyrinth(const std::string &Name);
     virtual ~Labyrinth();
