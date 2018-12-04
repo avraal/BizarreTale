@@ -14,12 +14,17 @@ std::map<std::string, std::function<std::shared_ptr<IEntity>(us_int, const std::
 
 us_int EntityManager::currentId = 0;
 
-std::shared_ptr<IEntity> EntityManager::Create(const std::string &TypeName, const std::string &objName)
+std::shared_ptr<IEntity> EntityManager::Create(const std::string &TypeName, std::string objName)
 {
     auto it = RegisteredMethods.find(TypeName);
     if (it != RegisteredMethods.end())
     {
-        auto ie = it->second(getNextId(), objName);
+        us_int id = getNextId();
+        if (objName.empty())
+        {
+            objName = "obj" + std::to_string(id);
+        }
+        auto ie = it->second(id, objName);
         //        std::cout << "New id: " << ie->getId() << std::endl;
         Entities.push_back(ie);
         return ie;
@@ -34,7 +39,7 @@ void EntityManager::ShowAll()
         std::cout << "id: " << e->getId() << " name: " << e->getName() << std::endl;
     }
 }
-bool EntityManager::Destroy(int id)
+bool EntityManager::Destroy(us_int id)
 {
     int beforeSize = Entities.size();
 

@@ -27,7 +27,7 @@ private:
     static us_int currentId;
 
     static us_int getNextId();
-    static bool Destroy(int id);
+    static bool Destroy(us_int id);
 
 public:
     EntityManager(const EntityManager &) = delete;
@@ -36,7 +36,7 @@ public:
     EntityManager&operator=(EntityManager &&) = delete;
 
     static std::shared_ptr<IEntity> getEntity(us_int id);
-    static std::shared_ptr<IEntity> Create(const std::string &TypeName, const std::string &objName);
+    static std::shared_ptr<IEntity> Create(const std::string &TypeName, std::string objName = "");
 
     template <typename ERegisterable>
     static void Register()
