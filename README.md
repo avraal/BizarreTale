@@ -1,5 +1,5 @@
-# Demiurge Engine 0.4.6
-Simple engine for 2D games
+# Demiurge Engine 0.4.7
+Simple constructor for 2D games
 Guide for using.  
 Demiurge - it's Entity-Component-System (ECS) based constructor.  
 
@@ -8,9 +8,9 @@ Based unit of all game objects. Every entity has a list of unique identifiers co
 EntityManager - it's class, which can create, delete, etc. entity.
 
 ```cpp
-auto Wall = std::static_pointer_cast<EObject>(EntityManager::Create(GetClassName::Get<EObject>(), "Wall0"));
+auto Wall = EntityManager::Create<EObject>("Wall0")); //quotes may be empty
+addObEect(Wall->getId());
 Wall->DoesSomeMethod();
-addObject(Wall->getId());
 ```
 
 This code created a new game object - wall with name "Wall0". **Create** - is a static method of class EntityManager, which created new object by class name, added to vector and returned him.
@@ -29,14 +29,15 @@ This method released all components which linked with him.
 ## Component and ComponentManager
 Based thing for interaction entity with entity. Every component has a unique id and id of entity to which his attached. Like Entity objects, component may created only on ComponentManager:
 ```cpp
-Wall->body = std::static_pointer_cast<CDrawable>(ComponentManager::Create(GetClassName::Get<CDrawable>(), Wall->getId(), "body"));
-Wall->transform = std::static_pointer_cast<CTransform>(ComponentManager::Create(GetClassName::Get<CTransform>(), Wall->getId(), "transform"));
+Wall->body = ComponentManager::Create(Wall->getId(), "body")); //quotes may be empty
+//or
+ComponentManager::Create<CDrawable>(Wall->getId());
 ``` 
 
 In Create-method ComponentManager find entity by id and attach id of component to him. If entity not found, returned nullptr.  
 
 ## Level-based system
-Every entity may have drawable components. For draw you may used draw-method. This method definition in every level. 
+Every entity may have drawable components. For draw you must call draw-method. This method definition in every level. 
 Life-cycle every level:
 1. Register level in LevelManager
 2. Load level  
