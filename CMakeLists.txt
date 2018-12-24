@@ -22,7 +22,6 @@ add_executable(Demiurge src/main.cpp
         src/Engine/Systems/Managers/ComponentManager.cpp
         src/Engine/Components/CDrawable.cpp
         src/Engine/Components/CTransform.cpp
-        src/Game/TestNewECS/TestECS.cpp
         src/Engine/Util/GetClassName.hpp)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics network audio)
