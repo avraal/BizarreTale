@@ -19,6 +19,7 @@ Labyrinth::Labyrinth(const std::string &Name) : Level(Name)
     tileSizeY = 99;
     tileSizeX = 99;
     CameraSpeed = 14.0f;
+    backgroundColor = sf::Color::Black;
     showInfo = true;
 }
 bool Labyrinth::prepareLevel(sf::RenderWindow &window)
@@ -41,30 +42,52 @@ void Labyrinth::drawTileMap()
 {
     us_int **walls = mazeGenerate();
 
-    for (us_int i = 0; i < tileSizeX; i++)
-    {
-        for (us_int j = 0; j < tileSizeY; j++)
-        {
-            if (walls[i][j] != VISITED)
-            {
-                if (guard.try_lock())
-                {
-                    auto tile = std::static_pointer_cast<EObject>(
-                            EntityManager::Create(GetClassName::Get<EObject>()));
-                    tile->transform = std::static_pointer_cast<CTransform>(
-                            ComponentManager::Create(GetClassName::Get<CTransform>(), tile->getId(), "transform"));
+    auto testObj = EntityManager::Create<EObject>("test");
+    testObj->setPosition(sf::Vector2f(32, 32));
+    auto body = ComponentManager::Create<CDrawable>(testObj->getId());
+    body->setCanDraw(true);
+//    body->setGlobalPosition({0, 0});
+    ComponentManager::Create<CDrawable>(testObj->getId(), "body1");
+    addObject(testObj->getId());
 
-                    tile->body = std::static_pointer_cast<CDrawable>(
-                            ComponentManager::Create(GetClassName::Get<CDrawable>(), tile->getId(), "body"));
-                    tile->setPosition(sf::Vector2i(j * TILE_SIZE_DEFAULT, i * TILE_SIZE_DEFAULT));
-                    addObject(tile->getId());
-                    TileIds.push_back(tile->getId());
-                    guard.unlock();
-                }
-            }
-        }
+//    for (us_int i = 0; i < tileSizeX; i++)
+//    {
+//        for (us_int j = 0; j < tileSizeY; j++)
+//        {
+//            if (walls[i][j] != VISITED)
+//            {
+//                if (guard.try_lock())
+//                {
+//                    auto tile = EntityManager::Create<EObject>();
+////                    tile->transform = ComponentManager::Create<CTransform>(tile->getId(), "transform");
+//                    tile->body = ComponentManager::Create<CDrawable>(tile->getId(), "body");
+////                    tile->body->setCanDraw(false);
+//                    tile->setPosition(sf::Vector2i(j * TILE_SIZE_DEFAULT, i * TILE_SIZE_DEFAULT));
+//                    addObject(tile->getId());
+//                    TileIds.push_back(tile->getId());
+//                    guard.unlock();
+//                }
+//            }
+//        }
+//    }
+//    std::this_thread::yield();
+
+    std::vector<sf::Vector2f> positions;
+    positions.push_back({-64, -64});
+    positions.push_back({64, -64});
+    positions.push_back({64, 64});
+    positions.push_back({-64, 64});
+
+    for (int i = 0; i < 4; i++)
+    {
+        auto b = ComponentManager::Create<CDrawable>(EntityManager::getEntity("test")->getId());
+        b->setColor(sf::Color::White);
+        b->setCanDraw(true);
+//        b->setIsAttachedPosition(false);
+        b->setLocalePosition(positions[i]);
+//        b->setIsAttachedPosition(true);
+        DrawableComponents.push_back(b);
     }
-    std::this_thread::yield();
 
     for (auto i : TileIds)
     {
@@ -75,9 +98,9 @@ void Labyrinth::drawTileMap()
             component->setCanDraw(true);
         }
     }
+//    sf::Color lineColor = sf::Color(42, 76, 61);
+    sf::Color lineColor = sf::Color::White;
     //horizontal lines
-    sf::Color lineColor = sf::Color(42, 76, 61);
-//    sf::Color lineColor = sf::Color::White;
     for (float j = 0; j <= tileSizeX; j++)
     {
         sf::Vertex line[] =
@@ -129,6 +152,30 @@ void Labyrinth::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
                 MainCamera->move(CameraSpeed, 0.0f);
                 break;
             }
+            case sf::Keyboard::W:
+            {
+                auto entity = std::static_pointer_cast<EObject>(EntityManager::getEntity("test"));
+                entity->move(sf::Vector2f(0, -32));
+                break;
+            }
+            case sf::Keyboard::S:
+            {
+                auto entity = std::static_pointer_cast<EObject>(EntityManager::getEntity("test"));
+                entity->move(sf::Vector2f(0, 32));
+                break;
+            }
+            case sf::Keyboard::A:
+            {
+                auto entity = std::static_pointer_cast<EObject>(EntityManager::getEntity("test"));
+                entity->move(sf::Vector2f(-32, 0));
+                break;
+            }
+            case sf::Keyboard::D:
+            {
+                auto entity = std::static_pointer_cast<EObject>(EntityManager::getEntity("test"));
+                entity->move(sf::Vector2f(32, 0));
+                break;
+            }
             case sf::Keyboard::Left:
             {
                 MainCamera->move(-CameraSpeed, 0.0f);
@@ -144,13 +191,24 @@ void Labyrinth::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
                 MainCamera->move(0.0f, CameraSpeed);
                 break;
             }
+            case sf::Keyboard::Space:
+            {
+                auto e = std::static_pointer_cast<EObject>(EntityManager::getEntity("test"));
+                e->setPosition(sf::Vector2i(64, 64));
+//                auto b1 = std::static_pointer_cast<CDrawable>(ComponentManager::getComponent("body2"));
+//                b1->setLocalePosition(sf::Vector2f{32, 32});
+                std::cout << "So..." << std::endl;
+                break;
+            }
         }
     }
 }
+
 void Labyrinth::HandleGUIEvent(sf::Event &event)
 {
     Level::HandleGUIEvent(event);
 }
+
 void Labyrinth::draw(sf::RenderWindow &window)
 {
     Level::draw(window);
