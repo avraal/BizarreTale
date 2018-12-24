@@ -9,27 +9,10 @@
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
 std::vector<std::shared_ptr<IComponent>> ComponentManager::Components;
-std::map<std::string, std::function<std::shared_ptr<IComponent>(us_int id, us_int, const std::string&)>> ComponentManager::RegisteredMethods;
+std::map<std::string, std::function<std::shared_ptr<IComponent>(us_int id, us_int, const std::string&)>> ComponentManager::RegisteredComponents;
 
 int ComponentManager::currentId = 0;
 
-std::shared_ptr<IComponent> ComponentManager::Create(const std::string &TypeName, int entityId, const std::string &objName)
-{
-    auto target = EntityManager::getEntity(entityId);
-    if (!target)
-    {
-        return nullptr;
-    }
-    auto it = RegisteredMethods.find(TypeName);
-    if (it != RegisteredMethods.end())
-    {
-        auto c = it->second(getNextId(), entityId, objName);
-        Components.push_back(c);
-        target->ComponentsId.push_back(c->id);
-        return c;
-    }
-    return nullptr;
-}
 
 std::shared_ptr<IComponent> ComponentManager::getComponent(us_int id)
 {
@@ -44,7 +27,18 @@ std::shared_ptr<IComponent> ComponentManager::getComponent(us_int id)
     return nullptr;
 }
 
-
+std::shared_ptr<IComponent> ComponentManager::getComponent(const std::string &name)
+{
+    for (auto &c : Components)
+    {
+        if (c->getName() == name)
+        {
+            return c;
+        }
+    }
+    std::cout << "Can\'t find component" << std::endl;
+    return nullptr;
+}
 
 bool ComponentManager::Destroy(us_int compId)
 {
@@ -80,7 +74,7 @@ int ComponentManager::getNextId()
 }
 void ComponentManager::ShowComponents()
 {
-    for (auto c : Components)
+    for (const auto &c : Components)
     {
         std::cout << "id: " << c->getId() << " name: " << c->getName() << std::endl;
     }
@@ -91,6 +85,7 @@ void ComponentManager::DestroyAll()
     {
         auto comp = getComponent((*it)->id);
         auto entity = EntityManager::getEntity(comp->entityId);
+
         entity->ComponentsId.erase(std::remove(entity->ComponentsId.begin(), entity->ComponentsId.end(), comp->id), entity->ComponentsId.end());
         comp.reset();
         it = Components.erase(it);
@@ -112,4 +107,10 @@ void ComponentManager::DestroyAllByEntityId(us_int entityId)
             ++it;
         }
     }
+}
+void ComponentManager::AppendTo(us_int compId, us_int entityId)
+{
+    auto comp = getComponent(compId);
+    auto target = EntityManager::getEntity(entityId);
+    target->ComponentsId.push_back(compId);
 }
