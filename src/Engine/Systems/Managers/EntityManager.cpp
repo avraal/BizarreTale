@@ -10,27 +10,9 @@
 #include "ComponentManager.hpp"
 
 std::vector<std::shared_ptr<IEntity>> EntityManager::Entities;
-std::map<std::string, std::function<std::shared_ptr<IEntity>(us_int, const std::string&)>> EntityManager::RegisteredMethods;
+std::map<std::string, std::function<std::shared_ptr<IEntity>(us_int, const std::string&)>> EntityManager::RegisteredEntities;
 
 us_int EntityManager::currentId = 0;
-
-std::shared_ptr<IEntity> EntityManager::Create(const std::string &TypeName, std::string objName)
-{
-    auto it = RegisteredMethods.find(TypeName);
-    if (it != RegisteredMethods.end())
-    {
-        us_int id = getNextId();
-        if (objName.empty())
-        {
-            objName = "obj" + std::to_string(id);
-        }
-        auto ie = it->second(id, objName);
-        //        std::cout << "New id: " << ie->getId() << std::endl;
-        Entities.push_back(ie);
-        return ie;
-    }
-    return nullptr;
-}
 
 void EntityManager::ShowAll()
 {
@@ -62,6 +44,19 @@ std::shared_ptr<IEntity> EntityManager::getEntity(us_int id)
     for (auto &e : Entities)
     {
         if (e->getId() == id)
+        {
+            return e;
+        }
+    }
+    std::cout << "EntityManager returned nullptr" << std::endl;
+    return nullptr;
+}
+
+std::shared_ptr<IEntity> EntityManager::getEntity(const std::string &name)
+{
+    for (auto &e : Entities)
+    {
+        if (e->getName() == name)
         {
             return e;
         }
