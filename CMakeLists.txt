@@ -2,13 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 project(Demiurge)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_COMPILER /usr/bin/g++-7)
+#set(CMAKE_CXX_COMPILER /usr/bin/g++-7)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
 add_executable(Demiurge src/main.cpp
-#        src/Engine/Components/CTile.cpp
 #        src/Engine/MapEditor.cpp
-#        src/Engine/Components/CPrimitiveQuad.cpp
         src/Engine/ThicknessLine.cpp
         src/Engine/ThicknessLineArray.cpp
         src/Engine/Entity/IEntity.cpp
