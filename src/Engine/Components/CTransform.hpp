@@ -9,6 +9,7 @@
 #define DEMIURGE_CTRANSFORM_HPP
 
 #include <SFML/Graphics/Transformable.hpp>
+#include <iostream>
 #include "IComponent.hpp"
 
 class CTransform :public IComponent, public CRegisterable<CTransform>, public sf::Transformable
@@ -18,6 +19,10 @@ public:
     virtual ~CTransform() {}
     friend class CRegisterable<CTransform>;
 
+    friend std::ostream &operator<<(std::ostream &os, std::shared_ptr<CTransform> transform)
+    {
+        os << "X: " << transform->getPosition().x << " Y: " << transform->getPosition().y << std::endl;
+    }
 public:
     CTransform() = delete;
 };
