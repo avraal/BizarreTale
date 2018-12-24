@@ -43,7 +43,7 @@ public:
     IEntity() = delete;
 
     std::vector<us_int> ComponentsId;
-
+    virtual void init() = 0;
     us_int getId() const;
     void setName(const std::string &name);
     const std::string &getName() const;
