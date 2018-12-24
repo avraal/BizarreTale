@@ -26,7 +26,8 @@
 
 class IEntity;
 class EObject;
-
+class ComponentManager;
+class EntityManager;
 class Level
 {
 protected:
@@ -35,14 +36,12 @@ protected:
     us_int Id;
     std::string Name;
     std::vector<us_int> ObjectIds;
-    //    std::vector<int> DrawableComponentIds;
     std::vector<std::shared_ptr<CDrawable>> DrawableComponents;
     std::vector<tgui::Widget::Ptr> guiContainer;
     std::vector<std::string> ImagesFormats;
     std::vector<std::string> PathToImages;
     sf::Clock clock;
     sf::View *MainCamera;
-    sf::Color backgroundColor;
     virtual void loadGui(sf::RenderWindow &window);
     virtual void initGui(sf::RenderWindow &window);
     bool findAllFiles(std::vector<std::string> &Container, std::vector<std::string> FileFormats);
@@ -73,6 +72,7 @@ public:
     void setCamera(sf::View &camera);
     us_int getObjCount();
     std::vector<us_int> &getAllObjectsIds();
+    sf::Color backgroundColor;
     std::string ImageDirectory;
     float fps;
 };

@@ -117,13 +117,9 @@ void Level::draw(sf::RenderWindow &window)
 
     for (auto &d : DrawableComponents)
     {
-        if (guard.try_lock())
+        if (d != nullptr)
         {
-            if (d)
-            {
-                window.draw(*d);
-            }
-            guard.unlock();
+            window.draw(*d);
         }
     }
 
