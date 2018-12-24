@@ -19,15 +19,15 @@ class EObject : public IEntity, public ERegisterable<EObject>
 public:
     friend class ERegisterable<EObject>;
     EObject(us_int id, const std::string &name);
-    virtual ~EObject();
 public:
-    std::shared_ptr<CDrawable> body;
+    virtual ~EObject();
     std::shared_ptr<CTransform> transform;
     EObject() = delete;
-    //    CDrawable *getBody() const;
-    //    CTransform *getTransform() const;
     void setPosition(const sf::Vector2f &pos);
     void setPosition(const sf::Vector2i &pos);
+    void move(const sf::Vector2f &offset);
+    virtual void init() override;
+    const sf::Vector2f &getPosition();
 };
 
 #endif //DEMIURGE_EOBJECT_HPP

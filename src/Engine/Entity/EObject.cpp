@@ -14,23 +14,38 @@ EObject::~EObject()
 }
 EObject::EObject(us_int id, const std::string &name) : IEntity(id, name)
 {
-    body = nullptr;
-    transform = nullptr;
 }
-//CDrawable *EObject::getBody() const
-//{
-//    return body;
-//}
-//CTransform *EObject::getTransform() const
-//{
-//    return transform;
-//}
 void EObject::setPosition(const sf::Vector2f &pos)
 {
+    auto n_pos = pos - transform->getPosition();
     transform->setPosition(pos);
-    body->setPosition(pos);
+
+    for (auto i : ComponentsId)
+    {
+        auto d = std::dynamic_pointer_cast<CDrawable>(ComponentManager::getComponent(i));
+        if (d)
+        {
+            if (d->isAttachedPosition())
+            {
+                d->setLocalePosition(n_pos);
+            }
+        }
+    }
+
 }
 void EObject::setPosition(const sf::Vector2i &pos)
 {
     setPosition(sf::Vector2f(pos));
+}
+const sf::Vector2f &EObject::getPosition()
+{
+    return transform->getPosition();
+}
+void EObject::init()
+{
+    transform = ComponentManager::Create<CTransform>(id, "transform");
+}
+void EObject::move(const sf::Vector2f &offset)
+{
+    setPosition(getPosition() + offset);
 }
