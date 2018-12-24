@@ -7,6 +7,8 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include "CDrawable.hpp"
+#include "../Systems/Managers/EntityManager.hpp"
+#include "../Entity/EObject.hpp"
 CDrawable::CDrawable(us_int id, us_int entityId, const std::string &name, const std::string &ImagePath, sf::Color c,
                      us_int index) : IComponent(id, entityId, name)
 {
@@ -16,6 +18,10 @@ CDrawable::CDrawable(us_int id, us_int entityId, const std::string &name, const 
     showBounds = false;
     bodyInit(sf::PrimitiveType::Quads, 4);
     canDraw = false;
+    attachedPosition = true;
+    auto parent = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
+    setGlobalPosition(parent->getPosition());
+    //    canDraw = true;
 }
 
 void CDrawable::bodyBuild()
@@ -36,12 +42,33 @@ void CDrawable::setColor(const sf::Color &color)
     body[3].color = color;
 }
 
-void CDrawable::setPosition(const sf::Vector2f &p)
+void CDrawable::setGlobalPosition(const sf::Vector2f &p)
 {
-    body[0].position = {p.x, p.y};
+    body[0].position =  p;
     body[1].position = {p.x + TDS, p.y};
     body[2].position = {p.x + TDS, p.y + TDS};
     body[3].position = {p.x, p.y + TDS};
+}
+
+void CDrawable::setLocalePosition(const sf::Vector2f &p)
+{
+    auto parent = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
+    sf::Vector2f startPoint;
+//    if (attachedPosition)
+//    {
+//        startPoint = body[0].position + p;
+//    } else
+//    {
+//        startPoint = parent->getPosition() + p;
+//    }
+    //    startPoint = body[0].position + p;
+    startPoint = body[0].position + p;
+
+    body[0].position =  startPoint;
+    body[1].position = {startPoint.x + TDS, startPoint.y};
+    body[2].position = {startPoint.x + TDS, startPoint.y + TDS};
+    body[3].position = {startPoint.x, startPoint.y + TDS};
+
 }
 
 void CDrawable::bodyInit(sf::PrimitiveType type, us_int vertexCount)
@@ -89,7 +116,7 @@ bool CDrawable::isShowBounds() const
 }
 void CDrawable::setShowBounds(bool showBounds)
 {
-    CDrawable::showBounds = showBounds;
+    this->showBounds = showBounds;
 }
 void CDrawable::hideBounds()
 {
@@ -111,4 +138,12 @@ bool CDrawable::isCanDraw() const
 void CDrawable::setCanDraw(bool isDraw)
 {
     this->canDraw = isDraw;
+}
+bool CDrawable::isAttachedPosition() const
+{
+    return attachedPosition;
+}
+void CDrawable::setIsAttachedPosition(bool isAttachedPosition)
+{
+    this->attachedPosition = isAttachedPosition;
 }

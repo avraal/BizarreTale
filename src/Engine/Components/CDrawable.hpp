@@ -36,6 +36,8 @@ public:
 
     us_int index;
     bool showBounds;
+    bool attachedPosition;
+
     std::string ImagePath;
     sf::VertexArray body;
 
@@ -52,13 +54,16 @@ public:
     us_int getIndex() const;
     const std::string &getImagePath() const;
     const sf::Texture &getTexture() const;
-    virtual void setPosition(const sf::Vector2f &p);
+    virtual void setGlobalPosition(const sf::Vector2f &p);
+    virtual void setLocalePosition(const sf::Vector2f &p);
     void setShowBounds(bool showBounds);
     void setIndex(us_int index);
     void setColor(const sf::Color &color);
     void setCanDraw(bool isDraw);
+    void setIsAttachedPosition(bool isAttachedPosition);
     bool isCanDraw() const;
     bool isShowBounds() const;
+    bool isAttachedPosition() const;
 };
 
 #endif //DEMIURGE_CDRAWABLE_HPP
