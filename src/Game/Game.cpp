@@ -14,16 +14,15 @@
 #include "../Engine/CONST_DEFINITIONS.hpp"
 #include "../Engine/MapEditor.hpp"
 #include "Labyrinth/Labyrinth.hpp"
-#include "TestNewECS/TestECS.hpp"
 Game::Game(const std::string &title)
 {
     this->Title = title;
     levelManager = std::make_unique<LevelManager>();
 //    auto editor = std::make_shared<MapEditor>("MapEditor");
     auto labyrinth = std::make_shared<Labyrinth>("Labyrinth");
-    auto testEcs = std::make_shared<TestECS>("TestECS");
+//    auto testEcs = std::make_shared<TestECS>("TestECS");
 //    levelManager->registerLevel(editor);
-    levelManager->registerLevel(testEcs);
+//    levelManager->registerLevel(testEcs);
     levelManager->registerLevel(labyrinth);
 }
 
@@ -52,7 +51,8 @@ bool Game::start()
     while (window.isOpen())
     {
         sf::Event event;
-        window.clear(sf::Color(42, 76, 61));
+//        window.clear(sf::Color(42, 76, 61));
+        window.clear(CurrentLevel->backgroundColor);
 
         while (window.pollEvent(event))
         {
