@@ -12,6 +12,8 @@
 #include "Systems/Managers/EntityManager.hpp"
 #include "Systems/Managers/ComponentManager.hpp"
 #include "Entity/EObject.hpp"
+#include "Components/Primitives/CRectangle.hpp"
+#include "Components/Primitives/CTriangle.hpp"
 
 us_int Level::currentId = 0;
 
@@ -26,8 +28,10 @@ Level::Level(const std::string &Name)
     UserInterface = std::make_unique<UIWrapper>();
 
     EntityManager::Register<EObject>();
-    ComponentManager::Register<CDrawable>();
+//    ComponentManager::Register<CDrawable>();
     ComponentManager::Register<CTransform>();
+    ComponentManager::Register<CRectangle>();
+    ComponentManager::Register<CTriangle>();
 }
 
 bool Level::DestroyEntity(us_int entityId)
