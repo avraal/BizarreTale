@@ -10,30 +10,20 @@
 
 #include <string>
 
-class GetClassName
+template <class T>
+std::string getClassName()
 {
-public:
-    template <class T>
-    static std::string Get()
+    std::string tmp = typeid(T).name();
+    int position = 0;
+    for (int i = 0; i < tmp.length(); i++)
     {
-        std::string tmp = typeid(T).name();
-        int position = 0;
-        for (int i = 0; i < tmp.length(); i++)
+        if (isdigit(tmp.at(i)))
         {
-            if (isdigit(tmp.at(i)))
-            {
-                position = i;
-            }
+            position = i;
         }
-        tmp.erase(0, position + 1);
-        return tmp;
     }
-
-    GetClassName() = delete;
-    GetClassName(const GetClassName&) = delete;
-    GetClassName(GetClassName&&) = delete;
-    GetClassName&operator=(const GetClassName&) = delete;
-    GetClassName&operator=(GetClassName&&) = delete;
-};
+    tmp.erase(0, position + 1);
+    return tmp;
+}
 
 #endif //DEMIURGE_GETCLASSNAME_HPP

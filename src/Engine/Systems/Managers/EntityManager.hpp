@@ -41,7 +41,7 @@ public:
     template <typename E>
     static std::shared_ptr<E> Create(std::string objName = "")
     {
-        const std::string TypeName = GetClassName::Get<E>();
+        const std::string TypeName = getClassName<E>();
         auto it = RegisteredEntities.find(TypeName);
         if (it != RegisteredEntities.end())
         {
@@ -61,7 +61,7 @@ public:
     template <typename ERegisterable>
     static void Register()
     {
-        RegisteredEntities.insert({GetClassName::Get<ERegisterable>(), &ERegisterable::Create});
+        RegisteredEntities.insert({getClassName<ERegisterable>(), &ERegisterable::Create});
     }
 
     static void ShowAll();

@@ -39,7 +39,7 @@ public:
         {
             return nullptr;
         }
-        const std::string TypeName = GetClassName::Get<C>();
+        const std::string TypeName = getClassName<C>();
         auto it = RegisteredComponents.find(TypeName);
         if (it != RegisteredComponents.end())
         {
@@ -62,7 +62,7 @@ public:
     template <typename CRegisterable>
     static void Register()
     {
-        RegisteredComponents.insert({GetClassName::Get<CRegisterable>(), &CRegisterable::Create});
+        RegisteredComponents.insert({getClassName<CRegisterable>(), &CRegisterable::Create});
     }
 
     static std::shared_ptr<IComponent> getComponent(us_int id);
@@ -71,7 +71,6 @@ public:
     static void ShowComponents();
     static void DestroyAll();
     static void DestroyAllByEntityId(us_int entityId);
-    static void AppendTo(us_int compId, us_int entityId);
 };
 
 #endif //DEMIURGE_COMPONENTMANAGER_HPP
