@@ -15,23 +15,24 @@
 #include "IComponent.hpp"
 #include "../ThicknessLineArray.hpp"
 #include "../CONST_DEFINITIONS.hpp"
+#include "CTransform.hpp"
 
 #define TDS TILE_SIZE_DEFAULT
 
 class CDrawable : public IComponent, public sf::Drawable, public CRegisterable<CDrawable>
 {
 public:
+    using CRegisterable<CDrawable>::Create;
     CDrawable(us_int id, us_int entityId, const std::string &name, const std::string &ImagePath = "",
               sf::Color c = sf::Color(91, 97, 91), us_int index = 0);
 
-    virtual ~CDrawable() {}
-    friend class CRegisterable<CDrawable>;
+    virtual ~CDrawable() {};
 
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-    virtual void bodyBuild();
+    virtual void bodyBuild() = 0;
 
     virtual void drawBounds();
-    void bodyInit(sf::PrimitiveType type, us_int vertexCount);
+    virtual void bodyInit(const sf::PrimitiveType &type, us_int vertexCount);
     void hideBounds();
 
     us_int index;
@@ -48,6 +49,7 @@ protected:
     sf::Color color;
     ThicknessLineArray bounds;
     bool canDraw;
+    virtual void setPosition(const sf::Vector2f &p) = 0;
 
 public:
     const sf::Color &getColor() const;
@@ -56,9 +58,10 @@ public:
     const sf::Texture &getTexture() const;
     virtual void setGlobalPosition(const sf::Vector2f &p);
     virtual void setLocalePosition(const sf::Vector2f &p);
+    virtual void rotate(float angle);
     void setShowBounds(bool showBounds);
     void setIndex(us_int index);
-    void setColor(const sf::Color &color);
+    virtual void setColor(const sf::Color &color);
     void setCanDraw(bool isDraw);
     void setIsAttachedPosition(bool isAttachedPosition);
     bool isCanDraw() const;

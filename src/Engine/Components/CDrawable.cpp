@@ -16,62 +16,42 @@ CDrawable::CDrawable(us_int id, us_int entityId, const std::string &name, const 
     this->index = index;
     this->ImagePath = ImagePath;
     showBounds = false;
-    bodyInit(sf::PrimitiveType::Quads, 4);
     canDraw = false;
     attachedPosition = true;
-    auto parent = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
-    setGlobalPosition(parent->getPosition());
     //    canDraw = true;
-}
-
-void CDrawable::bodyBuild()
-{
-    body[0].position = {0, 0};
-    body[1].position = {TDS, 0};
-    body[2].position = {TDS, TDS};
-    body[3].position = {0, TDS};
-    setColor(color);
 }
 
 void CDrawable::setColor(const sf::Color &color)
 {
     this->color = color;
-    body[0].color = color;
-    body[1].color = color;
-    body[2].color = color;
-    body[3].color = color;
+    for (int i = 0; i < body.getVertexCount(); i++)
+    {
+        body[i].color = color;
+    }
 }
 
 void CDrawable::setGlobalPosition(const sf::Vector2f &p)
 {
-    body[0].position =  p;
-    body[1].position = {p.x + TDS, p.y};
-    body[2].position = {p.x + TDS, p.y + TDS};
-    body[3].position = {p.x, p.y + TDS};
+    setPosition(p);
 }
 
 void CDrawable::setLocalePosition(const sf::Vector2f &p)
 {
     auto parent = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
     sf::Vector2f startPoint;
-//    if (attachedPosition)
-//    {
-//        startPoint = body[0].position + p;
-//    } else
-//    {
-//        startPoint = parent->getPosition() + p;
-//    }
+    //    if (attachedPosition)
+    //    {
+    //        startPoint = body[0].position + p;
+    //    } else
+    //    {
+    //        startPoint = parent->getPosition() + p;
+    //    }
     //    startPoint = body[0].position + p;
     startPoint = body[0].position + p;
-
-    body[0].position =  startPoint;
-    body[1].position = {startPoint.x + TDS, startPoint.y};
-    body[2].position = {startPoint.x + TDS, startPoint.y + TDS};
-    body[3].position = {startPoint.x, startPoint.y + TDS};
-
+    setPosition(startPoint);
 }
 
-void CDrawable::bodyInit(sf::PrimitiveType type, us_int vertexCount)
+void CDrawable::bodyInit(const sf::PrimitiveType &type, us_int vertexCount)
 {
     body.setPrimitiveType(type);
     body.resize(vertexCount);
@@ -105,10 +85,10 @@ const sf::Texture &CDrawable::getTexture() const
 void CDrawable::drawBounds()
 {
     bounds.clear();
-    bounds.append({body[0].position, body[1].position});
-    bounds.append({body[1].position, body[2].position});
-    bounds.append({body[2].position, body[3].position});
-    bounds.append({body[3].position, body[0].position});
+    for (int i = 0; i < body.getVertexCount(); i++)
+    {
+        bounds.append({body[i].position, body[i == (body.getVertexCount() - 1) ? 0 : i+1].position});
+    }
 }
 bool CDrawable::isShowBounds() const
 {
@@ -147,3 +127,17 @@ void CDrawable::setIsAttachedPosition(bool isAttachedPosition)
 {
     this->attachedPosition = isAttachedPosition;
 }
+void CDrawable::rotate(float angle)
+{
+//    float rotate = static_cast<float>(std::fmod(angle, 360));
+//    if (rotate < 0)
+//    {
+//        rotate += 360.f;
+//    }
+    sf::Vector2f rotatedPoint;
+    rotatedPoint.x = body[0].position.x * std::cos(angle) - body[0].position.y * std::sin(angle);
+    rotatedPoint.y = body[0].position.x * std::sin(angle) + body[0].position.y * std::cos(angle);
+
+    setPosition(rotatedPoint);
+}
+
