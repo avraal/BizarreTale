@@ -22,6 +22,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, std::shared_ptr<CTransform> transform)
     {
         os << "X: " << transform->getPosition().x << " Y: " << transform->getPosition().y << std::endl;
+        return os;
     }
 public:
     CTransform() = delete;
