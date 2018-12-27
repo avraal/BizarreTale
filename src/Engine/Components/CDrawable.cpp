@@ -30,27 +30,6 @@ void CDrawable::setColor(const sf::Color &color)
     }
 }
 
-void CDrawable::setGlobalPosition(const sf::Vector2f &p)
-{
-    setPosition(p);
-}
-
-void CDrawable::setLocalePosition(const sf::Vector2f &p)
-{
-    auto parent = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
-    sf::Vector2f startPoint;
-    //    if (attachedPosition)
-    //    {
-    //        startPoint = body[0].position + p;
-    //    } else
-    //    {
-    //        startPoint = parent->getPosition() + p;
-    //    }
-    //    startPoint = body[0].position + p;
-    startPoint = body[0].position + p;
-    setPosition(startPoint);
-}
-
 void CDrawable::bodyInit(const sf::PrimitiveType &type, us_int vertexCount)
 {
     body.setPrimitiveType(type);
@@ -72,6 +51,7 @@ const std::string &CDrawable::getImagePath() const
 }
 void CDrawable::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+    states.transform = getTransform();
     if (canDraw)
     {
         target.draw(body, states);
@@ -127,17 +107,27 @@ void CDrawable::setIsAttachedPosition(bool isAttachedPosition)
 {
     this->attachedPosition = isAttachedPosition;
 }
-void CDrawable::rotate(float angle)
+void CDrawable::setRotate(float angle)
 {
-//    float rotate = static_cast<float>(std::fmod(angle, 360));
-//    if (rotate < 0)
-//    {
-//        rotate += 360.f;
-//    }
-    sf::Vector2f rotatedPoint;
-    rotatedPoint.x = body[0].position.x * std::cos(angle) - body[0].position.y * std::sin(angle);
-    rotatedPoint.y = body[0].position.x * std::sin(angle) + body[0].position.y * std::cos(angle);
-
-    setPosition(rotatedPoint);
+    rotation = angle;
+}
+const sf::Transform CDrawable::getTransform() const
+{
+    sf::Transform Out;
+    Out.translate(position);
+    Out.rotate(rotation);
+    return Out;
+}
+const sf::Vector2f &CDrawable::getPosition() const
+{
+    return position;
+}
+void CDrawable::setPosition(const sf::Vector2f &p)
+{
+    position += p;
+}
+float CDrawable::getRotate() const
+{
+    return rotation;
 }
 

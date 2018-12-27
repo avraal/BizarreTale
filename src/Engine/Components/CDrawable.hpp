@@ -42,25 +42,33 @@ public:
     std::string ImagePath;
     sf::VertexArray body;
 
+    const sf::Vector2f &getPosition() const;
+
     const sf::VertexArray &getBody() const;
 
 protected:
     sf::Texture texture;
     sf::Color color;
+    sf::Vector2f position;
+    float rotation;
+
+public:
+    float getRotate() const;
+protected:
+
     ThicknessLineArray bounds;
     bool canDraw;
-    virtual void setPosition(const sf::Vector2f &p) = 0;
 
 public:
     const sf::Color &getColor() const;
     us_int getIndex() const;
     const std::string &getImagePath() const;
     const sf::Texture &getTexture() const;
-    virtual void setGlobalPosition(const sf::Vector2f &p);
-    virtual void setLocalePosition(const sf::Vector2f &p);
-    virtual void rotate(float angle);
+    const sf::Transform getTransform() const;
+    virtual void setRotate(float angle);
     void setShowBounds(bool showBounds);
     void setIndex(us_int index);
+    void setPosition(const sf::Vector2f &p);
     virtual void setColor(const sf::Color &color);
     void setCanDraw(bool isDraw);
     void setIsAttachedPosition(bool isAttachedPosition);

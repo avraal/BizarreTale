@@ -12,7 +12,7 @@ CRectangle::CRectangle(us_int id, us_int entityId, const std::string &name) : CD
 {
     bodyInit(sf::PrimitiveType::Quads, 4);
     auto parent = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
-    setGlobalPosition(parent->getPosition());
+    setPosition(parent->getPosition());
 }
 void CRectangle::bodyBuild()
 {
@@ -23,18 +23,6 @@ void CRectangle::bodyBuild()
     setColor(color);
 }
 
-void CRectangle::setPosition(const sf::Vector2f &p)
-{
-    body[0].position = p;
-    body[1].position = {p.x + TDS, p.y};
-    body[2].position = {p.x + TDS, p.y + TDS};
-    body[3].position = {p.x, p.y + TDS};
-
-    if (showBounds)
-    {
-        drawBounds();
-    }
-}
 void CRectangle::bodyInit(const sf::PrimitiveType &type, us_int vertexCount)
 {
     body.setPrimitiveType(type);

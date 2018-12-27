@@ -17,8 +17,6 @@ public:
     CRectangle(us_int id, us_int entityId, const std::string &name);
     virtual void bodyBuild() override;
     virtual void bodyInit(const sf::PrimitiveType &type, us_int vertexCount) override;
-protected:
-    virtual void setPosition(const sf::Vector2f &p) override;
 public:
     virtual ~CRectangle() {}
 };

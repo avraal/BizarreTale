@@ -12,7 +12,7 @@ CTriangle::CTriangle(us_int id, us_int entityId, const std::string &name) : CDra
 {
     bodyInit(sf::PrimitiveType::Triangles, 3);
     auto parent = std::static_pointer_cast<EObject>(EntityManager::getEntity(entityId));
-    setGlobalPosition(parent->getPosition());
+    setPosition(parent->getPosition());
 }
 void CTriangle::bodyInit(const sf::PrimitiveType &type, us_int vertexCount)
 {
@@ -28,15 +28,4 @@ void CTriangle::bodyBuild()
     body[2].position = {0, TDS};
 
     setColor(color);
-}
-void CTriangle::setPosition(const sf::Vector2f &p)
-{
-    body[0].position = p;
-    body[1].position = {p.x + TDS, p.y + TDS};
-    body[2].position = {p.x, p.y + TDS};
-
-    if (showBounds)
-    {
-        drawBounds();
-    }
 }

@@ -15,8 +15,6 @@ class CTriangle : public CDrawable, public CRegisterable<CTriangle>
 public:
     using CRegisterable<CTriangle>::Create;
     CTriangle(us_int id, us_int entityId, const std::string &name);
-protected:
-    virtual void setPosition(const sf::Vector2f &p) override;
 public:
     virtual void bodyInit(const sf::PrimitiveType &type, us_int vertexCount) override;
     virtual void bodyBuild() override;
