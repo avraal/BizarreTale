@@ -27,7 +27,7 @@ void EObject::setPosition(const sf::Vector2f &pos)
         {
             if (d->isAttachedPosition())
             {
-                d->setLocalePosition(n_pos);
+                d->setPosition(n_pos);
             }
         }
     }

@@ -108,9 +108,3 @@ void ComponentManager::DestroyAllByEntityId(us_int entityId)
         }
     }
 }
-void ComponentManager::AppendTo(us_int compId, us_int entityId)
-{
-    auto comp = getComponent(compId);
-    auto target = EntityManager::getEntity(entityId);
-    target->ComponentsId.push_back(compId);
-}

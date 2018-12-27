@@ -17,7 +17,7 @@ class EObject : public IEntity, public ERegisterable<EObject>
 {
     //TODO: Make this protected
 public:
-    using ERegisterable<EObject>::Create;
+//    using ERegisterable<EObject>::Create;
     EObject(us_int id, const std::string &name);
 public:
     virtual ~EObject();
