@@ -34,7 +34,7 @@ bool Labyrinth::prepareLevel(sf::RenderWindow &window)
     UserInterface->gui->add(infoPanel);
 
     std::thread LaunchDraw(&Labyrinth::drawTileMap, this);
-    LaunchDraw.detach();
+    LaunchDraw.join();
 
     return true;
 }
@@ -44,32 +44,32 @@ void Labyrinth::drawTileMap()
 
     auto testObj = EntityManager::Create<EObject>("test");
     testObj->setPosition(sf::Vector2f(32, 32));
-    //    auto body = ComponentManager::Create<CRectangle>(testObj->getId(), "body");
     auto body = ComponentManager::Create<CRectangle>(testObj->getId(), "body");
     body->setCanDraw(true);
     addObject(testObj->getId());
 
-    //    for (us_int i = 0; i < tileSizeX; i++)
-    //    {
-    //        for (us_int j = 0; j < tileSizeY; j++)
-    //        {
-    //            if (walls[i][j] != VISITED)
-    //            {
-    //                if (guard.try_lock())
-    //                {
-    //                    auto tile = EntityManager::Create<EObject>();
-    ////                    tile->transform = ComponentManager::Create<CTransform>(tile->getId(), "transform");
-    //                    tile->body = ComponentManager::Create<CDrawable>(tile->getId(), "body");
-    ////                    tile->body->setCanDraw(false);
-    //                    tile->setPosition(sf::Vector2i(j * TILE_SIZE_DEFAULT, i * TILE_SIZE_DEFAULT));
-    //                    addObject(tile->getId());
-    //                    TileIds.push_back(tile->getId());
-    //                    guard.unlock();
-    //                }
-    //            }
-    //        }
-    //    }
-    //    std::this_thread::yield();
+//        for (us_int i = 0; i < tileSizeX; i++)
+//        {
+//            for (us_int j = 0; j < tileSizeY; j++)
+//            {
+//                if (walls[i][j] != VISITED)
+//                {
+//                    if (guard.try_lock())
+//                    {
+//                        auto tile = EntityManager::Create<EObject>();
+//    //                    tile->transform = ComponentManager::Create<CTransform>(tile->getId(), "transform");
+////                        tile->body = ComponentManager::Create<CDrawable>(tile->getId(), "body");
+//                        ComponentManager::Create<CRectangle>(tile->getId());
+//    //                    tile->body->setCanDraw(false);
+//                        tile->setPosition(sf::Vector2i(j * TILE_SIZE_DEFAULT, i * TILE_SIZE_DEFAULT));
+//                        addObject(tile->getId());
+//                        TileIds.push_back(tile->getId());
+//                        guard.unlock();
+//                    }
+//                }
+//            }
+//        }
+//        std::this_thread::yield();
 
     std::vector<sf::Vector2f> positions;
     positions.push_back({-64, -64});
@@ -82,9 +82,7 @@ void Labyrinth::drawTileMap()
         auto b = ComponentManager::Create<CTriangle>(EntityManager::getEntity("test")->getId());
         b->setColor(sf::Color::White);
         b->setCanDraw(true);
-        //        b->setIsAttachedPosition(false);
-        b->setLocalePosition(positions[i]);
-        //        b->setIsAttachedPosition(true);
+        b->setPosition(positions[i]);
         DrawableComponents.push_back(b);
     }
 
@@ -193,22 +191,26 @@ void Labyrinth::KeyBoardCallbacks(sf::RenderWindow &window, sf::Event &event)
             case sf::Keyboard::R:
             {
                 auto e = std::static_pointer_cast<EObject>(EntityManager::getEntity("test"));
-//                e->transform->rotate(45.f);
                 e->setPosition(e->getPosition());
                 break;
             }
             case sf::Keyboard::Space:
             {
                 auto e = std::static_pointer_cast<EObject>(EntityManager::getEntity("test"));
-                //                auto b = std::static_pointer_cast<CRectangle>(ComponentManager::getComponent("body"));
                 for (auto i : e->ComponentsId)
                 {
                     auto c = std::dynamic_pointer_cast<CDrawable>(ComponentManager::getComponent(i));
-//                    std::cout << c->getName() << std::endl;
                     if (c)
                     {
                         c->drawBounds();
-                        c->rotate(45.f);
+                        c->setRotate(c->getRotate() + 45.f);
+                        if (c->getName() == "body")
+                        {
+                            for (int i = 0; i < c->getBody().getVertexCount(); i++)
+                            {
+                                std::cout << c->getBody()[i].position.x << " : " << c->getBody()[i].position.y << std::endl;
+                            }
+                        }
                     }
                 }
                 std::cout << "So..." << std::endl;
@@ -225,7 +227,6 @@ void Labyrinth::HandleGUIEvent(sf::Event &event)
 
 void Labyrinth::draw(sf::RenderWindow &window)
 {
-    Level::draw(window);
     for (auto g : LineGrid)
     {
         sf::Vertex line[] =
@@ -235,6 +236,7 @@ void Labyrinth::draw(sf::RenderWindow &window)
                 };
         window.draw(line, 2, sf::Lines);
     }
+    Level::draw(window);
     infoFPSLabel->setText("FPS: " + std::to_string((us_int) fps));
     infoObjCount->setText("ObjCount: " + std::to_string(ObjectIds.size()));
     infoDrawableComponentCount->setText("DrawableComponentCount: " + std::to_string(DrawableComponents.size()));
