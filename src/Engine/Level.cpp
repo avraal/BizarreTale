@@ -69,7 +69,7 @@ void Level::addObject(us_int entityId)
 
     for (auto d : target->ComponentsId)
     {
-        std::shared_ptr<CDrawable> c = std::dynamic_pointer_cast<CDrawable>(ComponentManager::getComponent(d));
+        auto c = std::dynamic_pointer_cast<CDrawable>(ComponentManager::getComponent(d));
         if (c)
         {
             DrawableComponents.push_back(c);
