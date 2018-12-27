@@ -1,0 +1,9 @@
+*.idea
+*.cmake
+*.dll
+*.a
+*.exe
+*.cbp
+cmake-build-debug/Makefile
+cmake-build-debug/CMakeCache.txt
+cmake-build-debug/CMakeFiles/*
